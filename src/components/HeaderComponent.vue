@@ -7,7 +7,7 @@
     </div>
 
     <nav class="menu">
-      <a href="#">INÍCIO</a>
+      <a href="home">INÍCIO</a>
       <a href="#">PRONTUÁRIOS</a>
       <a href="#">CADASTRO DE RESIDENTE</a>
       <a href="#">ADMINISTRADOR</a>
@@ -22,7 +22,7 @@
   align-items: center;
   background: #ffffff;
   padding: 10px 30px;
-  border-bottom: 2px solid #2e5d2e;
+
 }
 
 .logo {
