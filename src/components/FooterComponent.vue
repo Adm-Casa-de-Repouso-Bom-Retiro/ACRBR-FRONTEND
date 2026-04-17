@@ -3,7 +3,6 @@
 <template>
   <footer class="footer">
     <div class="footer-content">
-      <!-- esquerda -->
       <div class="left">
         <p>
           <span>Desenvolvido por:</span> Ana Paula Dominoni, Anna Flávia S. Carneiro, Emily V. D.
@@ -13,20 +12,18 @@
 
       <div class="divider"></div>
 
-      <!-- centro -->
       <div class="center">
         <h2>ACRBR</h2>
       </div>
 
       <div class="divider"></div>
 
-      <!-- direita -->
       <div class="right">
         <div class="links">
-          <a href="#">INÍCIO</a>
-          <a href="#">PRONTUÁRIOS</a>
-          <a href="#">CADASTRO DE RESIDENTE</a>
-          <a href="#">ADMINISTRADOR</a>
+          <router-link to="/">INÍCIO</router-link>
+          <router-link to="/prontuarios">PRONTUÁRIOS</router-link>
+          <router-link to="/cadastro-residente">CADASTRO DE RESIDENTE</router-link>
+          <router-link to="/login">ADMINISTRADOR</router-link>
         </div>
       </div>
     </div>

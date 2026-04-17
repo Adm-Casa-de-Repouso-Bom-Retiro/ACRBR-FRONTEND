@@ -7,10 +7,10 @@
     </div>
 
     <nav class="menu">
-      <a href="home">INÍCIO</a>
-      <a href="#">PRONTUÁRIOS</a>
-      <a href="#">CADASTRO DE RESIDENTE</a>
-      <a href="#">ADMINISTRADOR</a>
+      <router-link to="/">INÍCIO</router-link>
+      <router-link to="/prontuarios">PRONTUÁRIOS</router-link>
+      <router-link to="/cadastro-residente">CADASTRO DE RESIDENTE</router-link>
+      <router-link to="/login">ADMINISTRADOR</router-link>
     </nav>
   </header>
 </template>
@@ -22,7 +22,6 @@
   align-items: center;
   background: #ffffff;
   padding: 10px 30px;
-
 }
 
 .logo {
@@ -40,13 +39,6 @@
 .menu {
   display: flex;
   gap: 30px;
-}
-
-.menu a {
-  text-decoration: none;
-  color: #2e5d2e;
-  font-weight: 600;
-  font-size: 14px;
 }
 
 .menu a {
