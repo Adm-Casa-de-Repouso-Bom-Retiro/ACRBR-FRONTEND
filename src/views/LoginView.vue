@@ -1,6 +1,6 @@
 <template>
   <div class="login-page">
-  <div class="login-line"></div>
+    <div class="login-line"></div>
     <main class="main-content">
       <div class="photo-side">
         <img src="/src/assets/images/tela-login.png" alt="Cuidadora com idoso" class="photo-img" />
@@ -11,6 +11,8 @@
           <div class="avatar-circle">
             <img src="/src/assets/images/icone-login.png" alt="Usuário" class="avatar-img" />
           </div>
+
+          <p v-if="erro" class="msg-erro">{{ erro }}</p>
 
           <form @submit.prevent="handleLogin" class="login-form">
             <div class="form-group">
@@ -42,7 +44,9 @@
               <router-link to="/cadastro" class="signup-link">Realizar cadastro.</router-link>
             </p>
 
-            <button type="submit" class="btn-entrar">ENTRAR</button>
+            <button type="submit" class="btn-entrar" :disabled="carregando">
+              {{ carregando ? 'AGUARDE...' : 'ENTRAR' }}
+            </button>
           </form>
         </div>
       </div>
@@ -51,6 +55,8 @@
 </template>
 
 <script>
+import api from '@/services/api'
+
 export default {
   name: 'LoginView',
 
@@ -58,15 +64,38 @@ export default {
     return {
       email: '',
       senha: '',
+      erro: '',
+      carregando: false,
     }
   },
 
   methods: {
     async handleLogin() {
+      this.erro = ''
+      this.carregando = true
+
       try {
-        console.log('Login com:', this.email)
+        const response = await api.post('/token/', {
+          email: this.email,
+          password: this.senha,
+        })
+
+        // Salva os tokens no localStorage
+        localStorage.setItem('access_token', response.data.access)
+        localStorage.setItem('refresh_token', response.data.refresh)
+
+        // Redireciona para a página inicial após login
+        this.$router.push('/')
       } catch (error) {
-        console.error('Erro ao fazer login:', error)
+        if (error.response && error.response.data) {
+          const erros = error.response.data
+          const primeiroErro = Object.values(erros)[0]
+          this.erro = Array.isArray(primeiroErro) ? primeiroErro[0] : primeiroErro
+        } else {
+          this.erro = 'Erro ao fazer login. Tente novamente.'
+        }
+      } finally {
+        this.carregando = false
       }
     },
   },
@@ -86,7 +115,6 @@ export default {
   background: #2e5d2e;
 }
 
-/* ── Main Content ── */
 .main-content {
   flex: 1;
   width: 100%;
@@ -117,7 +145,6 @@ export default {
   background: #ffffff;
 }
 
-/* ── Login Card ── */
 .login-card {
   width: 100%;
   max-width: 340px;
@@ -128,17 +155,20 @@ export default {
 }
 
 .avatar-img {
-  width: 40px;
-  height: 40px;
-  object-fit: contain;
   width: 72px;
   height: 72px;
+  object-fit: contain;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* ── Form ── */
+.msg-erro {
+  color: #c0392b;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
 .login-form {
   width: 100%;
   display: flex;
@@ -211,7 +241,12 @@ export default {
   transition: background 0.2s;
 }
 
-.btn-entrar:hover {
+.btn-entrar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-entrar:hover:not(:disabled) {
   background: #1e3e1e;
 }
 </style>

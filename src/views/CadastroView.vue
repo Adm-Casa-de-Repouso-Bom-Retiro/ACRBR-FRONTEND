@@ -11,6 +11,9 @@
 
           <h2 class="titulo">CADASTRE-SE COMO ADMINISTRADOR:</h2>
 
+          <p v-if="erro" class="msg-erro">{{ erro }}</p>
+          <p v-if="sucesso" class="msg-sucesso">{{ sucesso }}</p>
+
           <form @submit.prevent="handleCadastro" class="cadastro-form">
             <div class="form-grid">
               <div class="col">
@@ -54,7 +57,9 @@
               </div>
             </div>
 
-            <button type="submit" class="btn-criar">CRIAR CONTA</button>
+            <button type="submit" class="btn-criar" :disabled="carregando">
+              {{ carregando ? 'AGUARDE...' : 'CRIAR CONTA' }}
+            </button>
           </form>
         </div>
       </div>
@@ -63,6 +68,8 @@
 </template>
 
 <script>
+import api from '@/services/api'
+
 export default {
   name: 'CadastroView',
 
@@ -74,19 +81,48 @@ export default {
       senha: '',
       email: '',
       data: '',
+      erro: '',
+      sucesso: '',
+      carregando: false,
     }
   },
 
   methods: {
-    handleCadastro() {
-      console.log('Cadastro:', {
-        nome: this.nome,
-        telefone: this.telefone,
-        cargo: this.cargo,
-        senha: this.senha,
-        email: this.email,
-        data: this.data,
-      })
+    // Formata telefone removendo caracteres não numéricos antes de enviar
+    formatarTelefone(valor) {
+      return valor.replace(/\D/g, '')
+    },
+
+    async handleCadastro() {
+      this.erro = ''
+      this.sucesso = ''
+      this.carregando = true
+
+      try {
+        await api.post('/registro/', {
+          nome: this.nome,
+          telefone: this.formatarTelefone(this.telefone),
+          cargo: this.cargo,
+          password: this.senha,
+          email: this.email,
+          data_registro: this.data,
+        })
+
+        this.sucesso = 'Conta criada com sucesso!'
+        // Redireciona para login após 1.5s
+        setTimeout(() => this.$router.push('/login'), 1500)
+      } catch (error) {
+        if (error.response && error.response.data) {
+          const erros = error.response.data
+          // Exibe o primeiro erro retornado pela API
+          const primeiroErro = Object.values(erros)[0]
+          this.erro = Array.isArray(primeiroErro) ? primeiroErro[0] : primeiroErro
+        } else {
+          this.erro = 'Erro ao criar conta. Tente novamente.'
+        }
+      } finally {
+        this.carregando = false
+      }
     },
   },
 }
@@ -122,10 +158,24 @@ export default {
   width: 70px;
   margin-bottom: 10px;
 }
+
 .titulo {
   color: #1e3e1e;
   font-size: 18px;
   margin-bottom: 20px;
+}
+
+.msg-erro {
+  color: #c0392b;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.msg-sucesso {
+  color: #1e3e1e;
+  font-size: 13px;
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 
 .form-grid {
@@ -137,7 +187,6 @@ export default {
   width: 100%;
 }
 
-/* FORM */
 .form-group {
   display: flex;
   flex-direction: column;
@@ -160,12 +209,12 @@ export default {
   border-radius: 4px;
   padding: 0 8px;
   font-size: 13px;
-  color: #bbb;
-  background-color: #ffffff; 
+  color: #1e3e1e;
+  background-color: #ffffff;
 }
 
 .form-group input::placeholder {
-  color: #bbb;
+  color: #1e3e1e;
 }
 
 .btn-criar {
@@ -179,7 +228,12 @@ export default {
   cursor: pointer;
 }
 
-.btn-criar:hover {
+.btn-criar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-criar:hover:not(:disabled) {
   background: #163216;
 }
 </style>
