@@ -1,6 +1,5 @@
 <script setup>
 import { ref } from 'vue'
-
 // Valores serão preenchidos via API futuramente
 const funcionarios = ref(null)
 const residentes = ref(null)
@@ -18,7 +17,6 @@ const residentes = ref(null)
               rotina de cuidados.
             </p>
           </div>
-
           <div class="stats-row">
             <div class="stat-card">
               <span class="stat-label">Quantidade de<br />Funcionários</span>
@@ -30,7 +28,6 @@ const residentes = ref(null)
             </div>
           </div>
         </div>
-
         <div class="hero-right">
           <img src="@/assets/images/idoso4k.png" alt="Casal de idosos" class="hero-image" />
         </div>
@@ -40,14 +37,23 @@ const residentes = ref(null)
 </template>
 
 <style scoped>
+/* ── HOME ─────────────────────────────────────────────── */
+.home {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
 /* ── HERO ─────────────────────────────────────────────── */
 .hero {
   position: relative;
+  flex: 1;
   background-image: url('@/assets/images/background.png');
   background-size: cover;
   background-position: top center;
   background-repeat: no-repeat;
-  overflow: hidden;
+  /* overflow: hidden REMOVIDO — cortava os outlines dos cards */
 }
 
 .hero-content {
@@ -58,6 +64,7 @@ const residentes = ref(null)
   justify-content: space-between;
   padding: 60px 140px 120px 80px;
   gap: 40px;
+  height: 100%;
 }
 
 /* ── ESQUERDA ─────────────────────────────────────────── */
@@ -74,6 +81,7 @@ const residentes = ref(null)
   outline: 3px solid #ffffff;
   outline-offset: 5px;
 }
+
 .welcome-box p {
   margin: 0;
   color: #2e5d2e;

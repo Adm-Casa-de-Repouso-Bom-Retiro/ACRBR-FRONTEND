@@ -4,10 +4,41 @@ import HeaderComponent from './components/HeaderComponent.vue';
 </script>
 
 <template>
-  <HeaderComponent />
-  <router-view />
-  <FooterComponent />
+  <div class="app-wrapper">
+    <HeaderComponent />
+    <main class="app-main">
+      <router-view />
+    </main>
+    <FooterComponent />
+  </div>
 </template>
 
 <style>
+/* Reset global */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+#app {
+  height: 100%;
+}
+
+/* Layout principal */
+.app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
 </style>
