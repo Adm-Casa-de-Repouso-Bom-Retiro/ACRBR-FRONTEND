@@ -39,21 +39,20 @@ const residentes = ref(null)
 <style scoped>
 /* ── HOME ─────────────────────────────────────────────── */
 .home {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: 0;
 }
 
 /* ── HERO ─────────────────────────────────────────────── */
 .hero {
   position: relative;
   flex: 1;
+  min-height: calc(100vh - 80px);
   background-image: url('@/assets/images/background.png');
   background-size: cover;
   background-position: top center;
   background-repeat: no-repeat;
-  /* overflow: hidden REMOVIDO — cortava os outlines dos cards */
 }
 
 .hero-content {
@@ -64,7 +63,7 @@ const residentes = ref(null)
   justify-content: space-between;
   padding: 60px 140px 120px 80px;
   gap: 40px;
-  height: 100%;
+  min-height: inherit;
 }
 
 /* ── ESQUERDA ─────────────────────────────────────────── */

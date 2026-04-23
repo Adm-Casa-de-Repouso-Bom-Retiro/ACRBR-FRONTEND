@@ -1,6 +1,6 @@
 <script setup>
-import FooterComponent from './components/FooterComponent.vue';
-import HeaderComponent from './components/HeaderComponent.vue';
+import FooterComponent from './components/FooterComponent.vue'
+import HeaderComponent from './components/HeaderComponent.vue'
 </script>
 
 <template>
@@ -14,22 +14,28 @@ import HeaderComponent from './components/HeaderComponent.vue';
 </template>
 
 <style>
-/* Reset global */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html, body {
+html {
   height: 100%;
+}
+
+body {
+  min-height: 100%;
 }
 
 #app {
-  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Layout principal */
 .app-wrapper {
   display: flex;
   flex-direction: column;

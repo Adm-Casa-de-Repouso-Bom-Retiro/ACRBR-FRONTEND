@@ -65,6 +65,7 @@ export default {
           <h1 class="nome">{{ administrador.nome || '...' }}</h1>
           <p class="cargo">Cargo: {{ cargoFormatado }}</p>
         </div>
+        <div class="divider"></div>
         <div class="info-section">
           <div class="info-item">
             <span class="info-label">E-MAIL:</span>
@@ -92,101 +93,130 @@ export default {
 * {
   box-sizing: border-box;
 }
+
 .top-line {
   width: 100%;
-  height: 1.3vw;
+  height: 6px;
   background: #1e3e1e;
 }
+
 .main-content {
-  height: calc(100vh - 140px);
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 40px 20px;
+  min-height: calc(100vh - 146px); /* header ~80px + top-line 6px + footer ~60px */
 }
+
 .perfil-card {
-  width: 60vw;
+  width: min(700px, 90vw);
   border: 2px solid #1e3e1e;
-  border-radius: 12px;
-  padding: 75px;
+  border-radius: 16px;
+  padding: 40px 48px;
   display: flex;
-  gap: 50px;
+  gap: 40px;
   align-items: center;
 }
+
+/* ── DIVISOR VERTICAL ─────────────────────────────────── */
+.divider {
+  width: 1px;
+  align-self: stretch;
+  background: #d0d0d0;
+  flex-shrink: 0;
+}
+
+/* ── AVATAR ───────────────────────────────────────────── */
 .avatar-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  min-width: 180px;
+  gap: 8px;
+  min-width: 150px;
 }
+
 .avatar-img {
-  width: 92px;
-  height: 92px;
+  width: 80px;
+  height: 80px;
   object-fit: contain;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
+
 .nome {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: bold;
   color: #1e3e1e;
   text-align: center;
 }
+
 .cargo {
-  font-size: 16px;
+  font-size: 14px;
   color: #555;
+  text-align: center;
 }
+
+/* ── INFO ─────────────────────────────────────────────── */
 .info-section {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
+
 .info-item {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
+
 .info-label {
-  font-size: 15px;
+  font-size: 13px;
   font-weight: bold;
   color: #1e3e1e;
 }
+
 .info-valor {
-  font-size: 15px;
+  font-size: 14px;
   color: #333;
   border-bottom: 1px solid #ccc;
-  padding-bottom: 4px;
+  padding-bottom: 6px;
 }
+
+/* ── BOTÕES ───────────────────────────────────────────── */
 .botoes {
   display: flex;
-  gap: 16px;
-  margin-top: 10px;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
 }
+
 .btn-editar {
   background: #1e3e1e;
   color: white;
   border: none;
-  padding: 10px 24px;
+  padding: 9px 20px;
   border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
+  transition: background 0.2s;
 }
+
 .btn-editar:hover {
   background: #163216;
 }
+
 .btn-sair {
   background: transparent;
   color: #1e3e1e;
   border: 2px solid #1e3e1e;
-  padding: 10px 24px;
+  padding: 9px 20px;
   border-radius: 5px;
   font-weight: bold;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 13px;
+  transition: background 0.2s;
 }
+
 .btn-sair:hover {
   background: #f0f0f0;
 }
