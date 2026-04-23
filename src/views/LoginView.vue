@@ -80,7 +80,6 @@ export default {
           password: this.senha,
         })
 
-        // Salva os tokens no localStorage //
         localStorage.setItem('access_token', response.data.access)
         localStorage.setItem('refresh_token', response.data.refresh)
 

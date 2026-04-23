@@ -53,6 +53,7 @@
                 <div class="form-group">
                   <label>DATA DE REGISTRO:</label>
                   <input v-model="data" type="date" required />
+                  <span class="campo-obs">Data em que o funcionário foi registrado</span>
                 </div>
               </div>
             </div>
@@ -88,7 +89,6 @@ export default {
   },
 
   methods: {
-    // Formata telefone removendo caracteres não numéricos antes de enviar
     formatarTelefone(valor) {
       return valor.replace(/\D/g, '')
     },
@@ -109,12 +109,10 @@ export default {
         })
 
         this.sucesso = 'Conta criada com sucesso!'
-        // Redireciona para login após 1.5s
         setTimeout(() => this.$router.push('/login'), 1500)
       } catch (error) {
         if (error.response && error.response.data) {
           const erros = error.response.data
-          // Exibe o primeiro erro retornado pela API
           const primeiroErro = Object.values(erros)[0]
           this.erro = Array.isArray(primeiroErro) ? primeiroErro[0] : primeiroErro
         } else {
@@ -215,6 +213,12 @@ export default {
 
 .form-group input::placeholder {
   color: #1e3e1e;
+}
+
+.campo-obs {
+  font-size: 10px;
+  color: #888;
+  margin-top: 2px;
 }
 
 .btn-criar {
