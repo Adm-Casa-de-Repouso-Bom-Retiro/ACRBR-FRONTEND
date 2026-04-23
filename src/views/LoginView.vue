@@ -80,12 +80,12 @@ export default {
           password: this.senha,
         })
 
-        // Salva os tokens no localStorage
+        // Salva os tokens no localStorage //
         localStorage.setItem('access_token', response.data.access)
         localStorage.setItem('refresh_token', response.data.refresh)
 
-        // Redireciona para a página inicial após login
-        this.$router.push('/')
+        // Redireciona para a página do perfil do funcionário após o login //
+        this.$router.push('/perfilfuncionario')
       } catch (error) {
         if (error.response && error.response.data) {
           const erros = error.response.data
