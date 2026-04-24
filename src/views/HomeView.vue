@@ -61,7 +61,7 @@ const residentes = ref(null)
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 60px 140px 120px 80px;
+  padding: 60px 140px 160px 140px;
   gap: 40px;
   min-height: inherit;
 }
