@@ -5,9 +5,26 @@
     <main class="main-content">
       <div class="form-container">
         <div class="cadastro-card">
-          <div class="avatar-circle">
-            <img src="/src/assets/images/icone-login.png" class="avatar-img" />
+
+          <div class="avatar-wrap" @click="abrirSeletorFoto" title="Clique para adicionar foto">
+            <div class="avatar-circle" :class="{ 'avatar-circle--foto': fotoPrevia }">
+              <img :src="fotoPrevia || '/src/assets/images/icone-login.png'" class="avatar-img" :class="{ 'avatar-img--foto': fotoPrevia }" />
+            </div>
+            <div class="cam-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+            </div>
           </div>
+
+          <input
+            ref="inputFoto"
+            type="file"
+            accept="image/jpeg,image/png"
+            style="display: none"
+            @change="selecionarFoto"
+          />
 
           <h2 class="titulo">CADASTRE-SE COMO ADMINISTRADOR:</h2>
 
@@ -85,6 +102,8 @@ export default {
       erro: '',
       sucesso: '',
       carregando: false,
+      fotoArquivo: null,
+      fotoPrevia: '',
     }
   },
 
@@ -93,20 +112,53 @@ export default {
       return valor.replace(/\D/g, '')
     },
 
+    abrirSeletorFoto() {
+      this.$refs.inputFoto.click()
+    },
+
+    selecionarFoto(evento) {
+      const arquivo = evento.target.files[0]
+      if (!arquivo) return
+      this.fotoArquivo = arquivo
+      this.fotoPrevia = URL.createObjectURL(arquivo)
+    },
+
+    async uploadFoto() {
+      if (!this.fotoArquivo) return null
+
+      const formData = new FormData()
+      formData.append('file', this.fotoArquivo)
+      formData.append('description', this.nome || 'foto-perfil')
+
+      const resposta = await api.post('/media/images/', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      })
+
+      return resposta.data.attachment_key
+    },
+
     async handleCadastro() {
       this.erro = ''
       this.sucesso = ''
       this.carregando = true
 
       try {
-        await api.post('/registro/', {
+        const fotoKey = await this.uploadFoto()
+
+        const dadosCadastro = {
           nome: this.nome,
           telefone: this.formatarTelefone(this.telefone),
           cargo: this.cargo,
           password: this.senha,
           email: this.email,
           data_registro: this.data,
-        })
+        }
+
+        if (fotoKey) {
+          dadosCadastro.perfil_attachment_key = fotoKey
+        }
+
+        await api.post('/registro/', dadosCadastro)
 
         this.sucesso = 'Conta criada com sucesso!'
         setTimeout(() => this.$router.push('/login'), 1500)
@@ -134,7 +186,7 @@ export default {
 .top-line {
   width: 100%;
   height: 1.3vw;
-  background: #1e3e1e;
+  background: #2e5d2e;
 }
 
 .main-content {
@@ -146,19 +198,64 @@ export default {
 
 .cadastro-card {
   width: 80vw;
-  border: 2px solid #1e3e1e;
+  border: 2px solid #2e5d2e;
   border-radius: 12px;
   padding: 30px;
   text-align: center;
 }
 
-.avatar-img {
-  width: 70px;
+.avatar-wrap {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
   margin-bottom: 10px;
 }
 
+.avatar-circle {
+  width: 105px;
+  height: 105px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-circle--foto {
+  overflow: hidden;
+  border: 2px solid #2e5d2e;
+}
+
+.avatar-img {
+  width: 105px;
+  height: 105px;
+  object-fit: contain;
+}
+
+.avatar-img--foto {
+  object-fit: cover;
+}
+
+.cam-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 34px;
+  height: 34px;
+  background: #2e5d2e;
+  border-radius: 50%;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.avatar-wrap:hover .cam-btn {
+  background: #1e3e1e;
+}
+
 .titulo {
-  color: #1e3e1e;
+  color: #2e5d2e;
   font-size: 18px;
   margin-bottom: 20px;
 }
@@ -170,7 +267,7 @@ export default {
 }
 
 .msg-sucesso {
-  color: #1e3e1e;
+  color: #2e5d2e;
   font-size: 13px;
   margin-bottom: 10px;
   font-weight: bold;
@@ -203,7 +300,7 @@ export default {
 .form-group select {
   width: 100%;
   height: 30px;
-  border: 1.5px solid #1e3e1e;
+  border: 1.5px solid #2e5d2e;
   border-radius: 4px;
   padding: 0 8px;
   font-size: 13px;
@@ -223,7 +320,7 @@ export default {
 
 .btn-criar {
   margin-top: 15px;
-  background: #1e3e1e;
+  background: #2e5d2e;
   color: white;
   border: none;
   padding: 10px 30px;
