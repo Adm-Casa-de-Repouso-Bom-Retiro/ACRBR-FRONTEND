@@ -102,8 +102,8 @@ export default {
 
 .top-line {
   width: 100%;
-  height: 1.3vw;
-  background: #1e3e1e;
+  height: 6px;
+  background: #2e5d2e;
 }
 
 .main-content {
