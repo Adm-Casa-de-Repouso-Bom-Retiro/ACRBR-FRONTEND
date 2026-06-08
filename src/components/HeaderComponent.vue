@@ -9,7 +9,7 @@
     <nav class="menu">
       <router-link to="/">INÍCIO</router-link>
       <router-link to="/prontuarios">PRONTUÁRIOS</router-link>
-      <router-link to="/cadastro-residente">CADASTRO DE RESIDENTE</router-link>
+      <router-link to="/dadosmedicos">CADASTRO DE RESIDENTE</router-link>
       <router-link to="/login">ADMINISTRADOR</router-link>
     </nav>
   </header>

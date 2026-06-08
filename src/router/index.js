@@ -28,6 +28,12 @@ const router = createRouter({
       component: () => import('../views/PerfilFuncionarioView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/dadosmedicos',
+      name: 'dadosmedicos',
+      component: () => import('../views/DadosMedicosView.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 router.beforeEach((to, from, next) => {
