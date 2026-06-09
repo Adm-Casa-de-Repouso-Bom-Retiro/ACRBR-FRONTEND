@@ -110,7 +110,7 @@ export default {
 
 .perfil-card {
   width: min(700px, 90vw);
-  border: 2px solid #1e3e1e;
+  border: 3px solid #3a7d44;
   border-radius: 16px;
   padding: 40px 48px;
   display: flex;
