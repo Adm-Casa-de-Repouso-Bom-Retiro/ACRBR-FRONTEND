@@ -33,7 +33,7 @@
 <style scoped>
 .footer {
   background: #2e5d2e;
-  padding: 25px 40px;
+  padding: 55px 40px;
   color: #fff;
 }
 
@@ -51,12 +51,13 @@
 }
 .left span {
   font-weight: bold;
+  font-size: 14px;
 }
 
 .center {
   width: 20%;
   text-align: center;
-  font-size: 15px;
+  font-size: 18px;
   font-weight: bold;
 }
 
@@ -84,7 +85,7 @@
 .links a {
   text-decoration: none;
   color: #fff;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
 }
 </style>
