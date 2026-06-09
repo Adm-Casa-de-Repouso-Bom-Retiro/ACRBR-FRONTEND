@@ -122,7 +122,7 @@ export default {
 
 .top-line {
   width: 100%;
-  height: 6px;
+  height: 1.3vw;
   background: #2e5d2e;
 }
 
