@@ -8,7 +8,7 @@
 
           <div class="avatar-wrap" @click="abrirSeletorFoto" title="Clique para adicionar foto">
             <div class="avatar-circle" :class="{ 'avatar-circle--foto': fotoPrevia }">
-              <img :src="fotoPrevia || '/src/assets/images/icone-login.png'" class="avatar-img" :class="{ 'avatar-img--foto': fotoPrevia }" />
+              <img :src="fotoPrevia || iconeLogin" class="avatar-img" :class="{ 'avatar-img--foto': fotoPrevia }" />
             </div>
             <div class="cam-btn">
               <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -87,12 +87,14 @@
 
 <script>
 import api from '@/services/api'
+import iconeLogin from '@/assets/images/icone-login.png'
 
 export default {
   name: 'CadastroView',
 
   data() {
     return {
+      iconeLogin,
       nome: '',
       telefone: '',
       cargo: '',
