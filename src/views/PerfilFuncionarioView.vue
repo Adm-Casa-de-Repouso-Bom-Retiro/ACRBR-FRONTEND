@@ -45,15 +45,16 @@ export default {
       return `${dia}/${mes}/${ano}`
     },
   },
-
-  async created() {
-    try {
-      const response = await api.get('/administradores/me/')
-      this.administrador = response.data
-    } catch (error) {
-      this.$router.push('/login')
-    }
-  },
+async created() {
+  try {
+    const response = await api.get('/administradores/me/')
+    console.log('Foto:', response.data.foto_url)
+    console.log(response.data)
+    this.administrador = response.data
+  } catch (error) {
+    this.$router.push('/login')
+  }
+},
 
   methods: {
     sair() {
@@ -73,7 +74,11 @@ export default {
       <div class="perfil-card">
         <div class="avatar-section">
           <div class="avatar-circle">
-            <img src="/src/assets/images/icone-login.png" alt="Foto de perfil" class="avatar-img" />
+            <img
+              :src="administrador.foto_url || '/src/assets/images/icone-login.png'"
+              alt="Foto de perfil"
+              class="avatar-img"
+            />
           </div>
 
           <h1 class="nome">{{ administrador.nome || '...' }}</h1>
@@ -174,6 +179,7 @@ export default {
 .avatar-img {
   width: 110px;
   height: 110px;
+  border-radius: 50%;
   object-fit: contain;
 }
 
