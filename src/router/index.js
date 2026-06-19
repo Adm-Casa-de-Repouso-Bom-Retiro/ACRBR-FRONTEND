@@ -34,6 +34,12 @@ const router = createRouter({
       component: () => import('../views/DadosMedicosView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/prontuario',
+      name: 'prontuario',
+      component: () => import('../views/ProntuarioView.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 router.beforeEach((to, from, next) => {
