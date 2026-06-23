@@ -40,6 +40,12 @@ const router = createRouter({
       component: () => import('../views/ProntuarioView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/perfilresidente',
+      name: 'perfilresidente',
+      component: () => import('../views/PerfilResidenteView.vue'),
+      meta: { requiresAuth: true },
+    },
   ],
 })
 router.beforeEach((to, from, next) => {
