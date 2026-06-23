@@ -210,14 +210,11 @@ export default {
 
 .cadastro-card {
   width: 400%;
-  max-width: 800px;
+  max-width: 70vw;
   min-height: 340px;
-
   border: 2px solid #8fd14f;
   border-radius: 12px;
-
   padding: 24px 30px;
-
   display: flex;
   gap: 28px;
   align-items: flex-start;
