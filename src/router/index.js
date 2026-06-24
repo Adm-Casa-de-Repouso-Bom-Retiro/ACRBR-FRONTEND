@@ -46,7 +46,13 @@ const router = createRouter({
       component: () => import('../views/PerfilResidenteView.vue'),
       meta: { requiresAuth: true },
     },
-  ],
+    {
+      path: '/perfildadosmedicos',
+      name: 'perfildadosmedicos',
+      component: () => import('../views/PerfilDadosMedicosView.vue'),
+      meta: { requiresAuth: true },
+    },
+  ],  
 })
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('access_token')
