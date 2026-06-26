@@ -1,312 +1,340 @@
-<script>
-import api from '@/services/api'
+<template>
+  <div class="dados-medicos-page">
 
+    <main class="main-content">
+      <div class="dados-card">
+
+        <!-- Header -->
+        <div class="card-header">
+          <div class="header-left">
+            <div class="avatar">
+              <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="20" cy="20" r="20" fill="#ccc"/>
+                <circle cx="20" cy="15" r="7" fill="#888"/>
+                <ellipse cx="20" cy="34" rx="12" ry="8" fill="#888"/>
+              </svg>
+            </div>
+            <span class="residente-nome">Dados Médicos - {{ nomeResidente }}</span>
+          </div>
+          <button class="btn-editar" @click="toggleEdicao">EDITAR DADOS</button>
+        </div>
+
+        <p v-if="erro" class="msg-erro">{{ erro }}</p>
+        <p v-if="sucesso" class="msg-sucesso">{{ sucesso }}</p>
+
+        <!-- Grid 2x2 -->
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Condições Médicas:</label>
+            <textarea v-model="condicoesMedicas" :disabled="!modoEdicao" />
+          </div>
+          <div class="form-group">
+            <label>Alergias:</label>
+            <textarea v-model="alergias" :disabled="!modoEdicao" />
+          </div>
+          <div class="form-group">
+            <label>Observações:</label>
+            <textarea v-model="observacoes" :disabled="!modoEdicao" />
+          </div>
+          <div class="form-group">
+            <label>Peso e Altura:</label>
+            <textarea v-model="pesoAltura" :disabled="!modoEdicao" />
+          </div>
+        </div>
+
+        <!-- Tabela Medicamentos -->
+        <div class="medicamentos-section">
+          <table class="medicamentos-table">
+            <thead>
+              <tr>
+                <th>Medicamentos:</th>
+                <th>Dosagem:</th>
+                <th>Horário:</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-if="medicamentos.length === 0">
+                <td colspan="3" class="sem-medicamentos">Nenhum medicamento cadastrado.</td>
+              </tr>
+              <tr v-for="(med, index) in medicamentos" :key="index">
+                <td><span class="checkbox-icon">☐</span> {{ med.nome }}</td>
+                <td>{{ med.dosagem }}</td>
+                <td>{{ med.horario }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="form-footer" v-if="modoEdicao">
+          <button class="btn-salvar" @click="handleSalvar" :disabled="carregando">
+            {{ carregando ? 'AGUARDE...' : 'SALVAR →' }}
+          </button>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+</template>
+
+<script>
 export default {
   name: 'DadosMedicosView',
 
   data() {
     return {
-      residente: {},
-      dadosMedicos: {
-        condicoes_medicas: '',
-        alergias: '',
-        observacoes: '',
-        peso: '',
-        altura: '',
-        medicamentos: [],
-      },
-      carregando: true,
+      nomeResidente: 'Ana Paula Dominoni',
+      modoEdicao: false,
+      condicoesMedicas: '',
+      alergias: '',
+      observacoes: '',
+      pesoAltura: '',
+      medicamentos: [],
+      erro: '',
+      sucesso: '',
+      carregando: false,
     }
-  },
-
-  computed: {
-    pesoAlturaFormatado() {
-      const peso = this.dadosMedicos.peso
-      const altura = this.dadosMedicos.altura
-      if (!peso && !altura) return ''
-      if (peso && altura) return `${peso} kg / ${altura} m`
-      return peso ? `${peso} kg` : `${altura} m`
-    },
-  },
-
-  async created() {
-    const residenteId = this.$route.params.id
-
-    try {
-      const residenteRes = await api.get(`/residentes/${residenteId}/`)
-      this.residente = residenteRes.data
-    } catch (error) {
-      console.error('Erro ao carregar residente:', error)
-    }
-
-    try {
-      const medicosRes = await api.get(`/residentes/${residenteId}/dados-medicos/`)
-      this.dadosMedicos = {
-        condicoes_medicas: medicosRes.data.condicoes_medicas || '',
-        alergias: medicosRes.data.alergias || '',
-        observacoes: medicosRes.data.observacoes || '',
-        peso: medicosRes.data.peso || '',
-        altura: medicosRes.data.altura || '',
-        medicamentos: medicosRes.data.medicamentos || [],
-      }
-    } catch (error) {
-      console.error('Erro ao carregar dados médicos:', error)
-    }
-
-    this.carregando = false
   },
 
   methods: {
-    editarDados() {
-      this.$router.push(`/residentes/${this.$route.params.id}/editar-dados-medicos`)
+    toggleEdicao() {
+      this.modoEdicao = !this.modoEdicao
+    },
+
+    async handleSalvar() {
+      this.erro = ''
+      this.sucesso = ''
+      this.carregando = true
+      try {
+        this.$emit('dados-medicos', {
+          condicoes_medicas: this.condicoesMedicas,
+          alergias: this.alergias,
+          observacoes: this.observacoes,
+          peso_altura: this.pesoAltura,
+          medicamentos: this.medicamentos,
+        })
+        this.sucesso = 'Dados salvos com sucesso!'
+        this.modoEdicao = false
+      } catch (error) {
+        this.erro = 'Erro ao salvar. Tente novamente.'
+      } finally {
+        this.carregando = false
+      }
     },
   },
 }
 </script>
 
-<template>
-  <div class="dados-medicos-page">
-    <div class="top-line"></div>
-
-    <div v-if="carregando" class="loading">
-      Carregando...
-    </div>
-
-    <main v-else class="main-content">
-
-      <div class="cabecalho">
-        <div class="cabecalho-esquerda">
-          <div class="avatar-circle">
-            <img
-              :src="residente.foto_url || '/src/assets/images/icone-login.png'"
-              alt="Foto do residente"
-              class="avatar-img"
-            />
-          </div>
-          <span class="nome-pill">Dados Médicos - {{ residente.nome || '...' }}</span>
-        </div>
-        <button class="btn-editar" @click="editarDados">EDITAR DADOS</button>
-      </div>
-
-      <div class="grid-cards">
-        <div class="info-card">
-          <span class="info-card-titulo">Condições Médicas:</span>
-          <p class="info-card-texto">{{ dadosMedicos.condicoes_medicas }}</p>
-        </div>
-
-        <div class="info-card">
-          <span class="info-card-titulo">Alergias:</span>
-          <p class="info-card-texto">{{ dadosMedicos.alergias }}</p>
-        </div>
-
-        <div class="info-card">
-          <span class="info-card-titulo">Observações:</span>
-          <p class="info-card-texto">{{ dadosMedicos.observacoes }}</p>
-        </div>
-
-        <div class="info-card">
-          <span class="info-card-titulo">Peso e Altura:</span>
-          <p class="info-card-texto">{{ pesoAlturaFormatado }}</p>
-        </div>
-      </div>
-
-      <div class="medicamentos-card">
-        <div class="med-header">
-          <span class="med-col-titulo">Medicamentos:</span>
-          <span class="med-col-titulo">Dosagem:</span>
-          <span class="med-col-titulo">Horário:</span>
-        </div>
-
-        <template v-if="dadosMedicos.medicamentos && dadosMedicos.medicamentos.length > 0">
-          <div
-            v-for="(med, index) in dadosMedicos.medicamentos"
-            :key="index"
-            class="med-linha"
-          >
-            <div class="med-col med-nome">
-              <span class="med-icone"></span>
-              <span>{{ med.nome }}</span>
-            </div>
-            <div class="med-col">{{ med.dosagem }}</div>
-            <div class="med-col">{{ med.horario }}</div>
-          </div>
-        </template>
-
-        <div v-else class="med-vazio">
-          Nenhum medicamento cadastrado.
-        </div>
-      </div>
-
-    </main>
-  </div>
-</template>
-
 <style scoped>
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-.top-line {
+.dados-medicos-page {
+  background-color: #ffffff !important;
+  min-height: 100vh;
   width: 100%;
-  height: 10px;
-  background: #2e5d2e;
-}
-
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px;
-  font-size: 15px;
-  color: #555;
 }
 
 .main-content {
-  background: #2e5d2e;
-  min-height: calc(100vh - 10px);
-  padding: 32px 5vw 48px 5vw;
+  background-color: #ffffff !important;
   display: flex;
-  flex-direction: column;
-  gap: 24px;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
 }
 
-.cabecalho {
+.dados-card {
+  background-color: #ffffff !important;
+  width: 80vw;
+  border: 2px solid #3a7d44;
+  border-radius: 10px;
+  padding: 24px 32px;
+}
+
+/* Header */
+.card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  margin-bottom: 24px;
 }
 
-.cabecalho-esquerda {
+.header-left {
   display: flex;
   align-items: center;
-  gap: 18px;
-}
-
-.avatar-circle {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background: #d0d0d0;
-  overflow: hidden;
-  flex-shrink: 0;
-}
-
-.avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.nome-pill {
-  background: #4a9e4a;
-  color: white;
-  font-size: 16px;
-  font-weight: 700;
-  border-radius: 20px;
-  padding: 8px 22px;
-  letter-spacing: 0.2px;
-}
-
-.btn-editar {
-  background: transparent;
-  color: white;
-  border: 2px solid white;
-  border-radius: 6px;
-  padding: 8px 20px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-editar:hover {
-  background: rgba(255, 255, 255, 0.12);
-}
-
-.grid-cards {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.info-card {
-  background: #2e5d2e;
-  border: 2px solid white;
-  border-radius: 10px;
-  padding: 16px 18px;
-  min-height: 120px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.info-card-titulo {
-  font-size: 14px;
-  font-weight: 700;
-  color: white;
-}
-
-.info-card-texto {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.85);
-  margin: 0;
-  line-height: 1.5;
-}
-
-.medicamentos-card {
-  background: #2e5d2e;
-  border: 2px solid white;
-  border-radius: 10px;
-  padding: 20px 24px;
-  display: flex;
-  flex-direction: column;
   gap: 12px;
 }
 
-.med-header {
-  display: grid;
-  grid-template-columns: 2fr 1.5fr 1.5fr;
-  padding-bottom: 4px;
-}
-
-.med-col-titulo {
-  font-size: 14px;
-  font-weight: 700;
-  color: white;
-}
-
-.med-linha {
-  display: grid;
-  grid-template-columns: 2fr 1.5fr 1.5fr;
-  align-items: center;
-}
-
-.med-col {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.9);
-}
-
-.med-nome {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.med-icone {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  border-radius: 4px;
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #3a7d44;
   flex-shrink: 0;
 }
 
-.med-vazio {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.6);
-  text-align: center;
-  padding: 12px 0;
+.avatar svg {
+  width: 100%;
+  height: 100%;
 }
 
+.residente-nome {
+  background-color: #3a7d44;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 4px;
+}
+
+.btn-editar {
+  background-color: #ffffff !important;
+  color: #3a7d44;
+  border: 2px solid #3a7d44;
+  padding: 6px 18px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+}
+
+.btn-editar:hover {
+  background-color: #f0f8f0 !important;
+}
+
+/* Mensagens */
+.msg-erro {
+  color: #c0392b;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.msg-sucesso {
+  color: #1e3e1e;
+  font-size: 13px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+/* Grid */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 20px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e3e1e;
+  letter-spacing: 0.3px;
+  padding: 8px 10px 4px 10px;
+}
+
+.form-group textarea {
+  width: 100%;
+  height: 90px;
+  border: 2px solid #3a7d44;
+  border-radius: 6px;
+  padding: 4px 10px 8px 10px;
+  font-size: 13px;
+  color: #1e3e1e;
+  resize: none;
+  outline: none;
+  background-color: #ffffff !important;
+}
+
+.form-group textarea:disabled {
+  background-color: #ffffff !important;
+  cursor: default;
+  color: #1e3e1e;
+}
+
+.form-group textarea:focus {
+  border-color: #1e3e1e;
+}
+
+/* Tabela */
+.medicamentos-section {
+  border: 2px solid #3a7d44;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #ffffff !important;
+}
+
+.medicamentos-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background-color: #ffffff !important;
+}
+
+.medicamentos-table th {
+  text-align: left;
+  padding: 10px 16px;
+  font-weight: 700;
+  color: #1e3e1e;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #3a7d44;
+}
+
+.medicamentos-table td {
+  padding: 8px 16px;
+  color: #1e3e1e;
+  background-color: #ffffff !important;
+  border-bottom: 1px solid #e8f0e8;
+}
+
+.medicamentos-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.sem-medicamentos {
+  text-align: center;
+  color: #888;
+  font-style: italic;
+  padding: 16px !important;
+}
+
+.checkbox-icon {
+  margin-right: 6px;
+}
+
+/* Footer do card */
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.btn-salvar {
+  background: none;
+  border: none;
+  color: #3a7d44;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  letter-spacing: 0.6px;
+}
+
+.btn-salvar:hover:not(:disabled) {
+  color: #1e3e1e;
+}
+
+.btn-salvar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 </style>
