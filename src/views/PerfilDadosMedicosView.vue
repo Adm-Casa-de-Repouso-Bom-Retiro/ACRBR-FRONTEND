@@ -1,3 +1,4 @@
+```vue
 <template>
   <div class="dados-medicos-page">
 
@@ -50,16 +51,34 @@
                 <th>Medicamentos:</th>
                 <th>Dosagem:</th>
                 <th>Horário:</th>
+                <th v-if="modoEdicao"></th>
               </tr>
             </thead>
             <tbody>
-              <tr v-if="medicamentos.length === 0">
+              <tr v-if="medicamentos.length === 0 && !modoEdicao">
                 <td colspan="3" class="sem-medicamentos">Nenhum medicamento cadastrado.</td>
               </tr>
               <tr v-for="(med, index) in medicamentos" :key="index">
                 <td><span class="checkbox-icon">☐</span> {{ med.nome }}</td>
                 <td>{{ med.dosagem }}</td>
                 <td>{{ med.horario }}</td>
+                <td v-if="modoEdicao" class="col-acao">
+                  <button type="button" class="btn-remover" @click="removerMedicamento(index)">✕</button>
+                </td>
+              </tr>
+              <tr v-if="modoEdicao" class="linha-novo-medicamento">
+                <td>
+                  <input type="text" v-model="novoMedicamento.nome" placeholder="Nome do medicamento" />
+                </td>
+                <td>
+                  <input type="text" v-model="novoMedicamento.dosagem" placeholder="Ex: 50 mg" />
+                </td>
+                <td>
+                  <input type="text" v-model="novoMedicamento.horario" placeholder="Ex: 08:00" />
+                </td>
+                <td class="col-acao">
+                  <button type="button" class="btn-adicionar" @click="adicionarMedicamento">+</button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -81,24 +100,73 @@
 export default {
   name: 'DadosMedicosView',
 
+  props: {
+    // ID do residente, geralmente vindo da rota (ex: /residente/:id/dados-medicos)
+    residenteId: {
+      type: [String, Number],
+      default: null,
+    },
+  },
+
   data() {
     return {
-      nomeResidente: 'Ana Paula Dominoni',
+      nomeResidente: '',
       modoEdicao: false,
       condicoesMedicas: '',
       alergias: '',
       observacoes: '',
       pesoAltura: '',
       medicamentos: [],
+      novoMedicamento: { nome: '', dosagem: '', horario: '' },
       erro: '',
       sucesso: '',
       carregando: false,
     }
   },
 
+  created() {
+    this.carregarResidente()
+  },
+
   methods: {
     toggleEdicao() {
       this.modoEdicao = !this.modoEdicao
+    },
+
+    async carregarResidente() {
+      // Pega o id pela prop, ou pela rota (ajuste conforme o nome do param na sua rota)
+      const id = this.residenteId || this.$route?.params?.id
+      if (!id) return
+
+      try {
+        const resposta = await fetch(`/api/residentes/${id}`)
+        if (!resposta.ok) throw new Error('Falha ao buscar residente')
+        const dados = await resposta.json()
+
+        this.nomeResidente = dados.nome
+        // Se o cadastro do residente já trouxer os dados médicos, preenche também:
+        this.condicoesMedicas = dados.condicoes_medicas || ''
+        this.alergias = dados.alergias || ''
+        this.observacoes = dados.observacoes || ''
+        this.pesoAltura = dados.peso_altura || ''
+        this.medicamentos = dados.medicamentos || []
+      } catch (error) {
+        this.erro = 'Erro ao carregar dados do residente.'
+      }
+    },
+
+    adicionarMedicamento() {
+      if (!this.novoMedicamento.nome.trim()) {
+        this.erro = 'Informe o nome do medicamento.'
+        return
+      }
+      this.erro = ''
+      this.medicamentos.push({ ...this.novoMedicamento })
+      this.novoMedicamento = { nome: '', dosagem: '', horario: '' }
+    },
+
+    removerMedicamento(index) {
+      this.medicamentos.splice(index, 1)
     },
 
     async handleSalvar() {
@@ -133,13 +201,13 @@ export default {
 }
 
 .dados-medicos-page {
-  background-color: #ffffff !important;
+  background-color: #305126 !important;
   min-height: 100vh;
   width: 100%;
 }
 
 .main-content {
-  background-color: #ffffff !important;
+  background-color: #305126 !important;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -147,7 +215,7 @@ export default {
 }
 
 .dados-card {
-  background-color: #ffffff !important;
+  background-color: #305126 !important;
   width: 80vw;
   border: 2px solid #3a7d44;
   border-radius: 10px;
@@ -173,7 +241,7 @@ export default {
   height: 48px;
   border-radius: 50%;
   overflow: hidden;
-  border: 2px solid #3a7d44;
+  border: 2px solid #ffffff;
   flex-shrink: 0;
 }
 
@@ -183,7 +251,7 @@ export default {
 }
 
 .residente-nome {
-  background-color: #3a7d44;
+  background-color: #4a9d4a;
   color: #ffffff;
   font-size: 14px;
   font-weight: 600;
@@ -192,9 +260,9 @@ export default {
 }
 
 .btn-editar {
-  background-color: #ffffff !important;
-  color: #3a7d44;
-  border: 2px solid #3a7d44;
+  background-color: #4a9d4a !important;
+  color: #ffffff;
+  border: none;
   padding: 6px 18px;
   border-radius: 4px;
   font-size: 13px;
@@ -204,18 +272,18 @@ export default {
 }
 
 .btn-editar:hover {
-  background-color: #f0f8f0 !important;
+  background-color: #5cb35c !important;
 }
 
 /* Mensagens */
 .msg-erro {
-  color: #c0392b;
+  color: #ffb4a8;
   font-size: 13px;
   margin-bottom: 10px;
 }
 
 .msg-sucesso {
-  color: #1e3e1e;
+  color: #ffffff;
   font-size: 13px;
   margin-bottom: 10px;
   font-weight: bold;
@@ -238,7 +306,7 @@ export default {
 .form-group label {
   font-size: 13px;
   font-weight: 700;
-  color: #1e3e1e;
+  color: #ffffff;
   letter-spacing: 0.3px;
   padding: 8px 10px 4px 10px;
 }
@@ -246,55 +314,59 @@ export default {
 .form-group textarea {
   width: 100%;
   height: 90px;
-  border: 2px solid #3a7d44;
+  border: 2px solid #ffffff;
   border-radius: 6px;
   padding: 4px 10px 8px 10px;
   font-size: 13px;
-  color: #1e3e1e;
+  color: #ffffff;
   resize: none;
   outline: none;
-  background-color: #ffffff !important;
+  background-color: #305126 !important;
+}
+
+.form-group textarea::placeholder {
+  color: #d4e4d4;
 }
 
 .form-group textarea:disabled {
-  background-color: #ffffff !important;
+  background-color: #305126 !important;
   cursor: default;
-  color: #1e3e1e;
+  color: #ffffff;
 }
 
 .form-group textarea:focus {
-  border-color: #1e3e1e;
+  border-color: #4a9d4a;
 }
 
 /* Tabela */
 .medicamentos-section {
-  border: 2px solid #3a7d44;
+  border: 2px solid #ffffff;
   border-radius: 8px;
   overflow: hidden;
-  background-color: #ffffff !important;
+  background-color: #305126 !important;
 }
 
 .medicamentos-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
-  background-color: #ffffff !important;
+  background-color: #305126 !important;
 }
 
 .medicamentos-table th {
   text-align: left;
   padding: 10px 16px;
   font-weight: 700;
-  color: #1e3e1e;
-  background-color: #ffffff !important;
-  border-bottom: 1px solid #3a7d44;
+  color: #ffffff;
+  background-color: #305126 !important;
+  border-bottom: 1px solid #ffffff;
 }
 
 .medicamentos-table td {
   padding: 8px 16px;
-  color: #1e3e1e;
-  background-color: #ffffff !important;
-  border-bottom: 1px solid #e8f0e8;
+  color: #ffffff;
+  background-color: #305126 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .medicamentos-table tbody tr:last-child td {
@@ -303,13 +375,71 @@ export default {
 
 .sem-medicamentos {
   text-align: center;
-  color: #888;
+  color: #d4e4d4;
   font-style: italic;
   padding: 16px !important;
 }
 
 .checkbox-icon {
   margin-right: 6px;
+  color: #ffffff;
+}
+
+.col-acao {
+  width: 36px;
+  text-align: center;
+}
+
+.linha-novo-medicamento td {
+  padding: 6px 16px;
+}
+
+.linha-novo-medicamento input {
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #ffffff;
+  color: #ffffff;
+  font-size: 13px;
+  padding: 4px 2px;
+  outline: none;
+}
+
+.linha-novo-medicamento input::placeholder {
+  color: #b8d0b8;
+}
+
+.linha-novo-medicamento input:focus {
+  border-bottom-color: #5cb35c;
+}
+
+.btn-adicionar,
+.btn-remover {
+  background-color: #4a9d4a;
+  color: #ffffff;
+  border: none;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.btn-adicionar:hover {
+  background-color: #5cb35c;
+}
+
+.btn-remover {
+  background-color: transparent;
+  border: 1px solid #ff9d8e;
+  color: #ff9d8e;
+}
+
+.btn-remover:hover {
+  background-color: #ff9d8e;
+  color: #305126;
 }
 
 /* Footer do card */
@@ -322,7 +452,7 @@ export default {
 .btn-salvar {
   background: none;
   border: none;
-  color: #3a7d44;
+  color: #ffffff;
   font-weight: 700;
   font-size: 14px;
   cursor: pointer;
@@ -330,7 +460,7 @@ export default {
 }
 
 .btn-salvar:hover:not(:disabled) {
-  color: #1e3e1e;
+  color: #d4e4d4;
 }
 
 .btn-salvar:disabled {
