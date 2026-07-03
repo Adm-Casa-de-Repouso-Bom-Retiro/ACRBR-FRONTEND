@@ -4,8 +4,6 @@
 
     <main class="main-content">
       <div class="dados-card">
-
-        <!-- Header com avatar + nome + botão -->
         <div class="card-header">
           <div class="header-left">
             <div class="avatar"></div>
@@ -16,8 +14,6 @@
 
         <p v-if="erro" class="msg-erro">{{ erro }}</p>
         <p v-if="sucesso" class="msg-sucesso">{{ sucesso }}</p>
-
-        <!-- Grid 2x2: Condições, Alergias, Observações, Peso e Altura -->
         <div class="form-grid">
           <div class="form-group">
             <label>Condições Médicas:</label>
@@ -40,7 +36,6 @@
           </div>
         </div>
 
-        <!-- Tabela de Medicamentos -->
         <div class="medicamentos-section">
           <table class="medicamentos-table">
             <thead>
@@ -62,32 +57,9 @@
             </tbody>
           </table>
         </div>
-
-        <!-- Footer do card com botão salvar (só aparece em edição) -->
-        <div class="form-footer" v-if="modoEdicao">
-          <button class="btn-salvar" @click="handleSalvar" :disabled="carregando">
-            {{ carregando ? 'AGUARDE...' : 'SALVAR →' }}
-          </button>
-        </div>
-
-      </div>
-    </main>
-
-    <!-- Footer da página -->
-    <footer class="page-footer">
-      <div class="footer-left">
-        <p>Desenvolvido por: Ana Paula Dominoni,</p>
-        <p>Anna Flávia S. Carneiro, Emily V. D. Ropolato,</p>
-        <p>Kelly P. Alves, Pietra G. S. Lavina</p>
-      </div>
-      <div class="footer-center">ACRBR</div>
-      <div class="footer-right">
-        <p><strong>PRONTUÁRIOS</strong></p>
-        <p>CADASTRO DE RESIDENTE</p>
-        <p>ADMINISTRADOR</p>
-      </div>
-    </footer>
-  </div>
+    </div>
+    </div>
+  </main>
 </template>
 
 <script>
@@ -344,37 +316,5 @@ export default {
 .btn-salvar:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-}
-
-/* Footer da página */
-.page-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  background: #1e3e1e;
-  color: #fff;
-  padding: 20px 60px;
-  font-size: 12px;
-  margin-top: auto;
-}
-
-.footer-left p {
-  margin: 2px 0;
-  color: #ccc;
-}
-
-.footer-center {
-  font-size: 20px;
-  font-weight: 700;
-  align-self: center;
-}
-
-.footer-right p {
-  margin: 2px 0;
-  text-align: right;
-}
-
-.footer-right p:first-child {
-  font-weight: 700;
 }
 </style>
