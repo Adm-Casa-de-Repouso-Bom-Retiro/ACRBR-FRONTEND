@@ -4,62 +4,48 @@
 
     <main class="main-content">
       <div class="dados-card">
+
         <div class="card-header">
-          <div class="header-left">
-            <div class="avatar"></div>
-            <span class="residente-nome">Dados Médicos - {{ nomeResidente }}</span>
-          </div>
-          <button class="btn-editar" @click="toggleEdicao">EDITAR DADOS</button>
+          <img src="/src/assets/images/icone-dados-medicos.png" alt="Dados Médicos" class="header-icon" />
+          Dados Médicos
         </div>
 
         <p v-if="erro" class="msg-erro">{{ erro }}</p>
         <p v-if="sucesso" class="msg-sucesso">{{ sucesso }}</p>
-        <div class="form-grid">
-          <div class="form-group">
-            <label>Condições Médicas:</label>
-            <textarea v-model="condicoesMedicas" :disabled="!modoEdicao" />
+
+        <form @submit.prevent="handleProximo" class="dados-form">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>CONDIÇÕES MÉDICAS:</label>
+              <textarea v-model="condicoesMedicas" />
+            </div>
+
+            <div class="form-group">
+              <label>ALERGIAS:</label>
+              <textarea v-model="alergias" />
+            </div>
+
+            <div class="form-group">
+              <label>MEDICAMENTOS E HORÁRIOS:</label>
+              <textarea v-model="medicamentos" />
+            </div>
+
+            <div class="form-group">
+              <label>OBSERVAÇÕES:</label>
+              <textarea v-model="observacoes" />
+            </div>
           </div>
 
-          <div class="form-group">
-            <label>Alergias:</label>
-            <textarea v-model="alergias" :disabled="!modoEdicao" />
+          <div class="form-footer">
+            <button type="submit" class="btn-proximo" :disabled="carregando">
+              {{ carregando ? 'AGUARDE...' : 'PRÓXIMO →' }}
+            </button>
           </div>
+        </form>
 
-          <div class="form-group">
-            <label>Observações:</label>
-            <textarea v-model="observacoes" :disabled="!modoEdicao" />
-          </div>
-
-          <div class="form-group">
-            <label>Peso e Altura:</label>
-            <textarea v-model="pesoAltura" :disabled="!modoEdicao" />
-          </div>
-        </div>
-
-        <div class="medicamentos-section">
-          <table class="medicamentos-table">
-            <thead>
-              <tr>
-                <th>Medicamentos:</th>
-                <th>Dosagem:</th>
-                <th>Horário:</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(med, index) in medicamentos" :key="index">
-                <td>
-                  <span class="checkbox-icon">&#9744;</span>
-                  {{ med.nome }}
-                </td>
-                <td>{{ med.dosagem }}</td>
-                <td>{{ med.horario }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-    </div>
-    </div>
-  </main>
+      </div>
+    </main>
+  </div>
 </template>
 
 <script>
@@ -68,17 +54,10 @@ export default {
 
   data() {
     return {
-      nomeResidente: 'Ana Paula Dominoni',
-      modoEdicao: false,
       condicoesMedicas: '',
       alergias: '',
+      medicamentos: '',
       observacoes: '',
-      pesoAltura: '',
-      medicamentos: [
-        { nome: 'Losartana', dosagem: '50 mg', horario: '08:00h' },
-        { nome: 'Metformina', dosagem: '850 mg', horario: '08:00h e 20:00h' },
-        { nome: 'Cálcio + Vitamina D', dosagem: '1 comprimido', horario: '12:00h' },
-      ],
       erro: '',
       sucesso: '',
       carregando: false,
@@ -86,11 +65,7 @@ export default {
   },
 
   methods: {
-    toggleEdicao() {
-      this.modoEdicao = !this.modoEdicao
-    },
-
-    async handleSalvar() {
+    async handleProximo() {
       this.erro = ''
       this.sucesso = ''
       this.carregando = true
@@ -99,13 +74,11 @@ export default {
         this.$emit('dados-medicos', {
           condicoes_medicas: this.condicoesMedicas,
           alergias: this.alergias,
-          observacoes: this.observacoes,
-          peso_altura: this.pesoAltura,
           medicamentos: this.medicamentos,
+          observacoes: this.observacoes,
         })
 
-        this.sucesso = 'Dados salvos com sucesso!'
-        this.modoEdicao = false
+        this.$router.push('/proximo-passo')
       } catch (error) {
         if (error.response && error.response.data) {
           const erros = error.response.data
@@ -137,64 +110,33 @@ export default {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 40px 20px;
+  padding: 80px 20px;
 }
 
 .dados-card {
-  width: 80vw;
+  width: 100%;
+  max-width: 70vw;
   border: 3px solid #3a7d44;
   border-radius: 12px;
-  padding: 24px 32px;
+  padding: 28px 36px 24px 36px;
 }
 
-/* Header */
 .card-header {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
+  gap: 8px;
+  color: #3a7d44;
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 28px; 
 }
 
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.header-icon {
+  width: 38px;
+  height: 38px;
+  object-fit: contain;
 }
 
-.avatar {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: #ccc;
-  flex-shrink: 0;
-}
-
-.residente-nome {
-  background: #3a7d44;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 4px;
-}
-
-.btn-editar {
-  background: #3a7d44;
-  color: #fff;
-  border: none;
-  padding: 6px 16px;
-  border-radius: 4px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  letter-spacing: 0.5px;
-}
-
-.btn-editar:hover {
-  background: #1e3e1e;
-}
-
-/* Mensagens */
 .msg-erro {
   color: #c0392b;
   font-size: 13px;
@@ -208,12 +150,10 @@ export default {
   font-weight: bold;
 }
 
-/* Grid 2x2 */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px 24px;
-  margin-bottom: 20px;
+  gap: 16px 30px;
 }
 
 .form-group {
@@ -226,12 +166,12 @@ export default {
   font-size: 13px;
   font-weight: 700;
   color: #1e3e1e;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.6px;
 }
 
 .form-group textarea {
   width: 100%;
-  height: 90px;
+  height: 100px; /* era 70px */
   border: 2px solid #3a7d44;
   border-radius: 6px;
   padding: 8px;
@@ -239,67 +179,19 @@ export default {
   color: #1e3e1e;
   resize: none;
   outline: none;
-  background: #fff;
-}
-
-.form-group textarea:disabled {
-  background: #fff;
-  cursor: default;
 }
 
 .form-group textarea:focus {
   border-color: #1e3e1e;
 }
 
-/* Tabela de medicamentos */
-.medicamentos-section {
-  border: 2px solid #3a7d44;
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 16px;
-}
-
-.medicamentos-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-.medicamentos-table thead tr {
-  background: #fff;
-}
-
-.medicamentos-table th {
-  text-align: left;
-  padding: 10px 14px;
-  font-weight: 700;
-  color: #1e3e1e;
-  border-bottom: 1px solid #3a7d44;
-}
-
-.medicamentos-table td {
-  padding: 8px 14px;
-  color: #1e3e1e;
-  border-bottom: 1px solid #e0ece2;
-}
-
-.medicamentos-table tbody tr:last-child td {
-  border-bottom: none;
-}
-
-.checkbox-icon {
-  margin-right: 6px;
-  font-size: 14px;
-}
-
-/* Footer do card */
 .form-footer {
   display: flex;
   justify-content: flex-end;
-  margin-top: 12px;
+  margin-top: 16px;
 }
 
-.btn-salvar {
+.btn-proximo {
   background: none;
   border: none;
   color: #3a7d44;
@@ -309,11 +201,11 @@ export default {
   letter-spacing: 0.6px;
 }
 
-.btn-salvar:hover:not(:disabled) {
+.btn-proximo:hover:not(:disabled) {
   color: #1e3e1e;
 }
 
-.btn-salvar:disabled {
+.btn-proximo:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }

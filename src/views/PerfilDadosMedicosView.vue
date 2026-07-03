@@ -9,7 +9,9 @@
             <div class="avatar"></div>
             <span class="residente-nome">Dados Médicos - {{ nomeResidente }}</span>
           </div>
-          <button class="btn-editar" @click="toggleEdicao">EDITAR DADOS</button>
+          <button class="btn-editar" @click="toggleEdicao">
+            {{ modoEdicao ? 'CANCELAR' : 'EDITAR DADOS' }}
+          </button>
         </div>
 
         <p v-if="erro" class="msg-erro">{{ erro }}</p>
@@ -57,14 +59,20 @@
             </tbody>
           </table>
         </div>
-    </div>
-    </div>
-  </main>
+
+        <div class="form-footer" v-if="modoEdicao">
+          <button class="btn-salvar" :disabled="carregando" @click="handleSalvar">
+            {{ carregando ? 'SALVANDO...' : 'SALVAR ALTERAÇÕES' }}
+          </button>
+        </div>
+      </div>
+    </main>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'DadosMedicosView',
+  name: 'PerfilDadosMedicosView',
 
   data() {
     return {
@@ -88,6 +96,8 @@ export default {
   methods: {
     toggleEdicao() {
       this.modoEdicao = !this.modoEdicao
+      this.erro = ''
+      this.sucesso = ''
     },
 
     async handleSalvar() {

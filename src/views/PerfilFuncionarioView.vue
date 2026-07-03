@@ -263,31 +263,5 @@ async created() {
 .btn-sair:hover {
   background: #f0f0f0;
 }
-
-@media (max-width: 768px) {
-  .perfil-card {
-    max-width: 95vw;
-    flex-direction: column;
-    gap: 24px;
-  }
-
-  .divider {
-    width: 100%;
-    height: 1px;
-  }
-
-  .avatar-section {
-    min-width: auto;
-  }
-
-  .botoes {
-    flex-direction: column;
-  }
-
-  .btn-editar,
-  .btn-sair {
-    width: 100%;
-  }
-}
 </style>
 ```
