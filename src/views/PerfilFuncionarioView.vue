@@ -11,6 +11,9 @@ export default {
   },
 
   computed: {
+    avatarUrl() {
+      return this.administrador.foto_url || '/src/assets/images/icone-login.png'
+    },
     cargoFormatado() {
       const cargos = {
         chefe: 'Chefe',
@@ -75,7 +78,7 @@ async created() {
         <div class="avatar-section">
           <div class="avatar-circle">
             <img
-              :src="administrador.foto_url || '/src/assets/images/icone-login.png'"
+              :src="avatarUrl"
               alt="Foto de perfil"
               class="avatar-img"
             />
