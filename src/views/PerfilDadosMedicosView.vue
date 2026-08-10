@@ -70,65 +70,59 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'PerfilDadosMedicosView',
+<script setup>
+import { ref } from 'vue'
 
-  data() {
-    return {
-      nomeResidente: 'Ana Paula Dominoni',
-      modoEdicao: false,
-      condicoesMedicas: '',
-      alergias: '',
-      observacoes: '',
-      pesoAltura: '',
-      medicamentos: [
-        { nome: 'Losartana', dosagem: '50 mg', horario: '08:00h' },
-        { nome: 'Metformina', dosagem: '850 mg', horario: '08:00h e 20:00h' },
-        { nome: 'Cálcio + Vitamina D', dosagem: '1 comprimido', horario: '12:00h' },
-      ],
-      erro: '',
-      sucesso: '',
-      carregando: false,
+const emit = defineEmits(['dados-medicos'])
+
+const nomeResidente = ref('Ana Paula Dominoni')
+const modoEdicao = ref(false)
+const condicoesMedicas = ref('')
+const alergias = ref('')
+const observacoes = ref('')
+const pesoAltura = ref('')
+const medicamentos = ref([
+  { nome: 'Losartana', dosagem: '50 mg', horario: '08:00h' },
+  { nome: 'Metformina', dosagem: '850 mg', horario: '08:00h e 20:00h' },
+  { nome: 'Cálcio + Vitamina D', dosagem: '1 comprimido', horario: '12:00h' },
+])
+const erro = ref('')
+const sucesso = ref('')
+const carregando = ref(false)
+
+function toggleEdicao() {
+  modoEdicao.value = !modoEdicao.value
+  erro.value = ''
+  sucesso.value = ''
+}
+
+async function handleSalvar() {
+  erro.value = ''
+  sucesso.value = ''
+  carregando.value = true
+
+  try {
+    emit('dados-medicos', {
+      condicoes_medicas: condicoesMedicas.value,
+      alergias: alergias.value,
+      observacoes: observacoes.value,
+      peso_altura: pesoAltura.value,
+      medicamentos: medicamentos.value,
+    })
+
+    sucesso.value = 'Dados salvos com sucesso!'
+    modoEdicao.value = false
+  } catch (error) {
+    if (error.response && error.response.data) {
+      const erros = error.response.data
+      const primeiroErro = Object.values(erros)[0]
+      erro.value = Array.isArray(primeiroErro) ? primeiroErro[0] : primeiroErro
+    } else {
+      erro.value = 'Erro ao salvar. Tente novamente.'
     }
-  },
-
-  methods: {
-    toggleEdicao() {
-      this.modoEdicao = !this.modoEdicao
-      this.erro = ''
-      this.sucesso = ''
-    },
-
-    async handleSalvar() {
-      this.erro = ''
-      this.sucesso = ''
-      this.carregando = true
-
-      try {
-        this.$emit('dados-medicos', {
-          condicoes_medicas: this.condicoesMedicas,
-          alergias: this.alergias,
-          observacoes: this.observacoes,
-          peso_altura: this.pesoAltura,
-          medicamentos: this.medicamentos,
-        })
-
-        this.sucesso = 'Dados salvos com sucesso!'
-        this.modoEdicao = false
-      } catch (error) {
-        if (error.response && error.response.data) {
-          const erros = error.response.data
-          const primeiroErro = Object.values(erros)[0]
-          this.erro = Array.isArray(primeiroErro) ? primeiroErro[0] : primeiroErro
-        } else {
-          this.erro = 'Erro ao salvar. Tente novamente.'
-        }
-      } finally {
-        this.carregando = false
-      }
-    },
-  },
+  } finally {
+    carregando.value = false
+  }
 }
 </script>
 

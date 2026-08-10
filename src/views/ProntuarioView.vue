@@ -1,62 +1,47 @@
-<script>
+<script setup>
+import { onMounted, ref } from 'vue'
 import api from '@/services/api'
 import ResidenteCard from '@/components/ResidenteCard.vue'
 
-export default {
-  name: 'ProntuariosView',
+const residentes = ref([])
+const residentesFiltrados = ref([])
+const termoBusca = ref('')
+const mostrarFiltros = ref(false)
+const carregando = ref(false)
+const erro = ref('')
 
-  components: {
-    ResidenteCard,
-  },
+async function buscarResidentes() {
+  carregando.value = true
+  erro.value = ''
 
-  data() {
-    return {
-      residentes: [],
-      residentesFiltrados: [],
-      termoBusca: '',
-      mostrarFiltros: false,
-      carregando: false,
-      erro: '',
-    }
-  },
-
-  mounted() {
-    this.buscarResidentes()
-  },
-
-  methods: {
-    async buscarResidentes() {
-      this.carregando = true
-      this.erro = ''
-
-      try {
-        // TODO: ajustar endpoint quando o backend estiver pronto
-        const resposta = await api.get('/residentes/')
-        this.residentes = resposta.data.results
-        this.residentesFiltrados = resposta.data.results
-      } catch (error) {
-        this.erro = 'Erro ao carregar residentes. Tente novamente.'
-        this.residentes = []
-        this.residentesFiltrados = []
-      } finally {
-        this.carregando = false
-      }
-    },
-
-    filtrarResidentes() {
-      const termo = this.termoBusca.trim().toLowerCase()
-
-      if (!termo) {
-        this.residentesFiltrados = this.residentes
-        return
-      }
-
-      this.residentesFiltrados = this.residentes.filter((residente) =>
-        residente.nome.toLowerCase().includes(termo)
-      )
-    },
-  },
+  try {
+    // TODO: ajustar endpoint quando o backend estiver pronto
+    const resposta = await api.get('/residentes/')
+    residentes.value = resposta.data.results
+    residentesFiltrados.value = resposta.data.results
+  } catch (error) {
+    erro.value = 'Erro ao carregar residentes. Tente novamente.'
+    residentes.value = []
+    residentesFiltrados.value = []
+  } finally {
+    carregando.value = false
+  }
 }
+
+function filtrarResidentes() {
+  const termo = termoBusca.value.trim().toLowerCase()
+
+  if (!termo) {
+    residentesFiltrados.value = residentes.value
+    return
+  }
+
+  residentesFiltrados.value = residentes.value.filter((residente) =>
+    residente.nome.toLowerCase().includes(termo)
+  )
+}
+
+onMounted(buscarResidentes)
 </script>
 <template>
   <div class="prontuarios-page">

@@ -48,50 +48,46 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'DadosMedicosView',
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
-  data() {
-    return {
-      condicoesMedicas: '',
-      alergias: '',
-      medicamentos: '',
-      observacoes: '',
-      erro: '',
-      sucesso: '',
-      carregando: false,
+const router = useRouter()
+const emit = defineEmits(['dados-medicos'])
+
+const condicoesMedicas = ref('')
+const alergias = ref('')
+const medicamentos = ref('')
+const observacoes = ref('')
+const erro = ref('')
+const sucesso = ref('')
+const carregando = ref(false)
+
+async function handleProximo() {
+  erro.value = ''
+  sucesso.value = ''
+  carregando.value = true
+
+  try {
+    emit('dados-medicos', {
+      condicoes_medicas: condicoesMedicas.value,
+      alergias: alergias.value,
+      medicamentos: medicamentos.value,
+      observacoes: observacoes.value,
+    })
+
+    router.push('/proximo-passo')
+  } catch (error) {
+    if (error.response && error.response.data) {
+      const erros = error.response.data
+      const primeiroErro = Object.values(erros)[0]
+      erro.value = Array.isArray(primeiroErro) ? primeiroErro[0] : primeiroErro
+    } else {
+      erro.value = 'Erro ao salvar. Tente novamente.'
     }
-  },
-
-  methods: {
-    async handleProximo() {
-      this.erro = ''
-      this.sucesso = ''
-      this.carregando = true
-
-      try {
-        this.$emit('dados-medicos', {
-          condicoes_medicas: this.condicoesMedicas,
-          alergias: this.alergias,
-          medicamentos: this.medicamentos,
-          observacoes: this.observacoes,
-        })
-
-        this.$router.push('/proximo-passo')
-      } catch (error) {
-        if (error.response && error.response.data) {
-          const erros = error.response.data
-          const primeiroErro = Object.values(erros)[0]
-          this.erro = Array.isArray(primeiroErro) ? primeiroErro[0] : primeiroErro
-        } else {
-          this.erro = 'Erro ao salvar. Tente novamente.'
-        }
-      } finally {
-        this.carregando = false
-      }
-    },
-  },
+  } finally {
+    carregando.value = false
+  }
 }
 </script>
 

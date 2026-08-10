@@ -1,68 +1,63 @@
-<script>
+<script setup>
+import { computed, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import api from '@/services/api'
 
-export default {
-  name: 'PerfilView',
+const router = useRouter()
 
-  data() {
-    return {
-      administrador: {},
-    }
-  },
+const administrador = ref({})
 
-  computed: {
-    cargoFormatado() {
-      const cargos = {
-        chefe: 'Chefe',
-        gerente: 'Gerente',
-        nutricionista: 'Nutricionista',
-        cuidador: 'Cuidador',
-      }
+const cargoFormatado = computed(() => {
+  const cargos = {
+    chefe: 'Chefe',
+    gerente: 'Gerente',
+    nutricionista: 'Nutricionista',
+    cuidador: 'Cuidador',
+  }
 
-      return cargos[this.administrador.cargo] || this.administrador.cargo || '...'
-    },
+  return cargos[administrador.value.cargo] || administrador.value.cargo || '...'
+})
 
-    telefoneFormatado() {
-      const tel = (this.administrador.telefone || '').replace(/\D/g, '')
+const telefoneFormatado = computed(() => {
+  const tel = (administrador.value.telefone || '').replace(/\D/g, '')
 
-      if (tel.length === 11) {
-        return `(${tel.slice(0, 2)}) ${tel.slice(2, 7)}-${tel.slice(7)}`
-      }
+  if (tel.length === 11) {
+    return `(${tel.slice(0, 2)}) ${tel.slice(2, 7)}-${tel.slice(7)}`
+  }
 
-      if (tel.length === 10) {
-        return `(${tel.slice(0, 2)}) ${tel.slice(2, 6)}-${tel.slice(6)}`
-      }
+  if (tel.length === 10) {
+    return `(${tel.slice(0, 2)}) ${tel.slice(2, 6)}-${tel.slice(6)}`
+  }
 
-      return this.administrador.telefone || '...'
-    },
+  return administrador.value.telefone || '...'
+})
 
-    dataFormatada() {
-      const data = this.administrador.data_registro
+const dataFormatada = computed(() => {
+  const data = administrador.value.data_registro
 
-      if (!data) return '...'
+  if (!data) return '...'
 
-      const [ano, mes, dia] = data.split('-')
-      return `${dia}/${mes}/${ano}`
-    },
-  },
-async created() {
+  const [ano, mes, dia] = data.split('-')
+  return `${dia}/${mes}/${ano}`
+})
+
+async function buscarDados() {
   try {
     const response = await api.get('/administradores/me/')
     console.log('Foto:', response.data.foto_url)
     console.log(response.data)
-    this.administrador = response.data
+    administrador.value = response.data
   } catch (error) {
-    this.$router.push('/login')
+    router.push('/login')
   }
-},
+}
 
-  methods: {
-    sair() {
-      localStorage.removeItem('access_token')
-      localStorage.removeItem('refresh_token')
-      this.$router.push('/login')
-    },
-  },
+onMounted(buscarDados)
+
+function sair() {
+  localStorage.removeItem('access_token')
+  localStorage.removeItem('refresh_token')
+  router.push('/login')
 }
 </script>
 
