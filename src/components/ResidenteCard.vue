@@ -7,22 +7,22 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'ResidenteCard',
-  props: {
-    residente: {
-      type: Object,
-      required: true,
-      // esperado: { id, nome, foto }
-    },
+<script setup>
+import { useRouter } from 'vue-router'
+
+const residente = defineProps({
+  residente: {
+    type: Object,
+    required: true,
+    // esperado: { id, nome, foto }
   },
-  methods: {
-    irParaPerfil() {
-      // TODO: ajustar quando a rota de perfil do residente existir
-      this.$router.push(`/residente/${this.residente.id}`)
-    },
-  },
+})
+
+const router = useRouter()
+
+function irParaPerfil() {
+  // TODO: ajustar quando a rota de perfil do residente existir
+  router.push(`/residente/${residente.id}`)
 }
 </script>
 

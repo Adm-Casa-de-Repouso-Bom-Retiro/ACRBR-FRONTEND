@@ -54,50 +54,44 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import api from '@/services/api'
 
-export default {
-  name: 'LoginView',
+const router = useRouter()
 
-  data() {
-    return {
-      email: '',
-      senha: '',
-      erro: '',
-      carregando: false,
+const email = ref('')
+const senha = ref('')
+const erro = ref('')
+const carregando = ref(false)
+
+async function handleLogin() {
+  erro.value = ''
+  carregando.value = true
+
+  try {
+    const response = await api.post('/token/', {
+      email: email.value,
+      password: senha.value,
+    })
+
+    localStorage.setItem('access_token', response.data.access)
+    localStorage.setItem('refresh_token', response.data.refresh)
+
+    // Redireciona para a página do perfil do funcionário após o login //
+    router.push('/perfilfuncionario')
+  } catch (error) {
+    if (error.response && error.response.data) {
+      const erros = error.response.data
+      const primeiroErro = Object.values(erros)[0]
+      erro.value = Array.isArray(primeiroErro) ? primeiroErro[0] : primeiroErro
+    } else {
+      erro.value = 'Erro ao fazer login. Tente novamente.'
     }
-  },
-
-  methods: {
-    async handleLogin() {
-      this.erro = ''
-      this.carregando = true
-
-      try {
-        const response = await api.post('/token/', {
-          email: this.email,
-          password: this.senha,
-        })
-
-        localStorage.setItem('access_token', response.data.access)
-        localStorage.setItem('refresh_token', response.data.refresh)
-
-        // Redireciona para a página do perfil do funcionário após o login //
-        this.$router.push('/perfilfuncionario')
-      } catch (error) {
-        if (error.response && error.response.data) {
-          const erros = error.response.data
-          const primeiroErro = Object.values(erros)[0]
-          this.erro = Array.isArray(primeiroErro) ? primeiroErro[0] : primeiroErro
-        } else {
-          this.erro = 'Erro ao fazer login. Tente novamente.'
-        }
-      } finally {
-        this.carregando = false
-      }
-    },
-  },
+  } finally {
+    carregando.value = false
+  }
 }
 </script>
 

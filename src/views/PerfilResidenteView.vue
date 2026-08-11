@@ -1,78 +1,37 @@
-<script>
-import api from '@/services/api'
+<script setup>
+import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
+import { useResidenteStore } from '@/stores/residente'
 
-export default {
-  name: 'CadastroResidenteView',
+const router = useRouter()
+const residenteStore = useResidenteStore()
+const { perfil: residente, fotoArquivo, fotoPreview } = storeToRefs(residenteStore)
 
-  data() {
-    return {
-      residente: {
-        nome: '',
-        data_nascimento: '',
-        data_entrada: '',
-        quarto: '',
-        grau_dependencia: 'grau1',
-        observacoes: '',
-      },
-      fotoArquivo: null,
-      fotoPreview: null,
-      enviando: false,
-      erro: '',
-    }
-  },
+const erro = ref('')
+const inputFoto = ref(null)
 
-  methods: {
-    abrirSeletorFoto() {
-      this.$refs.inputFoto.click()
-    },
+function abrirSeletorFoto() {
+  inputFoto.value.click()
+}
 
-    selecionarFoto(event) {
-      const arquivo = event.target.files[0]
-      if (!arquivo) return
+function selecionarFoto(event) {
+  const arquivo = event.target.files[0]
+  if (!arquivo) return
 
-      this.fotoArquivo = arquivo
-      this.fotoPreview = URL.createObjectURL(arquivo)
-    },
+  fotoArquivo.value = arquivo
+  fotoPreview.value = URL.createObjectURL(arquivo)
+}
 
-    async proximo() {
-      this.erro = ''
+function proximo() {
+  erro.value = ''
 
-      if (!this.residente.nome.trim()) {
-        this.erro = 'Informe o nome completo do residente.'
-        return
-      }
+  if (!residente.value.nome.trim()) {
+    erro.value = 'Informe o nome completo do residente.'
+    return
+  }
 
-      const formData = new FormData()
-      formData.append('nome', this.residente.nome)
-      formData.append('data_nascimento', this.residente.data_nascimento)
-      formData.append('data_entrada', this.residente.data_entrada)
-      formData.append('quarto', this.residente.quarto)
-      formData.append('grau_dependencia', this.residente.grau_dependencia)
-      formData.append('observacoes', this.residente.observacoes)
-      if (this.fotoArquivo) {
-        formData.append('foto', this.fotoArquivo)
-      }
-
-      this.enviando = true
-      try {
-        const response = await api.post('/residentes/', formData, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        })
-
-        this.$router.push(`/cadastro-residente/${response.data.id}/proximo`)
-      } catch (error) {
-        this.erro = 'Não foi possível salvar o residente. Tente novamente.'
-      } finally {
-        this.enviando = false
-      }
-    },
-  },
-
-  beforeUnmount() {
-    if (this.fotoPreview) {
-      URL.revokeObjectURL(this.fotoPreview)
-    }
-  },
+  router.push('/contatosresidentes')
 }
 </script>
 
@@ -150,17 +109,17 @@ export default {
 
             <div class="opcoes-grau">
               <label class="opcao-grau">
-                <input v-model="residente.grau_dependencia" type="radio" value="grau1" name="grau" />
+                <input v-model="residente.grau_dependencia" type="radio" value="grau_1" name="grau" />
                 <span>Grau 1 - Independente</span>
               </label>
 
               <label class="opcao-grau">
-                <input v-model="residente.grau_dependencia" type="radio" value="grau2" name="grau" />
+                <input v-model="residente.grau_dependencia" type="radio" value="grau_2" name="grau" />
                 <span>Grau 2 - Necessita auxílio parcial</span>
               </label>
 
               <label class="opcao-grau">
-                <input v-model="residente.grau_dependencia" type="radio" value="grau3" name="grau" />
+                <input v-model="residente.grau_dependencia" type="radio" value="grau_3" name="grau" />
                 <span>Grau 3 - Dependência total</span>
               </label>
             </div>
@@ -179,8 +138,8 @@ export default {
           <p v-if="erro" class="mensagem-erro">{{ erro }}</p>
 
           <div class="rodape-form">
-            <button class="btn-proximo" :disabled="enviando" @click="proximo">
-              {{ enviando ? 'SALVANDO...' : 'PRÓXIMO' }}
+            <button class="btn-proximo" type="button" @click="proximo">
+              PRÓXIMO
               <span class="seta">→</span>
             </button>
           </div>

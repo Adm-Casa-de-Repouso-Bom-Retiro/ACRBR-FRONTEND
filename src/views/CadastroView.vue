@@ -85,98 +85,92 @@
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import api from '@/services/api'
 import iconeLogin from '@/assets/images/icone-login.png'
 
-export default {
-  name: 'CadastroView',
+const router = useRouter()
 
-  data() {
-    return {
-      iconeLogin,
-      nome: '',
-      telefone: '',
-      cargo: '',
-      senha: '',
-      email: '',
-      data: '',
-      erro: '',
-      sucesso: '',
-      carregando: false,
-      fotoArquivo: null,
-      fotoPrevia: '',
+const nome = ref('')
+const telefone = ref('')
+const cargo = ref('')
+const senha = ref('')
+const email = ref('')
+const data = ref('')
+const erro = ref('')
+const sucesso = ref('')
+const carregando = ref(false)
+const fotoArquivo = ref(null)
+const fotoPrevia = ref('')
+const inputFoto = ref(null)
+
+function formatarTelefone(valor) {
+  return valor.replace(/\D/g, '')
+}
+
+function abrirSeletorFoto() {
+  inputFoto.value.click()
+}
+
+function selecionarFoto(evento) {
+  const arquivo = evento.target.files[0]
+  if (!arquivo) return
+  fotoArquivo.value = arquivo
+  fotoPrevia.value = URL.createObjectURL(arquivo)
+}
+
+async function uploadFoto() {
+  if (!fotoArquivo.value) return null
+
+  const formData = new FormData()
+  formData.append('file', fotoArquivo.value)
+  formData.append('description', nome.value || 'foto-perfil')
+
+  const resposta = await api.post('/media/images/', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  })
+
+  return resposta.data.attachment_key
+}
+
+async function handleCadastro() {
+  erro.value = ''
+  sucesso.value = ''
+  carregando.value = true
+
+  try {
+    const fotoKey = await uploadFoto()
+
+    const dadosCadastro = {
+      nome: nome.value,
+      telefone: formatarTelefone(telefone.value),
+      cargo: cargo.value,
+      password: senha.value,
+      email: email.value,
+      data_registro: data.value,
     }
-  },
 
-  methods: {
-    formatarTelefone(valor) {
-      return valor.replace(/\D/g, '')
-    },
+    if (fotoKey) {
+      dadosCadastro.perfil_attachment_key = fotoKey
+    }
 
-    abrirSeletorFoto() {
-      this.$refs.inputFoto.click()
-    },
+    await api.post('/registro/', dadosCadastro)
 
-    selecionarFoto(evento) {
-      const arquivo = evento.target.files[0]
-      if (!arquivo) return
-      this.fotoArquivo = arquivo
-      this.fotoPrevia = URL.createObjectURL(arquivo)
-    },
-
-    async uploadFoto() {
-      if (!this.fotoArquivo) return null
-
-      const formData = new FormData()
-      formData.append('file', this.fotoArquivo)
-      formData.append('description', this.nome || 'foto-perfil')
-
-      const resposta = await api.post('/media/images/', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      })
-
-      return resposta.data.attachment_key
-    },
-
-    async handleCadastro() {
-      this.erro = ''
-      this.sucesso = ''
-      this.carregando = true
-
-      try {
-        const fotoKey = await this.uploadFoto()
-
-        const dadosCadastro = {
-          nome: this.nome,
-          telefone: this.formatarTelefone(this.telefone),
-          cargo: this.cargo,
-          password: this.senha,
-          email: this.email,
-          data_registro: this.data,
-        }
-
-        if (fotoKey) {
-          dadosCadastro.perfil_attachment_key = fotoKey
-        }
-
-        await api.post('/registro/', dadosCadastro)
-
-        this.sucesso = 'Conta criada com sucesso!'
-        setTimeout(() => this.$router.push('/login'), 1500)
-      } catch (error) {
-        if (error.response && error.response.data) {
-          const erros = error.response.data
-          const primeiroErro = Object.values(erros)[0]
-          this.erro = Array.isArray(primeiroErro) ? primeiroErro[0] : primeiroErro
-        } else {
-          this.erro = 'Erro ao criar conta. Tente novamente.'
-        }
-      } finally {
-        this.carregando = false
-      }
-    },
-  },
+    sucesso.value = 'Conta criada com sucesso!'
+    setTimeout(() => router.push('/login'), 1500)
+  } catch (error) {
+    if (error.response && error.response.data) {
+      const erros = error.response.data
+      const primeiroErro = Object.values(erros)[0]
+      erro.value = Array.isArray(primeiroErro) ? primeiroErro[0] : primeiroErro
+    } else {
+      erro.value = 'Erro ao criar conta. Tente novamente.'
+    }
+  } finally {
+    carregando.value = false
+  }
 }
 </script>
 
