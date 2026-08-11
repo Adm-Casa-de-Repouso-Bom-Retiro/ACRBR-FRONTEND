@@ -227,7 +227,7 @@ async function handleSubmit() {
   gap: 10px;
   background: #3a7d44;
   color: #ffffff;
-  font-size: 15px;
+  font-size: 20px;
   font-weight: 700;
   letter-spacing: 0.5px;
   padding: 8px 20px;
@@ -252,10 +252,7 @@ async function handleSubmit() {
   display: flex;
   flex-direction: column;
   gap: 5px;
-}
-
-.form-group + .form-group {
-  margin-top: 14px;
+  
 }
 
 .form-group label {
@@ -263,6 +260,9 @@ async function handleSubmit() {
   font-weight: 700;
   color: #1e3e1e;
   letter-spacing: 0.4px;
+  padding: 10px 0 10px 0;
+  font-size: 1rem;
+
 }
 
 .form-group input,
