@@ -37,7 +37,7 @@ function filtrarResidentes() {
   }
 
   residentesFiltrados.value = residentes.value.filter((residente) =>
-    residente.nome.toLowerCase().includes(termo)
+    residente.nome_completo.toLowerCase().includes(termo)
   )
 }
 

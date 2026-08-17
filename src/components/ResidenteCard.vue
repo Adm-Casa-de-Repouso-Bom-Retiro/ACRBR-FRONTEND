@@ -1,20 +1,19 @@
 <template>
-  <div class="residente-card" @click="irParaPerfil" :title="`Ver perfil de ${residente.nome}`">
+  <div class="residente-card" @click="irParaPerfil" :title="`Ver perfil de ${residente.nome_completo}`">
     <div class="residente-foto" :class="{ 'residente-foto--vazia': !residente.foto }">
-      <img v-if="residente.foto" :src="residente.foto" class="residente-img" />
+      <img v-if="!!residente.foto" :src="residente.foto.url" class="residente-img" />
     </div>
-    <span class="residente-nome">{{ residente.nome }}</span>
+    <span class="residente-nome">{{ residente.nome_completo }}</span>
   </div>
 </template>
 
 <script setup>
 import { useRouter } from 'vue-router'
 
-const residente = defineProps({
+const { residente } = defineProps({
   residente: {
     type: Object,
     required: true,
-    // esperado: { id, nome, foto }
   },
 })
 
@@ -65,7 +64,7 @@ function irParaPerfil() {
 .residente-nome {
   font-size: 12px;
   font-weight: bold;
-  color: #ffffff;
+  color: #000000;
   text-align: center;
 }
 </style>
