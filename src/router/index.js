@@ -41,9 +41,9 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/perfilresidente',
-      name: 'perfilresidente',
-      component: () => import('../views/PerfilResidenteView.vue'),
+      path: '/cadastroresidente',
+      name: 'cadastroresidente',
+      component: () => import('../views/CadastroResidenteView.vue'),
       meta: { requiresAuth: true },
     },
     {
@@ -57,6 +57,13 @@ const router = createRouter({
       name: 'contatosresidentes',
       component: () => import('../views/ContatosResidentesView.vue'),
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/residente/:id',
+      name: 'residente',
+      component: () => import('../views/PerfilResidenteView.vue'),
+      meta: { requiresAuth: true },
+      props: true,
     },
   ],  
 })

@@ -1,152 +1,106 @@
 <script setup>
-import { ref } from 'vue'
-import { storeToRefs } from 'pinia'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useResidenteStore } from '@/stores/residente'
+import api from '@/services/api'
+
+const props = defineProps({
+  id: {
+    type: [String, Number],
+    required: true,
+  },
+})
 
 const router = useRouter()
-const residenteStore = useResidenteStore()
-const { perfil: residente, fotoArquivo, fotoPreview } = storeToRefs(residenteStore)
 
+// Valores serão preenchidos via API
+const residente = ref(null)
+const carregando = ref(false)
 const erro = ref('')
-const inputFoto = ref(null)
 
-function abrirSeletorFoto() {
-  inputFoto.value.click()
-}
-
-function selecionarFoto(event) {
-  const arquivo = event.target.files[0]
-  if (!arquivo) return
-
-  fotoArquivo.value = arquivo
-  fotoPreview.value = URL.createObjectURL(arquivo)
-}
-
-function proximo() {
+async function buscarResidente() {
+  carregando.value = true
   erro.value = ''
 
-  if (!residente.value.nome.trim()) {
-    erro.value = 'Informe o nome completo do residente.'
-    return
+  try {
+    // TODO: ajustar endpoint quando o backend estiver pronto
+    const resposta = await api.get(`/residentes/${props.id}/`)
+    residente.value = resposta.data
+  } catch (error) {
+    erro.value = 'Erro ao carregar dados do residente.'
+    residente.value = null
+  } finally {
+    carregando.value = false
   }
-
-  router.push('/contatosresidentes')
 }
+
+function irPara(nomeRota) {
+  // TODO: ajustar quando as rotas de cada seção existirem
+  router.push({ name: nomeRota, params: { id: props.id } })
+}
+
+onMounted(buscarResidente)
 </script>
 
 <template>
-  <div class="cadastro-page">
-    <div class="top-line"></div>
+  <main class="perfil-residente">
+    <p v-if="erro" class="msg-erro">{{ erro }}</p>
+    <div v-if="carregando" class="msg-carregando">Carregando dados do residente...</div>
 
-    <main class="main-content">
-      <div class="cadastro-card">
-        <div class="foto-section">
-          <button
-            type="button"
-            class="foto-upload"
-            :style="fotoPreview ? { backgroundImage: `url(${fotoPreview})` } : {}"
-            @click="abrirSeletorFoto"
-          >
-            <svg
-              v-if="!fotoPreview"
-              class="icone-camera"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M4 8a2 2 0 0 1 2-2h1.17a2 2 0 0 0 1.63-.84l.4-.57A2 2 0 0 1 10.8 3.6h2.4a2 2 0 0 1 1.6.98l.4.57A2 2 0 0 0 16.83 6H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z"
-                stroke="white"
-                stroke-width="1.6"
-              />
-              <circle cx="12" cy="13" r="3.2" stroke="white" stroke-width="1.6" />
-            </svg>
-          </button>
-
-          <input
-            ref="inputFoto"
-            type="file"
-            accept="image/*"
-            class="input-foto-oculto"
-            @change="selecionarFoto"
-          />
+    <template v-else-if="residente">
+      <section class="perfil-topo">
+        <div class="coluna-foto">
+          <div class="perfil-foto" :class="{ 'perfil-foto--vazia': !residente.foto }">
+            <img v-if="!!residente.foto" :src="residente.foto.url" class="perfil-img" />
+          </div>
+          <button class="btn-editar" @click="irPara('editarresidente')">EDITAR DADOS</button>
         </div>
 
-        <div class="form-section">
-          <div class="campo">
-            <label class="campo-label" for="nome">NOME COMPLETO:</label>
-            <input id="nome" v-model="residente.nome" type="text" class="campo-input" />
+        <div class="perfil-dados">
+          <h1 class="residente-nome">{{ residente.nome_completo }}</h1>
+          <p class="dado-linha"><strong>Nascimento:</strong> {{ residente.data_nascimento }}</p>
+          <p class="dado-linha"><strong>Idade:</strong> {{ residente.idade }} anos</p>
+          <p class="dado-linha"><strong>Data de Entrada:</strong> {{ residente.data_entrada }}</p>
+          <p class="dado-linha"><strong>Quarto:</strong> {{ residente.quarto }}</p>
+        </div>
+
+        <div class="perfil-dependencia">
+          <h2 class="dependencia-titulo">Grau de Dependência:</h2>
+          <div class="dependencia-item">
+            <span
+              class="dependencia-marcador"
+              :class="{ ativo: residente.grau_dependencia === 1 }"
+            ></span>
+            Grau 1 - Independente
           </div>
-
-          <div class="campo">
-            <label class="campo-label" for="nascimento">DATA DE NASCIMENTO:</label>
-            <input
-              id="nascimento"
-              v-model="residente.data_nascimento"
-              type="date"
-              class="campo-input campo-data"
-            />
+          <div class="dependencia-item">
+            <span
+              class="dependencia-marcador"
+              :class="{ ativo: residente.grau_dependencia === 2 }"
+            ></span>
+            Grau 2 - Necessita auxílio parcial
           </div>
-
-          <div class="campo">
-            <label class="campo-label" for="entrada">DATA DE ENTRADA:</label>
-            <input
-              id="entrada"
-              v-model="residente.data_entrada"
-              type="date"
-              class="campo-input campo-data"
-            />
-          </div>
-
-          <div class="campo">
-            <label class="campo-label" for="quarto">QUARTO:</label>
-            <input id="quarto" v-model="residente.quarto" type="text" class="campo-input campo-quarto" />
-          </div>
-
-          <div class="campo">
-            <span class="campo-label">GRAU DE DEPENDÊNCIA</span>
-
-            <div class="opcoes-grau">
-              <label class="opcao-grau">
-                <input v-model="residente.grau_dependencia" type="radio" value="grau_1" name="grau" />
-                <span>Grau 1 - Independente</span>
-              </label>
-
-              <label class="opcao-grau">
-                <input v-model="residente.grau_dependencia" type="radio" value="grau_2" name="grau" />
-                <span>Grau 2 - Necessita auxílio parcial</span>
-              </label>
-
-              <label class="opcao-grau">
-                <input v-model="residente.grau_dependencia" type="radio" value="grau_3" name="grau" />
-                <span>Grau 3 - Dependência total</span>
-              </label>
-            </div>
-          </div>
-
-          <div class="campo">
-            <label class="campo-label" for="observacoes">OBSERVAÇÕES:</label>
-            <textarea
-              id="observacoes"
-              v-model="residente.observacoes"
-              class="campo-textarea"
-              rows="3"
-            ></textarea>
-          </div>
-
-          <p v-if="erro" class="mensagem-erro">{{ erro }}</p>
-
-          <div class="rodape-form">
-            <button class="btn-proximo" type="button" @click="proximo">
-              PRÓXIMO
-              <span class="seta">→</span>
-            </button>
+          <div class="dependencia-item">
+            <span
+              class="dependencia-marcador"
+              :class="{ ativo: residente.grau_dependencia === 3 }"
+            ></span>
+            Grau 3 - Dependência total
           </div>
         </div>
-      </div>
-    </main>
-  </div>
+      </section>
+
+      <nav class="perfil-menu">
+        <button class="btn-menu" @click="irPara('dadosmedicos')">DADOS MÉDICOS</button>
+        <button class="btn-menu" @click="irPara('contatosresidentes')">CONTATOS</button>
+        <button class="btn-menu" @click="irPara('cuidadospessoais')">CUIDADOS PESSOAIS</button>
+        <button class="btn-menu" @click="irPara('historico')">HISTÓRICO</button>
+        <button class="btn-menu" @click="irPara('calendario')">CALENDÁRIO</button>
+        <button class="btn-menu" @click="irPara('nutricao')">NUTRIÇÃO</button>
+      </nav>
+    </template>
+
+    <div class="linha-divisoria"></div>
+  </main>
 </template>
 
 <style scoped>
@@ -154,192 +108,150 @@ function proximo() {
   box-sizing: border-box;
 }
 
-.top-line {
-  width: 100%;
-  height: 10px;
-  background: #2e5d2e;
-}
-
-.main-content {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 36px 20px;
-}
-
-.cadastro-card {
-  width: 400%;
-  max-width: 70vw;
-  min-height: 340px;
-  border: 2px solid #8fd14f;
-  border-radius: 12px;
-  padding: 24px 30px;
-  display: flex;
-  gap: 28px;
-  align-items: flex-start;
-}
-
-.foto-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.foto-upload {
-  width: 200px;
-  height: 180px;
-  border: none;
-  border-radius: 12px;
-  background-color: #2e5d2e;
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  flex-shrink: 0;
-  margin-top: 8vw;
-}
-
-.foto-upload:hover {
-  background-color: #264e26;
-}
-
-.icone-camera {
-  width: 44px;
-  height: 44px;
-}
-
-.input-foto-oculto {
-  display: none;
-}
-
-.form-section {
+.perfil-residente {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 13px;
+  gap: 30px;
+  padding: 40px 50px;
+  background: #2e5d2e;
 }
 
-.campo {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.campo-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: #1e3e1e;
-  letter-spacing: 0.35px;
-}
-
-.campo-input,
-.campo-textarea {
-  border: 1.2px solid #1e3e1e;
-  border-radius: 5px;
-  padding: 6px 10px;
+.msg-erro {
+  color: #ffdada;
   font-size: 13px;
-  color: #333;
-  font-family: inherit;
-  outline: none;
-  background: white;
 }
 
-.campo-input:focus,
-.campo-textarea:focus {
-  border-color: #3a7d44;
+.msg-carregando {
+  color: #ffffff;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 40px;
 }
 
-.campo-data {
-  max-width: 180px;
+/* ── LINHA PRINCIPAL: FOTO + DADOS + DEPENDÊNCIA ─────── */
+.perfil-topo {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
 }
 
-.campo-quarto {
-  max-width: 130px;
-}
-
-.campo-textarea {
-  resize: vertical;
-  min-height: 50px;
-}
-
-.opcoes-grau {
+.coluna-foto {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: 2px;
+  gap: 14px;
+  flex-shrink: 0;
 }
 
-.opcao-grau {
+.perfil-foto {
+  width: 190px;
+  height: 190px;
+  border-radius: 4px;
+  background: #d9d9d9;
+  overflow: hidden;
+}
+
+.perfil-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.btn-editar {
+  background: #ffffff;
+  border: 2px solid #ffffff;
+  color: #2e5d2e;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 10px 0;
+  width: 190px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.perfil-dados {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 8px;
-  font-size: 12.5px;
-  color: #333;
-  cursor: pointer;
+  padding-top: 4px;
 }
 
-.opcao-grau input[type='radio'] {
-  width: 14px;
-  height: 14px;
-  accent-color: #3a7d44;
-  cursor: pointer;
+.residente-nome {
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0 0 8px 0;
 }
 
-.mensagem-erro {
-  color: #b3261e;
-  font-size: 12px;
+.dado-linha {
+  color: #ffffff;
+  font-size: 15px;
   margin: 0;
 }
 
-.rodape-form {
+.perfil-dependencia {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 6px;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 4px;
 }
 
-.btn-proximo {
-  background: transparent;
-  border: none;
-  color: #3a7d44;
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.35px;
-  cursor: pointer;
+.dependencia-titulo {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 800;
+  margin: 0 0 6px 0;
+}
+
+.dependencia-item {
   display: flex;
   align-items: center;
-  gap: 5px;
-  padding: 5px 3px;
-  transition: color 0.2s, transform 0.2s;
-}
-
-.btn-proximo:hover:not(:disabled) {
-  color: #1e3e1e;
-  transform: translateX(2px);
-}
-
-.btn-proximo:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.seta {
+  gap: 8px;
+  color: #ffffff;
   font-size: 14px;
 }
 
-@media (max-width: 768px) {
-  .cadastro-card {
-    max-width: 95vw;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    padding: 20px 22px;
-  }
+.dependencia-marcador {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1.5px solid #ffffff;
+  flex-shrink: 0;
+}
 
-  .form-section {
-    width: 100%;
-  }
+.dependencia-marcador.ativo {
+  background: #a8d8a8;
+  border-color: #a8d8a8;
+}
+
+/* ── MENU DE SEÇÕES ───────────────────────────────────── */
+.perfil-menu {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  max-width: 780px;
+}
+
+.btn-menu {
+  background: #ffffff;
+  color: #2e5d2e;
+  font-weight: 800;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  padding: 16px 20px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-menu:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.linha-divisoria {
+  height: 1vw;
+  background: #ffffff;
+  width: 100%;
 }
 </style>
