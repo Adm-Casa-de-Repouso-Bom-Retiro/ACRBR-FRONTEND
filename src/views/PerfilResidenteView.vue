@@ -43,63 +43,162 @@ onMounted(buscarResidente)
 
 <template>
   <main class="perfil-residente">
+
     <p v-if="erro" class="msg-erro">{{ erro }}</p>
-    <div v-if="carregando" class="msg-carregando">Carregando dados do residente...</div>
+
+    <div v-if="carregando" class="msg-carregando">
+      Carregando dados do residente...
+    </div>
 
     <template v-else-if="residente">
-      <section class="perfil-topo">
-        <div class="coluna-foto">
-          <div class="perfil-foto" :class="{ 'perfil-foto--vazia': !residente.foto }">
-            <img v-if="!!residente.foto" :src="residente.foto.url" class="perfil-img" />
+
+      <div class="perfil-conteudo">
+
+        <div class="grupo-foto">
+
+          <div
+            class="perfil-foto"
+            :class="{ 'perfil-foto--vazia': !residente.foto }"
+          >
+            <img
+              v-if="!!residente.foto"
+              :src="residente.foto.url"
+              class="perfil-img"
+            />
           </div>
-          <button class="btn-editar" @click="irPara('editarresidente')">EDITAR DADOS</button>
+
+          <button
+            class="btn-editar"
+            @click="irPara('editarresidente')"
+          >
+            EDITAR DADOS
+          </button>
+
         </div>
 
-        <div class="perfil-dados">
-          <h1 class="residente-nome">{{ residente.nome_completo }}</h1>
-          <p class="dado-linha"><strong>Nascimento:</strong> {{ residente.data_nascimento }}</p>
-          <p class="dado-linha"><strong>Idade:</strong> {{ residente.idade }} anos</p>
-          <p class="dado-linha"><strong>Data de Entrada:</strong> {{ residente.data_entrada }}</p>
-          <p class="dado-linha"><strong>Quarto:</strong> {{ residente.quarto }}</p>
+        <div class="grupo-conteudo">
+
+          <div class="grupo-informacoes">
+
+            <div class="perfil-dados">
+
+              <h1 class="residente-nome">
+                {{ residente.nome_completo }}
+              </h1>
+
+              <p class="dado-linha">
+                <strong>Nascimento:</strong>
+                {{ residente.data_nascimento }}
+              </p>
+
+              <p class="dado-linha">
+                <strong>Idade:</strong>
+                {{ residente.idade }} anos
+              </p>
+
+              <p class="dado-linha">
+                <strong>Data de Entrada:</strong>
+                {{ residente.data_entrada }}
+              </p>
+
+              <p class="dado-linha">
+                <strong>Quarto:</strong>
+                {{ residente.quarto }}
+              </p>
+
+            </div>
+
+            <div class="perfil-dependencia">
+
+              <h2 class="dependencia-titulo">
+                Grau de Dependência:
+              </h2>
+
+              <div class="dependencia-item">
+                <span
+                  class="dependencia-marcador"
+                  :class="{ ativo: residente.grau_dependencia === 1 }"
+                ></span>
+
+                Grau 1 - Independente
+              </div>
+
+              <div class="dependencia-item">
+                <span
+                  class="dependencia-marcador"
+                  :class="{ ativo: residente.grau_dependencia === 2 }"
+                ></span>
+
+                Grau 2 - Necessita auxílio parcial
+              </div>
+
+              <div class="dependencia-item">
+                <span
+                  class="dependencia-marcador"
+                  :class="{ ativo: residente.grau_dependencia === 3 }"
+                ></span>
+
+                Grau 3 - Dependência total
+              </div>
+
+            </div>
+
+          </div>
+
+          <nav class="perfil-menu">
+
+            <button
+              class="btn-menu"
+              @click="irPara('dadosmedicos')"
+            >
+              DADOS MÉDICOS
+            </button>
+
+            <button
+              class="btn-menu"
+              @click="irPara('contatosresidentes')"
+            >
+              CONTATOS
+            </button>
+
+            <button
+              class="btn-menu"
+              @click="irPara('cuidadospessoais')"
+            >
+              CUIDADOS PESSOAIS
+            </button>
+
+            <button
+              class="btn-menu"
+              @click="irPara('historico')"
+            >
+              HISTÓRICO
+            </button>
+
+            <button
+              class="btn-menu"
+              @click="irPara('calendario')"
+            >
+              CALENDÁRIO
+            </button>
+
+            <button
+              class="btn-menu"
+              @click="irPara('nutricao')"
+            >
+              NUTRIÇÃO
+            </button>
+
+          </nav>
+
         </div>
 
-        <div class="perfil-dependencia">
-          <h2 class="dependencia-titulo">Grau de Dependência:</h2>
-          <div class="dependencia-item">
-            <span
-              class="dependencia-marcador"
-              :class="{ ativo: residente.grau_dependencia === 1 }"
-            ></span>
-            Grau 1 - Independente
-          </div>
-          <div class="dependencia-item">
-            <span
-              class="dependencia-marcador"
-              :class="{ ativo: residente.grau_dependencia === 2 }"
-            ></span>
-            Grau 2 - Necessita auxílio parcial
-          </div>
-          <div class="dependencia-item">
-            <span
-              class="dependencia-marcador"
-              :class="{ ativo: residente.grau_dependencia === 3 }"
-            ></span>
-            Grau 3 - Dependência total
-          </div>
-        </div>
-      </section>
+      </div>
 
-      <nav class="perfil-menu">
-        <button class="btn-menu" @click="irPara('dadosmedicos')">DADOS MÉDICOS</button>
-        <button class="btn-menu" @click="irPara('contatosresidentes')">CONTATOS</button>
-        <button class="btn-menu" @click="irPara('cuidadospessoais')">CUIDADOS PESSOAIS</button>
-        <button class="btn-menu" @click="irPara('historico')">HISTÓRICO</button>
-        <button class="btn-menu" @click="irPara('calendario')">CALENDÁRIO</button>
-        <button class="btn-menu" @click="irPara('nutricao')">NUTRIÇÃO</button>
-      </nav>
     </template>
 
     <div class="linha-divisoria"></div>
+
   </main>
 </template>
 
@@ -112,41 +211,47 @@ onMounted(buscarResidente)
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 30px;
-  padding: 40px 50px;
+  gap: 45px;
+  padding: 55px 70px 0 70px;
   background: #2e5d2e;
+  position: relative;
+  min-height: 0;
 }
 
 .msg-erro {
   color: #ffdada;
-  font-size: 13px;
+  font-size: 16px;
 }
 
 .msg-carregando {
   color: #ffffff;
-  font-size: 14px;
+  font-size: 18px;
   text-align: center;
-  margin-top: 40px;
+  margin-top: 50px;
 }
 
-/* ── LINHA PRINCIPAL: FOTO + DADOS + DEPENDÊNCIA ─────── */
-.perfil-topo {
+.perfil-conteudo {
   display: flex;
-  gap: 40px;
+  gap: 55px;
   align-items: flex-start;
+  justify-content: center;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.coluna-foto {
+.grupo-foto {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  align-items: center;
+  gap: 24px;
   flex-shrink: 0;
 }
 
 .perfil-foto {
-  width: 190px;
-  height: 190px;
-  border-radius: 4px;
+  width: 240px;
+  height: 264px;
+  border-radius: 14px;
   background: #d9d9d9;
   overflow: hidden;
 }
@@ -159,99 +264,122 @@ onMounted(buscarResidente)
 
 .btn-editar {
   background: #ffffff;
-  border: 2px solid #ffffff;
+  border: none;
   color: #2e5d2e;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 13px;
-  padding: 10px 0;
-  width: 190px;
-  border-radius: 6px;
+  padding: 11px 47px;
+  border-radius: 7px;
   cursor: pointer;
+}
+
+.grupo-conteudo {
+  flex: 1;
+  min-width: 0;
+}
+
+.grupo-informacoes {
+  display: flex;
+  gap: 65px;
+  align-items: flex-start;
 }
 
 .perfil-dados {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding-top: 4px;
+  gap: 12px;
+  padding-top: 5px;
+  width: 280px;
+  flex-shrink: 0;
 }
 
 .residente-nome {
   color: #ffffff;
   font-size: 24px;
-  font-weight: 800;
-  margin: 0 0 8px 0;
+  font-weight: 600;
+  margin: 11px 0 13px 0;
 }
 
 .dado-linha {
   color: #ffffff;
-  font-size: 15px;
+  font-size: 16px;
+  font-weight: 400;
   margin: 0;
+}
+
+.dado-linha strong {
+  font-weight: 600;
 }
 
 .perfil-dependencia {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding-top: 4px;
+  gap: 12px;
+  padding-top: 60px;
 }
 
 .dependencia-titulo {
   color: #ffffff;
-  font-size: 16px;
-  font-weight: 800;
+  font-size: 17px;
+  font-weight: 600;
   margin: 0 0 6px 0;
 }
 
 .dependencia-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
   color: #ffffff;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 400;
+  white-space: nowrap;
 }
 
 .dependencia-marcador {
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
-  border: 1.5px solid #ffffff;
+  width: 20px;
+  height: 15px;
+  border-radius: 4px;
+  border: 1px solid #78a84b;
   flex-shrink: 0;
 }
 
 .dependencia-marcador.ativo {
-  background: #a8d8a8;
-  border-color: #a8d8a8;
+  background: #8fbe4a;
+  border-color: #8fbe4a;
 }
 
-/* ── MENU DE SEÇÕES ───────────────────────────────────── */
 .perfil-menu {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  max-width: 780px;
+  gap: 18px 12px;
+  width: 590px;
+  margin-top: 22px;
 }
 
 .btn-menu {
-  background: #ffffff;
-  color: #2e5d2e;
-  font-weight: 800;
-  font-size: 14px;
+  background-color: #72a840;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 13px;
   border: none;
-  border-radius: 8px;
-  padding: 16px 20px;
+  border-radius: 7px;
+  padding: 9px 12px;
+  height: 36px;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .btn-menu:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  background-color: #7caf49;
+  transform: translateY(-1px);
 }
 
 .linha-divisoria {
-  height: 1vw;
+  height: 8px;
   background: #ffffff;
   width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 </style>
