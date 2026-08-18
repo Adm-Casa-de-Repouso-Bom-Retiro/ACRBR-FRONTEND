@@ -35,6 +35,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/cuidadospessoais',
+      name: 'cuidadospessoais',
+      component: () => import('../views/CuidadosPessoaisView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/prontuario',
       name: 'prontuario',
       component: () => import('../views/ProntuarioView.vue'),

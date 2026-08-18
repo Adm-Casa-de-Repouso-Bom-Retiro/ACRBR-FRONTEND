@@ -14,16 +14,4 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-export async function uploadImagem(arquivo, descricao = '') {
-  const formData = new FormData()
-  formData.append('file', arquivo)
-  formData.append('description', descricao)
-
-  const resposta = await api.post('/media/images/', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  })
-
-  return resposta.data 
-}
-
 export default api
