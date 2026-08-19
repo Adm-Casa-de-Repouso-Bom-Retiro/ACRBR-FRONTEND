@@ -75,19 +75,6 @@
 
         </section>
 
-        <section class="box box-observacoes">
-
-          <h2>Observações:</h2>
-
-          <textarea
-            v-model="cuidados.observacoes"
-            :disabled="!editando || salvando"
-            rows="5"
-            placeholder="Observações gerais sobre os cuidados pessoais do residente..."
-          ></textarea>
-
-        </section>
-
       </div>
 
       <div class="coluna">
@@ -186,6 +173,21 @@
 
     </div>
 
+    <section class="box box-observacoes">
+
+      <h2>Observações:</h2>
+
+      <textarea
+        v-model="cuidados.observacoes"
+        :disabled="salvando"
+        rows="4"
+        placeholder="Observações gerais sobre os cuidados pessoais do residente..."
+      ></textarea>
+
+    </section>
+
+    <div class="rodape-divisor"></div>
+
     <div
       v-if="mensagem"
       class="mensagem"
@@ -247,48 +249,21 @@ export default {
       },
 
       higieneItems: [
-        {
-          key: 'ajudaBanho',
-          label: 'Ajuda no banho?'
-        },
-        {
-          key: 'ajudaHigieneIntima',
-          label: 'Ajuda na higiene íntima?'
-        },
-        {
-          key: 'ajudaHigieneBucal',
-          label: 'Ajuda na higiene bucal?'
-        },
-        {
-          key: 'ajudaUsarBanheiro',
-          label: 'Ajuda ao usar o banheiro?'
-        },
-        {
-          key: 'ajudaVestirRoupas',
-          label: 'Ajuda para vestir roupas'
-        }
+        { key: 'ajudaBanho', label: 'Ajuda no banho?' },
+        { key: 'ajudaHigieneIntima', label: 'Ajuda na higiene íntima?' },
+        { key: 'ajudaHigieneBucal', label: 'Ajuda na higiene bucal?' },
+        { key: 'ajudaUsarBanheiro', label: 'Ajuda ao usar o banheiro?' },
+        { key: 'ajudaVestirRoupas', label: 'Ajuda para vestir roupas' }
       ],
 
       locomocaoItems: [
-        {
-          key: 'ajudaLocomocao',
-          label: 'Ajuda na locomoção?'
-        },
-        {
-          key: 'riscoQueda',
-          label: 'Possui risco de queda?'
-        }
+        { key: 'ajudaLocomocao', label: 'Ajuda na locomoção?' },
+        { key: 'riscoQueda', label: 'Possui risco de queda?' }
       ],
 
       alimentacaoItems: [
-        {
-          key: 'ajudaAlimentar',
-          label: 'Ajuda ao se alimentar?'
-        },
-        {
-          key: 'possuiRestricoes',
-          label: 'Possui restrições?'
-        }
+        { key: 'ajudaAlimentar', label: 'Ajuda ao se alimentar?' },
+        { key: 'possuiRestricoes', label: 'Possui restrições?' }
       ]
     }
   },
@@ -310,10 +285,7 @@ export default {
         return params.id
       }
 
-      if (
-        params.residenteId !== undefined &&
-        params.residenteId !== ''
-      ) {
+      if (params.residenteId !== undefined && params.residenteId !== '') {
         return params.residenteId
       }
 
@@ -321,10 +293,7 @@ export default {
         return query.id
       }
 
-      if (
-        query.residenteId !== undefined &&
-        query.residenteId !== ''
-      ) {
+      if (query.residenteId !== undefined && query.residenteId !== '') {
         return query.residenteId
       }
 
@@ -378,11 +347,7 @@ export default {
     async carregarDados() {
       const id = this.idResidente
 
-      if (
-        id === null ||
-        id === undefined ||
-        id === ''
-      ) {
+      if (id === null || id === undefined || id === '') {
         this.mostrarMensagem(
           'Não foi possível identificar o residente.',
           'erro'
@@ -391,39 +356,24 @@ export default {
       }
 
       try {
-        const respostaResidente = await api.get(
-          `/residentes/${id}/`
-        )
+        const respostaResidente = await api.get(`/residentes/${id}/`)
 
-        this.residente.nome =
-          respostaResidente.data?.nome || ''
+        this.residente.nome = respostaResidente.data?.nome || ''
 
-        const respostaCuidados = await api.get(
-          '/cuidadospessoais/'
-        )
+        const respostaCuidados = await api.get('/cuidadospessoais/')
 
         let lista = respostaCuidados.data
 
         if (!Array.isArray(lista)) {
-          lista =
-            respostaCuidados.data?.results || []
+          lista = respostaCuidados.data?.results || []
         }
 
         const cuidado = lista.find(item => {
-          if (
-            item.residente &&
-            typeof item.residente === 'object'
-          ) {
-            return (
-              Number(item.residente.id) ===
-              Number(id)
-            )
+          if (item.residente && typeof item.residente === 'object') {
+            return Number(item.residente.id) === Number(id)
           }
 
-          return (
-            Number(item.residente) ===
-            Number(id)
-          )
+          return Number(item.residente) === Number(id)
         })
 
         if (!cuidado) {
@@ -433,57 +383,31 @@ export default {
 
         this.cuidadosId = cuidado.id
 
-        this.cuidados.higiene.ajudaBanho =
-          cuidado.ajuda_banho ?? null
+        this.cuidados.higiene.ajudaBanho = cuidado.ajuda_banho ?? null
+        this.cuidados.higiene.ajudaHigieneIntima = cuidado.ajuda_higiene_intima ?? null
+        this.cuidados.higiene.ajudaHigieneBucal = cuidado.ajuda_higiene_bucal ?? null
+        this.cuidados.higiene.ajudaUsarBanheiro = cuidado.ajuda_usar_banheiro ?? null
+        this.cuidados.higiene.ajudaVestirRoupas = cuidado.ajuda_vestir_roupas ?? null
 
-        this.cuidados.higiene.ajudaHigieneIntima =
-          cuidado.ajuda_higiene_intima ?? null
+        this.cuidados.locomocao.ajudaLocomocao = cuidado.ajuda_locomocao ?? null
+        this.cuidados.locomocao.riscoQueda = cuidado.risco_queda ?? null
 
-        this.cuidados.higiene.ajudaHigieneBucal =
-          cuidado.ajuda_higiene_bucal ?? null
+        this.cuidados.alimentacao.ajudaAlimentar = cuidado.ajuda_alimentar ?? null
+        this.cuidados.alimentacao.possuiRestricoes = cuidado.possui_restricoes ?? null
 
-        this.cuidados.higiene.ajudaUsarBanheiro =
-          cuidado.ajuda_usar_banheiro ?? null
-
-        this.cuidados.higiene.ajudaVestirRoupas =
-          cuidado.ajuda_vestir_roupas ?? null
-
-        this.cuidados.locomocao.ajudaLocomocao =
-          cuidado.ajuda_locomocao ?? null
-
-        this.cuidados.locomocao.riscoQueda =
-          cuidado.risco_queda ?? null
-
-        this.cuidados.alimentacao.ajudaAlimentar =
-          cuidado.ajuda_alimentar ?? null
-
-        this.cuidados.alimentacao.possuiRestricoes =
-          cuidado.possui_restricoes ?? null
-
-        this.cuidados.observacoes =
-          cuidado.observacoes || ''
+        this.cuidados.observacoes = cuidado.observacoes || ''
 
       } catch (erro) {
-        console.error(
-          'ERRO AO CARREGAR:',
-          erro.response?.data || erro
-        )
+        console.error('ERRO AO CARREGAR:', erro.response?.data || erro)
 
-        this.mostrarMensagem(
-          'Erro ao carregar os dados.',
-          'erro'
-        )
+        this.mostrarMensagem('Erro ao carregar os dados.', 'erro')
       }
     },
 
     async salvarDados() {
       const id = this.idResidente
 
-      if (
-        id === null ||
-        id === undefined ||
-        id === ''
-      ) {
+      if (id === null || id === undefined || id === '') {
         this.mostrarMensagem(
           'Não foi possível identificar o residente.',
           'erro'
@@ -501,35 +425,19 @@ export default {
       const dados = {
         residente: Number(id),
 
-        ajuda_banho:
-          this.cuidados.higiene.ajudaBanho,
+        ajuda_banho: this.cuidados.higiene.ajudaBanho,
+        ajuda_higiene_intima: this.cuidados.higiene.ajudaHigieneIntima,
+        ajuda_higiene_bucal: this.cuidados.higiene.ajudaHigieneBucal,
+        ajuda_usar_banheiro: this.cuidados.higiene.ajudaUsarBanheiro,
+        ajuda_vestir_roupas: this.cuidados.higiene.ajudaVestirRoupas,
 
-        ajuda_higiene_intima:
-          this.cuidados.higiene.ajudaHigieneIntima,
+        ajuda_locomocao: this.cuidados.locomocao.ajudaLocomocao,
+        risco_queda: this.cuidados.locomocao.riscoQueda,
 
-        ajuda_higiene_bucal:
-          this.cuidados.higiene.ajudaHigieneBucal,
+        ajuda_alimentar: this.cuidados.alimentacao.ajudaAlimentar,
+        possui_restricoes: this.cuidados.alimentacao.possuiRestricoes,
 
-        ajuda_usar_banheiro:
-          this.cuidados.higiene.ajudaUsarBanheiro,
-
-        ajuda_vestir_roupas:
-          this.cuidados.higiene.ajudaVestirRoupas,
-
-        ajuda_locomocao:
-          this.cuidados.locomocao.ajudaLocomocao,
-
-        risco_queda:
-          this.cuidados.locomocao.riscoQueda,
-
-        ajuda_alimentar:
-          this.cuidados.alimentacao.ajudaAlimentar,
-
-        possui_restricoes:
-          this.cuidados.alimentacao.possuiRestricoes,
-
-        observacoes:
-          this.cuidados.observacoes
+        observacoes: this.cuidados.observacoes
       }
 
       try {
@@ -541,52 +449,37 @@ export default {
             dados
           )
         } else {
-          resposta = await api.post(
-            '/cuidadospessoais/',
-            dados
-          )
+          resposta = await api.post('/cuidadospessoais/', dados)
 
           if (resposta.data?.id) {
-            this.cuidadosId =
-              resposta.data.id
+            this.cuidadosId = resposta.data.id
           }
         }
 
         this.editando = false
 
-        this.mostrarMensagem(
-          'Dados salvos com sucesso!',
-          'sucesso'
-        )
+        this.mostrarMensagem('Dados salvos com sucesso!', 'sucesso')
 
       } catch (erro) {
-        console.error(
-          'ERRO AO SALVAR:',
-          erro.response?.data || erro
-        )
+        console.error('ERRO AO SALVAR:', erro.response?.data || erro)
 
-        const erroApi =
-          erro.response?.data
+        const erroApi = erro.response?.data
 
-        let mensagemErro =
-          'Não foi possível salvar os dados.'
+        let mensagemErro = 'Não foi possível salvar os dados.'
 
         if (erroApi) {
           if (typeof erroApi === 'string') {
             mensagemErro = erroApi
-          } else if (
-            typeof erroApi === 'object'
-          ) {
-            const mensagens =
-              Object.entries(erroApi)
-                .map(([campo, valor]) => {
-                  if (Array.isArray(valor)) {
-                    return `${campo}: ${valor.join(', ')}`
-                  }
+          } else if (typeof erroApi === 'object') {
+            const mensagens = Object.entries(erroApi)
+              .map(([campo, valor]) => {
+                if (Array.isArray(valor)) {
+                  return `${campo}: ${valor.join(', ')}`
+                }
 
-                  return `${campo}: ${valor}`
-                })
-                .join(' | ')
+                return `${campo}: ${valor}`
+              })
+              .join(' | ')
 
             if (mensagens) {
               mensagemErro = mensagens
@@ -596,10 +489,7 @@ export default {
 
         this.editando = true
 
-        this.mostrarMensagem(
-          mensagemErro,
-          'erro'
-        )
+        this.mostrarMensagem(mensagemErro, 'erro')
 
       } finally {
         this.salvando = false
@@ -611,64 +501,66 @@ export default {
 
 <style scoped>
 .cuidados-container {
-  min-height: 100vh;
   width: 100%;
   background-color: #2c5a34;
   color: #fff;
-  padding: 28px 40px 50px;
+  padding: 28px 40px 32px;
   box-sizing: border-box;
   font-family: 'Segoe UI', sans-serif;
 }
 
 .topo {
   width: 100%;
+  max-width: 1000px;
+  margin: 0 auto 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 30px;
-  margin-bottom: 45px;
+  gap: 20px;
 }
 
 .titulo-area {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   min-width: 0;
 }
 
 .avatar-placeholder {
-  width: 56px;
-  height: 56px;
-  min-width: 56px;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
   border-radius: 50%;
   background: #d9d9d9;
 }
 
 .card-title {
   background: #24492b;
-  padding: 10px 16px;
-  border-radius: 4px;
-  font-size: 1.1rem;
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-size: 1.05rem;
+  font-weight: 700;
   margin: 0;
   white-space: nowrap;
 }
 
 .btn-editar {
   flex-shrink: 0;
-  background: #24492b;
+  background: #7bb662;
   color: #fff;
   border: none;
-  padding: 10px 18px;
-  border-radius: 4px;
-  font-weight: bold;
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-weight: 700;
   cursor: pointer;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
   white-space: nowrap;
   transition: filter 0.15s ease, opacity 0.15s ease;
 }
 
 .btn-editar:hover:not(:disabled) {
-  filter: brightness(1.15);
+  filter: brightness(1.1);
 }
 
 .btn-editar:disabled {
@@ -678,31 +570,32 @@ export default {
 
 .grid-sections {
   width: 100%;
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  column-gap: 45px;
+  column-gap: 36px;
   align-items: start;
 }
 
 .coluna {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
 }
 
 .box {
   width: 100%;
   border: 2px solid #fff;
-  border-radius: 16px;
-  padding: 20px;
+  border-radius: 14px;
+  padding: 16px 20px;
   box-sizing: border-box;
 }
 
 .box h2 {
   margin: 0;
-  font-size: 1rem;
+  font-size: 0.95rem;
+  font-weight: 700;
   line-height: 1.2;
 }
 
@@ -710,27 +603,32 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 20px;
-  margin-bottom: 15px;
+  gap: 18px;
+  margin-bottom: 8px;
 }
 
 .col-labels {
   display: flex;
-  gap: 22px;
-  font-weight: bold;
-  font-size: 0.85rem;
+  gap: 18px;
+  font-weight: 700;
+  font-size: 0.8rem;
   flex-shrink: 0;
+}
+
+.col-labels span {
+  width: 18px;
+  text-align: center;
 }
 
 .check-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
-  min-height: 36px;
-  font-size: 0.85rem;
-  font-weight: bold;
-  padding: 7px 0;
+  gap: 18px;
+  min-height: 30px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 5px 0;
 }
 
 .check-row > span {
@@ -739,20 +637,33 @@ export default {
 
 .check-pair {
   display: flex;
-  gap: 22px;
+  gap: 18px;
   flex-shrink: 0;
 }
 
 .check-box {
-  width: 21px;
-  height: 21px;
-  min-width: 21px;
-  border: 2px solid #fff;
-  border-radius: 6px;
-  background: transparent;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  display: block;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  min-height: 16px;
+  max-width: 16px;
+  max-height: 16px;
+  flex: 0 0 auto;
+  aspect-ratio: 1 / 1;
+  border: 1.5px solid #fff;
+  border-radius: 3px;
+  background-color: transparent;
   cursor: pointer;
   padding: 0;
+  margin: 0;
   box-sizing: border-box;
+  outline: none;
+  line-height: 0;
+  font-size: 0;
   transition: background 0.15s ease, border-color 0.15s ease;
 }
 
@@ -761,8 +672,8 @@ export default {
 }
 
 .check-box.active {
-  background: #4caf50;
-  border-color: #4caf50;
+  background: #7bb662;
+  border-color: #7bb662;
 }
 
 .check-box:disabled {
@@ -770,28 +681,40 @@ export default {
   opacity: 0.65;
 }
 
+.box-observacoes {
+  width: 100%;
+  max-width: 1000px;
+  box-sizing: border-box;
+  margin: 20px auto 0;
+}
+
 .box-observacoes h2 {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 textarea {
   display: block;
   width: 100%;
-  min-height: 125px;
+  min-height: 80px;
   box-sizing: border-box;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
   border-radius: 8px;
-  border: 2px solid #fff;
-  padding: 10px;
+  padding: 10px 12px;
   font-family: inherit;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   resize: vertical;
   background: transparent;
   color: #fff;
   outline: none;
+  transition: border-color 0.15s ease;
+}
+
+textarea:not(:disabled) {
+  cursor: text;
 }
 
 textarea:focus {
-  border-color: #8fcf96;
+  border-color: rgba(255, 255, 255, 0.6);
 }
 
 textarea::placeholder {
@@ -801,6 +724,15 @@ textarea::placeholder {
 textarea:disabled {
   opacity: 0.7;
   cursor: default;
+}
+
+.rodape-divisor {
+  width: 100vw;
+  height: 10px;
+  background: #fff;
+  margin-top: 32px;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
 }
 
 .mensagem {
@@ -827,54 +759,41 @@ textarea:disabled {
 
 @media (max-width: 900px) {
   .cuidados-container {
-    padding: 25px;
-  }
-
-  .topo {
-    margin-bottom: 35px;
+    padding: 20px;
   }
 
   .grid-sections {
     max-width: 100%;
-    column-gap: 25px;
+    column-gap: 20px;
   }
 }
 
 @media (max-width: 768px) {
-  .cuidados-container {
-    padding: 20px;
-  }
-
   .topo {
     align-items: flex-start;
-    margin-bottom: 30px;
-  }
-
-  .titulo-area {
-    min-width: 0;
   }
 
   .card-title {
     white-space: normal;
-    font-size: 1rem;
+    font-size: 0.85rem;
   }
 
   .grid-sections {
     grid-template-columns: 1fr;
     column-gap: 0;
-    row-gap: 30px;
+    row-gap: 20px;
   }
 }
 
 @media (max-width: 480px) {
   .cuidados-container {
-    padding: 16px;
+    padding: 14px;
   }
 
   .topo {
     flex-direction: column;
     align-items: stretch;
-    gap: 15px;
+    gap: 12px;
   }
 
   .btn-editar {
@@ -882,35 +801,26 @@ textarea:disabled {
   }
 
   .avatar-placeholder {
-    width: 48px;
-    height: 48px;
-    min-width: 48px;
-  }
-
-  .card-title {
-    font-size: 0.9rem;
-    padding: 9px 12px;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
   }
 
   .box {
-    padding: 16px;
-  }
-
-  .box-header {
-    gap: 12px;
+    padding: 12px;
   }
 
   .col-labels {
-    gap: 14px;
+    gap: 10px;
   }
 
   .check-pair {
-    gap: 14px;
+    gap: 10px;
   }
 
   .check-row {
-    gap: 12px;
-    font-size: 0.8rem;
+    gap: 10px;
+    font-size: 0.72rem;
   }
 }
 </style>
