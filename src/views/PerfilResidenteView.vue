@@ -17,6 +17,45 @@ const residente = ref(null)
 const carregando = ref(false)
 const erro = ref('')
 
+// A API pode devolver datas como "AAAA-MM-DD" ou datetime ISO completo;
+// fatiamos a parte da data para evitar deslocamento de fuso horário.
+function formatarData(valor) {
+  if (!valor) return '—'
+
+  const [ano, mes, dia] = String(valor).slice(0, 10).split('-')
+
+  if (!ano || !mes || !dia) return valor
+
+  return `${dia}/${mes}/${ano}`
+}
+
+function calcularIdade(dataNascimento) {
+  if (!dataNascimento) return null
+
+  const [ano, mes, dia] = String(dataNascimento).slice(0, 10).split('-').map(Number)
+
+  if (!ano || !mes || !dia) return null
+
+  const hoje = new Date()
+  let idade = hoje.getFullYear() - ano
+  const aniversarioPassou =
+    hoje.getMonth() + 1 > mes || (hoje.getMonth() + 1 === mes && hoje.getDate() >= dia)
+
+  if (!aniversarioPassou) idade -= 1
+
+  return idade >= 0 ? idade : null
+}
+
+// A API devolve o grau como texto ("grau_1", "grau_2", "grau_3");
+// extraímos o número para tolerar também o formato numérico.
+function numeroGrau(grau) {
+  if (grau === null || grau === undefined) return null
+
+  const numero = parseInt(String(grau).replace(/\D/g, ''), 10)
+
+  return Number.isNaN(numero) ? null : numero
+}
+
 async function buscarResidente() {
   carregando.value = true
   erro.value = ''
@@ -43,83 +82,56 @@ onMounted(buscarResidente)
 
 <template>
   <main class="perfil-residente">
-
     <p v-if="erro" class="msg-erro">{{ erro }}</p>
 
-    <div v-if="carregando" class="msg-carregando">
-      Carregando dados do residente...
-    </div>
+    <div v-if="carregando" class="msg-carregando">Carregando dados do residente...</div>
 
     <template v-else-if="residente">
-
       <section class="perfil-painel">
-
         <div class="perfil-conteudo">
-
           <div class="grupo-foto">
-
-            <div
-              class="perfil-foto"
-              :class="{ 'perfil-foto--vazia': !residente.foto }"
-            >
-              <img
-                v-if="!!residente.foto"
-                :src="residente.foto.url"
-                class="perfil-img"
-              />
+            <div class="perfil-foto" :class="{ 'perfil-foto--vazia': !residente.foto }">
+              <img v-if="!!residente.foto" :src="residente.foto.url" class="perfil-img" />
             </div>
 
-            <button
-              class="btn-editar"
-              @click="irPara('editarresidente')"
-            >
-              EDITAR DADOS
-            </button>
-
+            <button class="btn-editar" @click="irPara('editarresidente')">EDITAR DADOS</button>
           </div>
 
           <div class="grupo-conteudo">
-
             <div class="grupo-informacoes">
-
               <div class="perfil-dados">
-
                 <h1 class="residente-nome">
                   {{ residente.nome_completo }}
                 </h1>
 
                 <p class="dado-linha">
                   <strong>Nascimento:</strong>
-                  {{ residente.data_nascimento }}
+                  {{ formatarData(residente.data_nascimento) }}
                 </p>
 
                 <p class="dado-linha">
                   <strong>Idade:</strong>
-                  {{ residente.idade }} anos
+                  {{ calcularIdade(residente.data_nascimento) ?? '—' }} anos
                 </p>
 
                 <p class="dado-linha">
                   <strong>Data de Entrada:</strong>
-                  {{ residente.data_entrada }}
+                  {{ formatarData(residente.data_admissao) }}
                 </p>
 
                 <p class="dado-linha">
                   <strong>Quarto:</strong>
                   {{ residente.quarto }}
                 </p>
-
               </div>
 
               <div class="perfil-dependencia">
-
-                <h2 class="dependencia-titulo">
-                  Grau de Dependência:
-                </h2>
+                <h2 class="dependencia-titulo">Grau de Dependência:</h2>
 
                 <div class="dependencia-item">
                   <span
                     class="dependencia-marcador"
-                    :class="{ ativo: residente.grau_dependencia === 1 }"
+                    :class="{ ativo: numeroGrau(residente.grau_dependencia) === 1 }"
                   ></span>
 
                   Grau 1 - Independente
@@ -128,7 +140,7 @@ onMounted(buscarResidente)
                 <div class="dependencia-item">
                   <span
                     class="dependencia-marcador"
-                    :class="{ ativo: residente.grau_dependencia === 2 }"
+                    :class="{ ativo: numeroGrau(residente.grau_dependencia) === 2 }"
                   ></span>
 
                   Grau 2 - Necessita auxílio parcial
@@ -137,24 +149,16 @@ onMounted(buscarResidente)
                 <div class="dependencia-item">
                   <span
                     class="dependencia-marcador"
-                    :class="{ ativo: residente.grau_dependencia === 3 }"
+                    :class="{ ativo: numeroGrau(residente.grau_dependencia) === 3 }"
                   ></span>
 
                   Grau 3 - Dependência total
                 </div>
-
               </div>
-
             </div>
 
             <nav class="perfil-menu">
-
-              <button
-                class="btn-menu"
-                @click="irPara('dadosmedicos')"
-              >
-                DADOS MÉDICOS
-              </button>
+              <button class="btn-menu" @click="irPara('dadosmedicos')">DADOS MÉDICOS</button>
 
               <button
                 class="btn-menu"
@@ -163,46 +167,27 @@ onMounted(buscarResidente)
                 CONTATOS
               </button>
 
-              <button
-                class="btn-menu"
-                @click="irPara('cuidadospessoais')"
-              >
+              <button class="btn-menu" @click="irPara('cuidadospessoais')">
                 CUIDADOS PESSOAIS
               </button>
 
-              <button
-                class="btn-menu"
-                @click="irPara('historico')"
-              >
-                HISTÓRICO
-              </button>
+              <button class="btn-menu" @click="irPara('historico')">HISTÓRICO</button>
 
-              <button
-                class="btn-menu"
-                @click="irPara('calendario')"
-              >
-                CALENDÁRIO
-              </button>
+              <button class="btn-menu" @click="irPara('calendario')">CALENDÁRIO</button>
 
-              <button
-                class="btn-menu"
-                @click="irPara('nutricao')"
-              >
-                NUTRIÇÃO
-              </button>
-
+              <button class="btn-menu" @click="irPara('nutricao')">NUTRIÇÃO</button>
             </nav>
 
+            <div class="observacoes-box">
+              <span class="label">Observações:</span>
+              <p class="observacoes-texto">{{ residente.observacoes || '—' }}</p>
+            </div>
           </div>
-
         </div>
-
       </section>
-
     </template>
 
     <div class="linha-divisoria"></div>
-
   </main>
 </template>
 
@@ -284,7 +269,9 @@ onMounted(buscarResidente)
   padding: 12px 0;
   border-radius: 7px;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .btn-editar:hover {
@@ -388,12 +375,38 @@ onMounted(buscarResidente)
   border-radius: 8px;
   padding: 14px 12px;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .btn-menu:hover {
   background-color: #7caf49;
   transform: translateY(-1px);
+}
+
+/* Caixa de observações: mesmo tratamento visual usado na tela de
+   contatos, movida para o perfil do residente. */
+.observacoes-box {
+  border: 1.5px solid #ffffff;
+  border-radius: 8px;
+  padding: 16px 20px;
+  min-height: 110px;
+  color: #ffffff;
+}
+
+.observacoes-box .label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.observacoes-texto {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 400;
+  color: #f0f0f0;
+  white-space: pre-line;
 }
 
 .linha-divisoria {

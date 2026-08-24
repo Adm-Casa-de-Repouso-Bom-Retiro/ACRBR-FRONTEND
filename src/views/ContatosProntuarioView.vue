@@ -41,7 +41,7 @@ function formatarParentesco(valor) {
 const fotoUrl = computed(() => residente.value?.foto?.url || '')
 
 const temResponsavelSecundario = computed(
-  () => !!(residente.value?.nome_responsavel_2 || residente.value?.telefone_responsavel_2)
+  () => !!(residente.value?.nome_responsavel_2 || residente.value?.telefone_responsavel_2),
 )
 
 async function buscarResidente() {
@@ -78,10 +78,7 @@ onMounted(buscarResidente)
       <section v-else-if="residente" class="contatos-painel">
         <div class="contatos-card">
           <div class="foto-coluna">
-            <div
-              class="foto-box"
-              :style="fotoUrl ? { backgroundImage: `url(${fotoUrl})` } : {}"
-            >
+            <div class="foto-box" :style="fotoUrl ? { backgroundImage: `url(${fotoUrl})` } : {}">
               <svg
                 v-if="!fotoUrl"
                 class="icone-foto-vazia"
@@ -142,16 +139,13 @@ onMounted(buscarResidente)
 
                   <p class="linha-info">
                     <span class="label">Telefone:</span>
-                    <span class="valor">{{ formatarTelefone(residente.telefone_responsavel_2) }}</span>
+                    <span class="valor">{{
+                      formatarTelefone(residente.telefone_responsavel_2)
+                    }}</span>
                   </p>
                 </div>
               </div>
             </template>
-
-            <div class="observacoes-box">
-              <span class="label">Observações:</span>
-              <p class="observacoes-texto">{{ residente.observacoes || '—' }}</p>
-            </div>
           </div>
         </div>
       </section>
@@ -239,7 +233,7 @@ onMounted(buscarResidente)
 
 .btn-editar {
   width: 100%;
-  background: #6BA13F;
+  background: #6ba13f;
   color: #ffffff;
   border: none;
   padding: 12px 0;
@@ -248,7 +242,9 @@ onMounted(buscarResidente)
   font-weight: 700;
   letter-spacing: 0.5px;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.15s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
 }
 
 .btn-editar:hover {
@@ -269,7 +265,7 @@ onMounted(buscarResidente)
   align-items: center;
   gap: 10px;
   align-self: flex-start;
-  background: #6BA13F;
+  background: #6ba13f;
   color: #ffffff;
   font-size: 18px;
   font-weight: 700;
@@ -311,28 +307,6 @@ onMounted(buscarResidente)
   margin: 4px 0;
 }
 
-.observacoes-box {
-  margin-top: auto;
-  border: 1.5px solid #ffffff;
-  border-radius: 8px;
-  padding: 16px 20px;
-  min-height: 130px;
-  color: #ffffff;
-}
-
-.observacoes-box .label {
-  display: block;
-  margin-bottom: 8px;
-}
-
-.observacoes-texto {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 400;
-  color: #f0f0f0;
-  white-space: pre-line;
-}
-
 .linha-divisoria {
   height: 8px;
   background: #ffffff;
@@ -366,10 +340,6 @@ onMounted(buscarResidente)
   .linha-dupla {
     flex-direction: column;
     gap: 10px;
-  }
-
-  .observacoes-box {
-    min-height: 100px;
   }
 }
 </style>

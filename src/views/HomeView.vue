@@ -149,6 +149,7 @@
 
 .hero-image {
   height: 460px;
+  margin-right: 100px;
   object-fit: contain;
   filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.15));
 }
