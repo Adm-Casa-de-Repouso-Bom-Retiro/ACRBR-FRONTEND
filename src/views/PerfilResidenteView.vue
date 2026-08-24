@@ -52,148 +52,152 @@ onMounted(buscarResidente)
 
     <template v-else-if="residente">
 
-      <div class="perfil-conteudo">
+      <section class="perfil-painel">
 
-        <div class="grupo-foto">
+        <div class="perfil-conteudo">
 
-          <div
-            class="perfil-foto"
-            :class="{ 'perfil-foto--vazia': !residente.foto }"
-          >
-            <img
-              v-if="!!residente.foto"
-              :src="residente.foto.url"
-              class="perfil-img"
-            />
-          </div>
+          <div class="grupo-foto">
 
-          <button
-            class="btn-editar"
-            @click="irPara('editarresidente')"
-          >
-            EDITAR DADOS
-          </button>
-
-        </div>
-
-        <div class="grupo-conteudo">
-
-          <div class="grupo-informacoes">
-
-            <div class="perfil-dados">
-
-              <h1 class="residente-nome">
-                {{ residente.nome_completo }}
-              </h1>
-
-              <p class="dado-linha">
-                <strong>Nascimento:</strong>
-                {{ residente.data_nascimento }}
-              </p>
-
-              <p class="dado-linha">
-                <strong>Idade:</strong>
-                {{ residente.idade }} anos
-              </p>
-
-              <p class="dado-linha">
-                <strong>Data de Entrada:</strong>
-                {{ residente.data_entrada }}
-              </p>
-
-              <p class="dado-linha">
-                <strong>Quarto:</strong>
-                {{ residente.quarto }}
-              </p>
-
+            <div
+              class="perfil-foto"
+              :class="{ 'perfil-foto--vazia': !residente.foto }"
+            >
+              <img
+                v-if="!!residente.foto"
+                :src="residente.foto.url"
+                class="perfil-img"
+              />
             </div>
 
-            <div class="perfil-dependencia">
-
-              <h2 class="dependencia-titulo">
-                Grau de Dependência:
-              </h2>
-
-              <div class="dependencia-item">
-                <span
-                  class="dependencia-marcador"
-                  :class="{ ativo: residente.grau_dependencia === 1 }"
-                ></span>
-
-                Grau 1 - Independente
-              </div>
-
-              <div class="dependencia-item">
-                <span
-                  class="dependencia-marcador"
-                  :class="{ ativo: residente.grau_dependencia === 2 }"
-                ></span>
-
-                Grau 2 - Necessita auxílio parcial
-              </div>
-
-              <div class="dependencia-item">
-                <span
-                  class="dependencia-marcador"
-                  :class="{ ativo: residente.grau_dependencia === 3 }"
-                ></span>
-
-                Grau 3 - Dependência total
-              </div>
-
-            </div>
+            <button
+              class="btn-editar"
+              @click="irPara('editarresidente')"
+            >
+              EDITAR DADOS
+            </button>
 
           </div>
 
-          <nav class="perfil-menu">
+          <div class="grupo-conteudo">
 
-            <button
-              class="btn-menu"
-              @click="irPara('dadosmedicos')"
-            >
-              DADOS MÉDICOS
-            </button>
+            <div class="grupo-informacoes">
 
-            <button
-              class="btn-menu"
-              @click="irPara('contatosprontuario', { params: { id: residente.id } })"
-            >
-              CONTATOS
-            </button>
+              <div class="perfil-dados">
 
-            <button
-              class="btn-menu"
-              @click="irPara('cuidadospessoais')"
-            >
-              CUIDADOS PESSOAIS
-            </button>
+                <h1 class="residente-nome">
+                  {{ residente.nome_completo }}
+                </h1>
 
-            <button
-              class="btn-menu"
-              @click="irPara('historico')"
-            >
-              HISTÓRICO
-            </button>
+                <p class="dado-linha">
+                  <strong>Nascimento:</strong>
+                  {{ residente.data_nascimento }}
+                </p>
 
-            <button
-              class="btn-menu"
-              @click="irPara('calendario')"
-            >
-              CALENDÁRIO
-            </button>
+                <p class="dado-linha">
+                  <strong>Idade:</strong>
+                  {{ residente.idade }} anos
+                </p>
 
-            <button
-              class="btn-menu"
-              @click="irPara('nutricao')"
-            >
-              NUTRIÇÃO
-            </button>
+                <p class="dado-linha">
+                  <strong>Data de Entrada:</strong>
+                  {{ residente.data_entrada }}
+                </p>
 
-          </nav>
+                <p class="dado-linha">
+                  <strong>Quarto:</strong>
+                  {{ residente.quarto }}
+                </p>
+
+              </div>
+
+              <div class="perfil-dependencia">
+
+                <h2 class="dependencia-titulo">
+                  Grau de Dependência:
+                </h2>
+
+                <div class="dependencia-item">
+                  <span
+                    class="dependencia-marcador"
+                    :class="{ ativo: residente.grau_dependencia === 1 }"
+                  ></span>
+
+                  Grau 1 - Independente
+                </div>
+
+                <div class="dependencia-item">
+                  <span
+                    class="dependencia-marcador"
+                    :class="{ ativo: residente.grau_dependencia === 2 }"
+                  ></span>
+
+                  Grau 2 - Necessita auxílio parcial
+                </div>
+
+                <div class="dependencia-item">
+                  <span
+                    class="dependencia-marcador"
+                    :class="{ ativo: residente.grau_dependencia === 3 }"
+                  ></span>
+
+                  Grau 3 - Dependência total
+                </div>
+
+              </div>
+
+            </div>
+
+            <nav class="perfil-menu">
+
+              <button
+                class="btn-menu"
+                @click="irPara('dadosmedicos')"
+              >
+                DADOS MÉDICOS
+              </button>
+
+              <button
+                class="btn-menu"
+                @click="irPara('contatosprontuario', { params: { id: residente.id } })"
+              >
+                CONTATOS
+              </button>
+
+              <button
+                class="btn-menu"
+                @click="irPara('cuidadospessoais')"
+              >
+                CUIDADOS PESSOAIS
+              </button>
+
+              <button
+                class="btn-menu"
+                @click="irPara('historico')"
+              >
+                HISTÓRICO
+              </button>
+
+              <button
+                class="btn-menu"
+                @click="irPara('calendario')"
+              >
+                CALENDÁRIO
+              </button>
+
+              <button
+                class="btn-menu"
+                @click="irPara('nutricao')"
+              >
+                NUTRIÇÃO
+              </button>
+
+            </nav>
+
+          </div>
 
         </div>
 
-      </div>
+      </section>
 
     </template>
 
@@ -210,9 +214,9 @@ onMounted(buscarResidente)
 .perfil-residente {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  gap: 45px;
-  padding: 55px 70px 0 70px;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 70px 68px 70px;
   background: #2e5d2e;
   position: relative;
   min-height: 0;
@@ -227,17 +231,25 @@ onMounted(buscarResidente)
   color: #ffffff;
   font-size: 18px;
   text-align: center;
-  margin-top: 50px;
+}
+
+/* Painel: dá ao conteúdo um limite visual definido em vez de
+   texto solto sobre o fundo verde, e ocupa proporcionalmente
+   o espaço disponível na tela. */
+.perfil-painel {
+  width: 100%;
+  max-width: 1180px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+  padding: 56px 64px;
 }
 
 .perfil-conteudo {
   display: flex;
-  gap: 55px;
+  gap: 70px;
   align-items: flex-start;
-  justify-content: center;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .grupo-foto {
@@ -249,8 +261,8 @@ onMounted(buscarResidente)
 }
 
 .perfil-foto {
-  width: 240px;
-  height: 264px;
+  width: 260px;
+  height: 290px;
   border-radius: 14px;
   background: #d9d9d9;
   overflow: hidden;
@@ -263,41 +275,52 @@ onMounted(buscarResidente)
 }
 
 .btn-editar {
+  width: 100%;
   background: #ffffff;
   border: none;
   color: #2e5d2e;
   font-weight: 600;
   font-size: 13px;
-  padding: 11px 47px;
+  padding: 12px 0;
   border-radius: 7px;
   cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-editar:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
 }
 
 .grupo-conteudo {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 }
 
 .grupo-informacoes {
   display: flex;
-  gap: 65px;
+  gap: 80px;
   align-items: flex-start;
 }
 
 .perfil-dados {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   padding-top: 5px;
-  width: 280px;
-  flex-shrink: 0;
+  flex: 1;
+  min-width: 0;
 }
 
 .residente-nome {
   color: #ffffff;
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 600;
-  margin: 11px 0 13px 0;
+  margin: 0 0 8px 0;
+  line-height: 1.15;
 }
 
 .dado-linha {
@@ -314,8 +337,9 @@ onMounted(buscarResidente)
 .perfil-dependencia {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding-top: 60px;
+  gap: 13px;
+  padding-top: 46px;
+  flex-shrink: 0;
 }
 
 .dependencia-titulo {
@@ -351,9 +375,8 @@ onMounted(buscarResidente)
 .perfil-menu {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px 12px;
-  width: 590px;
-  margin-top: 22px;
+  gap: 20px 18px;
+  width: 100%;
 }
 
 .btn-menu {
@@ -362,9 +385,8 @@ onMounted(buscarResidente)
   font-weight: 600;
   font-size: 13px;
   border: none;
-  border-radius: 7px;
-  padding: 9px 12px;
-  height: 36px;
+  border-radius: 8px;
+  padding: 14px 12px;
   cursor: pointer;
   transition: background-color 0.2s ease, transform 0.2s ease;
 }
@@ -381,5 +403,35 @@ onMounted(buscarResidente)
   position: absolute;
   bottom: 0;
   left: 0;
+}
+
+@media (max-width: 900px) {
+  .perfil-residente {
+    padding: 40px 24px 48px 24px;
+  }
+
+  .perfil-painel {
+    padding: 36px 28px;
+  }
+
+  .perfil-conteudo {
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .grupo-informacoes {
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+  }
+
+  .perfil-dependencia {
+    padding-top: 0;
+  }
+
+  .perfil-menu {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 </style>

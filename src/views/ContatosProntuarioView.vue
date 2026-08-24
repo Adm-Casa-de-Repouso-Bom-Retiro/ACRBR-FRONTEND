@@ -75,84 +75,86 @@ onMounted(buscarResidente)
 
       <div v-if="carregando" class="msg-carregando">Carregando dados do residente...</div>
 
-      <div v-else-if="residente" class="contatos-card">
-        <div class="foto-coluna">
-          <div
-            class="foto-box"
-            :style="fotoUrl ? { backgroundImage: `url(${fotoUrl})` } : {}"
-          >
-            <svg
-              v-if="!fotoUrl"
-              class="icone-foto-vazia"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+      <section v-else-if="residente" class="contatos-painel">
+        <div class="contatos-card">
+          <div class="foto-coluna">
+            <div
+              class="foto-box"
+              :style="fotoUrl ? { backgroundImage: `url(${fotoUrl})` } : {}"
             >
-              <path
-                d="M4 8a2 2 0 0 1 2-2h1.17a2 2 0 0 0 1.63-.84l.4-.57A2 2 0 0 1 10.8 3.6h2.4a2 2 0 0 1 1.6.98l.4.57A2 2 0 0 0 16.83 6H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z"
-                stroke="#ffffff"
-                stroke-width="1.4"
-              />
-              <circle cx="12" cy="13" r="3.2" stroke="#ffffff" stroke-width="1.4" />
-            </svg>
-          </div>
-
-          <button class="btn-editar" type="button" @click="editarDados">EDITAR DADOS</button>
-        </div>
-
-        <div class="info-coluna">
-          <div class="titulo-pill">
-            <span>Contatos - {{ residente.nome_completo }}</span>
-          </div>
-
-          <div class="bloco-responsavel">
-            <p class="linha-info">
-              <span class="label">Responsável:</span>
-              <span class="valor">{{ residente.nome_responsavel || '—' }}</span>
-            </p>
-
-            <div class="linha-dupla">
-              <p class="linha-info">
-                <span class="label">Grau de Parentesco:</span>
-                <span class="valor">{{ formatarParentesco(residente.parentesco) }}</span>
-              </p>
-
-              <p class="linha-info">
-                <span class="label">Telefone:</span>
-                <span class="valor">{{ formatarTelefone(residente.telefone_responsavel) }}</span>
-              </p>
+              <svg
+                v-if="!fotoUrl"
+                class="icone-foto-vazia"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4 8a2 2 0 0 1 2-2h1.17a2 2 0 0 0 1.63-.84l.4-.57A2 2 0 0 1 10.8 3.6h2.4a2 2 0 0 1 1.6.98l.4.57A2 2 0 0 0 16.83 6H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z"
+                  stroke="#ffffff"
+                  stroke-width="1.4"
+                />
+                <circle cx="12" cy="13" r="3.2" stroke="#ffffff" stroke-width="1.4" />
+              </svg>
             </div>
+
+            <button class="btn-editar" type="button" @click="editarDados">EDITAR DADOS</button>
           </div>
 
-          <template v-if="temResponsavelSecundario">
-            <div class="divisoria"></div>
+          <div class="info-coluna">
+            <div class="titulo-pill">
+              <span>Contatos - {{ residente.nome_completo }}</span>
+            </div>
 
             <div class="bloco-responsavel">
               <p class="linha-info">
-                <span class="label">Responsável Secundário:</span>
-                <span class="valor">{{ residente.nome_responsavel_2 || '—' }}</span>
+                <span class="label">Responsável:</span>
+                <span class="valor">{{ residente.nome_responsavel || '—' }}</span>
               </p>
 
               <div class="linha-dupla">
                 <p class="linha-info">
                   <span class="label">Grau de Parentesco:</span>
-                  <span class="valor">{{ formatarParentesco(residente.parentesco_2) }}</span>
+                  <span class="valor">{{ formatarParentesco(residente.parentesco) }}</span>
                 </p>
 
                 <p class="linha-info">
                   <span class="label">Telefone:</span>
-                  <span class="valor">{{ formatarTelefone(residente.telefone_responsavel_2) }}</span>
+                  <span class="valor">{{ formatarTelefone(residente.telefone_responsavel) }}</span>
                 </p>
               </div>
             </div>
-          </template>
 
-          <div class="observacoes-box">
-            <span class="label">Observações:</span>
-            <p class="observacoes-texto">{{ residente.observacoes || '—' }}</p>
+            <template v-if="temResponsavelSecundario">
+              <div class="divisoria"></div>
+
+              <div class="bloco-responsavel">
+                <p class="linha-info">
+                  <span class="label">Responsável Secundário:</span>
+                  <span class="valor">{{ residente.nome_responsavel_2 || '—' }}</span>
+                </p>
+
+                <div class="linha-dupla">
+                  <p class="linha-info">
+                    <span class="label">Grau de Parentesco:</span>
+                    <span class="valor">{{ formatarParentesco(residente.parentesco_2) }}</span>
+                  </p>
+
+                  <p class="linha-info">
+                    <span class="label">Telefone:</span>
+                    <span class="valor">{{ formatarTelefone(residente.telefone_responsavel_2) }}</span>
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            <div class="observacoes-box">
+              <span class="label">Observações:</span>
+              <p class="observacoes-texto">{{ residente.observacoes || '—' }}</p>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
     </main>
 
     <div class="linha-divisoria"></div>
@@ -173,9 +175,10 @@ onMounted(buscarResidente)
 .main-content {
   flex: 1;
   background: #2e5d2e;
-  padding: 40px 60px;
+  padding: 48px 60px 56px 60px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .msg-erro {
@@ -188,12 +191,23 @@ onMounted(buscarResidente)
   color: #ffffff;
   font-size: 14px;
   text-align: center;
-  margin-top: 40px;
+}
+
+/* Painel: mesmo tratamento de card usado no perfil do residente,
+   para que as duas telas leiam como parte do mesmo sistema. */
+.contatos-painel {
+  width: 100%;
+  max-width: 1080px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+  padding: 52px 58px;
 }
 
 .contatos-card {
   display: flex;
-  gap: 40px;
+  gap: 56px;
   align-items: flex-start;
 }
 
@@ -201,14 +215,14 @@ onMounted(buscarResidente)
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   flex-shrink: 0;
 }
 
 .foto-box {
-  width: 220px;
-  height: 240px;
-  border-radius: 8px;
+  width: 260px;
+  height: 290px;
+  border-radius: 10px;
   background-color: #d9d9d9;
   background-size: cover;
   background-position: center;
@@ -218,17 +232,18 @@ onMounted(buscarResidente)
 }
 
 .icone-foto-vazia {
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   opacity: 0.6;
 }
 
 .btn-editar {
+  width: 100%;
   background: #6BA13F;
   color: #ffffff;
   border: none;
-  padding: 10px 22px;
-  border-radius: 6px;
+  padding: 12px 0;
+  border-radius: 7px;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -237,7 +252,7 @@ onMounted(buscarResidente)
 }
 
 .btn-editar:hover {
-  background: #e8f0e8;
+  background: #7caf49;
   transform: translateY(-2px);
 }
 
@@ -245,7 +260,7 @@ onMounted(buscarResidente)
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 26px;
   min-width: 0;
 }
 
@@ -256,28 +271,22 @@ onMounted(buscarResidente)
   align-self: flex-start;
   background: #6BA13F;
   color: #ffffff;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.4px;
-  padding: 8px 22px;
-  border-radius: 5px;
-}
-
-.titulo-icone {
-  width: 18px;
-  height: 18px;
-  object-fit: contain;
+  padding: 10px 26px;
+  border-radius: 6px;
 }
 
 .bloco-responsavel {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 .linha-info {
   color: #ffffff;
-  font-size: 14px;
+  font-size: 15px;
   margin: 0;
 }
 
@@ -293,7 +302,7 @@ onMounted(buscarResidente)
 .linha-dupla {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px 60px;
+  gap: 12px 70px;
 }
 
 .divisoria {
@@ -306,14 +315,14 @@ onMounted(buscarResidente)
   margin-top: auto;
   border: 1.5px solid #ffffff;
   border-radius: 8px;
-  padding: 14px 18px;
-  min-height: 90px;
+  padding: 16px 20px;
+  min-height: 130px;
   color: #ffffff;
 }
 
 .observacoes-box .label {
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .observacoes-texto {
@@ -325,14 +334,18 @@ onMounted(buscarResidente)
 }
 
 .linha-divisoria {
-  height: 1vw;
+  height: 8px;
   background: #ffffff;
   width: 100%;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .main-content {
-    padding: 24px 20px;
+    padding: 28px 20px 40px 20px;
+  }
+
+  .contatos-painel {
+    padding: 32px 26px;
   }
 
   .contatos-card {
@@ -340,14 +353,23 @@ onMounted(buscarResidente)
     align-items: center;
   }
 
+  .foto-coluna {
+    width: 100%;
+    max-width: 260px;
+  }
+
   .foto-box {
-    width: 180px;
-    height: 200px;
+    width: 100%;
+    height: 220px;
   }
 
   .linha-dupla {
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+  }
+
+  .observacoes-box {
+    min-height: 100px;
   }
 }
 </style>
