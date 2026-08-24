@@ -1,26 +1,21 @@
 <template>
   <div class="contatos-page">
-    <div class="top-line"></div>
-
     <main class="main-content">
-      <div class="contatos-card">
-        <div class="card-titulo">
-          <img
-            src="/src/assets/images/icone-telefone.png"
-            alt="Ícone de telefone"
-            class="titulo-icone"
-          />
-          <span>Contatos</span>
+      <section class="contatos-painel">
+        <div class="titulo-pill">
+          <span>CONTATOS</span>
         </div>
 
         <p v-if="erro" class="msg-erro">{{ erro }}</p>
         <p v-if="sucesso" class="msg-sucesso">{{ sucesso }}</p>
 
         <form @submit.prevent="handleSubmit" class="contatos-form">
-          <div class="responsavel">
+          <div class="bloco-responsavel">
+            <span class="bloco-titulo">RESPONSÁVEL 1</span>
+
             <div class="linha-campos">
               <div class="form-group">
-                <label for="responsavel-1">RESPONSÁVEL 1:</label>
+                <label for="responsavel-1">NOME COMPLETO:</label>
                 <input
                   id="responsavel-1"
                   v-model="responsavel1"
@@ -42,7 +37,7 @@
               </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group campo-parentesco">
               <label for="grau-1">GRAU DE PARENTESCO:</label>
               <select id="grau-1" v-model="grauParentesco1" required>
                 <option value="" disabled>Selecione</option>
@@ -57,12 +52,14 @@
             </div>
           </div>
 
-          <div class="linha-divisoria"></div>
+          <div class="divisoria"></div>
 
-          <div class="responsavel">
+          <div class="bloco-responsavel">
+            <span class="bloco-titulo">RESPONSÁVEL 2 (OPCIONAL)</span>
+
             <div class="linha-campos">
               <div class="form-group">
-                <label for="responsavel-2">RESPONSÁVEL 2:</label>
+                <label for="responsavel-2">NOME COMPLETO:</label>
                 <input
                   id="responsavel-2"
                   v-model="responsavel2"
@@ -82,7 +79,7 @@
               </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group campo-parentesco">
               <label for="grau-2">GRAU DE PARENTESCO:</label>
               <select id="grau-2" v-model="grauParentesco2">
                 <option value="" disabled>Selecione</option>
@@ -103,8 +100,10 @@
             </button>
           </div>
         </form>
-      </div>
+      </section>
     </main>
+
+    <div class="linha-divisoria"></div>
   </div>
 </template>
 
@@ -115,8 +114,15 @@ import api from '@/services/api'
 import { useResidenteStore } from '@/stores/residente'
 
 const residenteStore = useResidenteStore()
-const { perfil, responsavel1, telefone1, grauParentesco1, responsavel2, telefone2, grauParentesco2 } =
-  storeToRefs(residenteStore)
+const {
+  perfil,
+  responsavel1,
+  telefone1,
+  grauParentesco1,
+  responsavel2,
+  telefone2,
+  grauParentesco2,
+} = storeToRefs(residenteStore)
 
 const erro = ref('')
 const sucesso = ref('')
@@ -199,47 +205,79 @@ async function handleSubmit() {
   box-sizing: border-box;
 }
 
-.top-line {
-  width: 100%;
-  height: 1.3vw;
-  background: #2e5d2e;
+.contatos-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
+  flex: 1;
+  background: #2e5d2e;
+  padding: 48px 60px 56px 60px;
   display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: flex-start;
-  padding: 40px 20px;
 }
 
-.contatos-card {
+/* Painel: mesmo tratamento de card usado no perfil do residente,
+   para que as duas telas leiam como parte do mesmo sistema. */
+.contatos-painel {
   width: 100%;
-  max-width: 70vw;
-  background: #ffffff;
-  border: 2px solid #3a7d44;
-  border-radius: 12px;
-  padding: 28px 36px 24px 36px;
+  max-width: 1080px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+  padding: 52px 58px;
 }
 
-.card-titulo {
+.titulo-pill {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: #3a7d44;
+  align-self: flex-start;
+  background: #6ba13f;
   color: #ffffff;
-  font-size: 20px;
+  font-size: 17px;
   font-weight: 700;
-  letter-spacing: 0.5px;
-  padding: 8px 20px;
-  border-radius: 30px;
+  letter-spacing: 0.4px;
+  padding: 10px 26px;
+  border-radius: 6px;
   margin-bottom: 28px;
 }
 
 .titulo-icone {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   object-fit: contain;
   filter: brightness(0) invert(1);
+}
+
+.msg-erro {
+  color: #ffdada;
+  font-size: 13px;
+  margin: 0 0 16px 0;
+}
+
+.msg-sucesso {
+  color: #d9f2c2;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0 0 16px 0;
+}
+
+.bloco-responsavel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.bloco-titulo {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
 }
 
 .linha-campos {
@@ -251,84 +289,86 @@ async function handleSubmit() {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  
+  gap: 6px;
 }
 
 .form-group label {
+  color: #ffffff;
   font-size: 12px;
   font-weight: 700;
-  color: #1e3e1e;
-  letter-spacing: 0.4px;
-  padding: 10px 0 10px 0;
-  font-size: 1rem;
-
+  letter-spacing: 0.6px;
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  height: 32px;
-  border: 1.2px solid #1e3e1e;
-  border-radius: 5px;
-  padding: 0 10px;
-  font-size: 13px;
-  color: #333333;
+  height: 38px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 0 12px;
+  font-family: inherit;
+  font-size: 14px;
+  color: #1e3e1e;
   background: #ffffff;
   outline: none;
-  font-family: inherit;
+  transition: box-shadow 0.15s ease;
+}
+
+.form-group select {
+  cursor: pointer;
+}
+
+.form-group select:invalid {
+  color: #6d7d70;
 }
 
 .form-group input:focus,
 .form-group select:focus {
-  border-color: #3a7d44;
+  border-color: #8fbe4a;
+  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
 }
 
 .form-group input::placeholder {
-  color: #9aa8a0;
+  color: #8fa093;
 }
 
-.linha-divisoria {
-  height: 2px;
-  background: #3a7d44;
-  margin: 24px 0;
+.campo-parentesco {
+  max-width: 320px;
 }
 
-.msg-erro {
-  color: #c0392b;
-  font-size: 13px;
-  margin-bottom: 10px;
-}
-
-.msg-sucesso {
-  color: #2e5d2e;
-  font-size: 13px;
-  margin-bottom: 10px;
-  font-weight: bold;
+.divisoria {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.4);
+  margin: 26px 0;
 }
 
 .form-footer {
   display: flex;
   justify-content: center;
-  margin-top: 28px;
+  margin-top: 32px;
 }
 
 .btn-adicionar {
-  background: #2e5d2e;
+  background: #6ba13f;
   color: #ffffff;
   border: none;
-  padding: 12px 36px;
-  border-radius: 6px;
+  padding: 13px 40px;
+  border-radius: 7px;
+  font-family: inherit;
   font-size: 13px;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
   cursor: pointer;
-  font-family: inherit;
-  transition: background 0.2s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-.btn-adicionar:hover {
-  background: #1e3e1e;
+.btn-adicionar:hover:not(:disabled) {
+  background: #7caf49;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
 }
 
 .btn-adicionar:disabled {
@@ -336,19 +376,28 @@ async function handleSubmit() {
   cursor: not-allowed;
 }
 
-@media (max-width: 768px) {
-  .contatos-card {
-    max-width: 95vw;
-    padding: 20px 22px;
+.linha-divisoria {
+  height: 8px;
+  background: #ffffff;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .main-content {
+    padding: 28px 20px 40px 20px;
+  }
+
+  .contatos-painel {
+    padding: 32px 26px;
   }
 
   .linha-campos {
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
   }
 
-  .form-group + .form-group {
-    margin-top: 12px;
+  .campo-parentesco {
+    max-width: none;
   }
 }
 </style>

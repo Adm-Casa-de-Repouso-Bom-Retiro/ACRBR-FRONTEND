@@ -1,87 +1,144 @@
 <template>
   <div class="cadastro-page">
-    <div class="top-line"></div>
-
     <main class="main-content">
-      <div class="form-container">
+      <section class="cadastro-painel">
         <div class="cadastro-card">
+          <div class="foto-coluna">
+            <div
+              class="avatar-wrap"
+              role="button"
+              tabindex="0"
+              @click="abrirSeletorFoto"
+              @keydown.enter="abrirSeletorFoto"
+              title="Clique para adicionar foto"
+            >
+              <div class="avatar-circle" :class="{ 'avatar-circle--foto': fotoPrevia }">
+                <img
+                  :src="fotoPrevia || iconeLogin"
+                  class="avatar-img"
+                  :class="{ 'avatar-img--foto': fotoPrevia }"
+                />
+              </div>
 
-          <div class="avatar-wrap" @click="abrirSeletorFoto" title="Clique para adicionar foto">
-            <div class="avatar-circle" :class="{ 'avatar-circle--foto': fotoPrevia }">
-              <img :src="fotoPrevia || iconeLogin" class="avatar-img" :class="{ 'avatar-img--foto': fotoPrevia }" />
+              <div class="cam-btn">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
+                  />
+                  <circle cx="12" cy="13" r="4" />
+                </svg>
+              </div>
             </div>
-            <div class="cam-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-              </svg>
-            </div>
+
+            <input
+              ref="inputFoto"
+              type="file"
+              accept="image/jpeg,image/png"
+              style="display: none"
+              @change="selecionarFoto"
+            />
+
+            <span class="foto-dica">ADICIONAR FOTO</span>
           </div>
 
-          <input
-            ref="inputFoto"
-            type="file"
-            accept="image/jpeg,image/png"
-            style="display: none"
-            @change="selecionarFoto"
-          />
-
-          <h2 class="titulo">CADASTRE-SE COMO ADMINISTRADOR:</h2>
-
-          <p v-if="erro" class="msg-erro">{{ erro }}</p>
-          <p v-if="sucesso" class="msg-sucesso">{{ sucesso }}</p>
-
-          <form @submit.prevent="handleCadastro" class="cadastro-form">
-            <div class="form-grid">
-              <div class="col">
-                <div class="form-group">
-                  <label>NOME COMPLETO:</label>
-                  <input v-model="nome" type="text" placeholder="Digite seu nome" required />
-                </div>
-
-                <div class="form-group">
-                  <label>TELEFONE:</label>
-                  <input v-model="telefone" type="text" placeholder="(00) 00000-0000" required />
-                </div>
-
-                <div class="form-group">
-                  <label>CARGO:</label>
-                  <select v-model="cargo" required>
-                    <option value="" disabled>Selecione</option>
-                    <option value="chefe">Chefe</option>
-                    <option value="gerente">Gerente</option>
-                    <option value="nutricionista">Nutricionista</option>
-                    <option value="cuidador">Cuidador</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="col">
-                <div class="form-group">
-                  <label>SENHA:</label>
-                  <input v-model="senha" type="password" placeholder="Digite sua senha" required />
-                </div>
-
-                <div class="form-group">
-                  <label>E-MAIL:</label>
-                  <input v-model="email" type="email" placeholder="abc@gmail.com" required />
-                </div>
-
-                <div class="form-group">
-                  <label>DATA DE REGISTRO:</label>
-                  <input v-model="data" type="date" required />
-                  <span class="campo-obs">Data em que o funcionário foi registrado</span>
-                </div>
-              </div>
+          <div class="info-coluna">
+            <div class="titulo-pill">
+              <span>Cadastre-se como Administrador</span>
             </div>
 
-            <button type="submit" class="btn-criar" :disabled="carregando">
-              {{ carregando ? 'AGUARDE...' : 'CRIAR CONTA' }}
-            </button>
-          </form>
+            <p v-if="erro" class="msg-erro">{{ erro }}</p>
+            <p v-if="sucesso" class="msg-sucesso">{{ sucesso }}</p>
+
+            <form @submit.prevent="handleCadastro" class="cadastro-form">
+              <div class="form-grid">
+                <div class="col">
+                  <div class="form-group">
+                    <label for="campo-nome">NOME COMPLETO:</label>
+                    <input
+                      id="campo-nome"
+                      v-model="nome"
+                      type="text"
+                      placeholder="Digite seu nome"
+                      required
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="campo-telefone">TELEFONE:</label>
+                    <input
+                      id="campo-telefone"
+                      v-model="telefone"
+                      type="text"
+                      placeholder="(00) 00000-0000"
+                      required
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="campo-cargo">CARGO:</label>
+                    <select id="campo-cargo" v-model="cargo" required>
+                      <option value="" disabled>Selecione</option>
+                      <option value="chefe">Chefe</option>
+                      <option value="gerente">Gerente</option>
+                      <option value="nutricionista">Nutricionista</option>
+                      <option value="cuidador">Cuidador</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="col">
+                  <div class="form-group">
+                    <label for="campo-senha">SENHA:</label>
+                    <input
+                      id="campo-senha"
+                      v-model="senha"
+                      type="password"
+                      placeholder="Digite sua senha"
+                      required
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="campo-email">E-MAIL:</label>
+                    <input
+                      id="campo-email"
+                      v-model="email"
+                      type="email"
+                      placeholder="abc@gmail.com"
+                      required
+                    />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="campo-data">DATA DE REGISTRO:</label>
+                    <input id="campo-data" v-model="data" type="date" required />
+                    <span class="campo-obs">Data em que o funcionário foi registrado</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-footer">
+                <button type="submit" class="btn-criar" :disabled="carregando">
+                  {{ carregando ? 'AGUARDE...' : 'CRIAR CONTA' }}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+      </section>
     </main>
+
+    <div class="linha-divisoria"></div>
   </div>
 </template>
 
@@ -179,67 +236,95 @@ async function handleCadastro() {
   box-sizing: border-box;
 }
 
-.top-line {
-  width: 100%;
-  height: 1.3vw;
-  background: #2e5d2e;
+.cadastro-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
-  height: calc(100vh - 140px);
+  flex: 1;
+  background: #2e5d2e;
+  padding: 48px 60px 56px 60px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+}
+
+/* Painel: mesmo tratamento de card usado no perfil do residente,
+   para que todas as telas leiam como parte do mesmo sistema. */
+.cadastro-painel {
+  width: 100%;
+  max-width: 1080px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+  padding: 52px 58px;
 }
 
 .cadastro-card {
-  width: 80vw;
-  border: 2px solid #2e5d2e;
-  border-radius: 12px;
-  padding: 30px;
-  text-align: center;
+  display: flex;
+  gap: 56px;
+  align-items: flex-start;
+}
+
+.foto-coluna {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  flex-shrink: 0;
 }
 
 .avatar-wrap {
   position: relative;
-  display: inline-block;
   cursor: pointer;
-  margin-bottom: 10px;
 }
 
 .avatar-circle {
-  width: 105px;
-  height: 105px;
+  width: 150px;
+  height: 150px;
   border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  border: 2px solid rgba(255, 255, 255, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.avatar-wrap:hover .avatar-circle {
+  border-color: rgba(255, 255, 255, 0.75);
 }
 
 .avatar-circle--foto {
-  overflow: hidden;
-  border: 2px solid #2e5d2e;
+  background: #d9d9d9;
+  border-color: #ffffff;
 }
 
 .avatar-img {
-  width: 105px;
-  height: 105px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
+  padding: 18px;
 }
 
 .avatar-img--foto {
   object-fit: cover;
+  padding: 0;
 }
 
 .cam-btn {
   position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 34px;
-  height: 34px;
-  background: #2e5d2e;
+  bottom: 4px;
+  right: 4px;
+  width: 36px;
+  height: 36px;
+  background: #6ba13f;
   border-radius: 50%;
-  border: 2px solid white;
+  border: 2px solid #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -247,82 +332,141 @@ async function handleCadastro() {
 }
 
 .avatar-wrap:hover .cam-btn {
-  background: #1e3e1e;
+  background: #7caf49;
 }
 
-.titulo {
-  color: #2e5d2e;
-  font-size: 18px;
-  margin-bottom: 20px;
+.foto-dica {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+}
+
+.info-coluna {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  min-width: 0;
+}
+
+.titulo-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-start;
+  background: #6ba13f;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 10px 26px;
+  border-radius: 6px;
 }
 
 .msg-erro {
-  color: #c0392b;
+  color: #ffdada;
   font-size: 13px;
-  margin-bottom: 10px;
+  margin: 0;
 }
 
 .msg-sucesso {
-  color: #2e5d2e;
+  color: #d9f2c2;
   font-size: 13px;
-  margin-bottom: 10px;
-  font-weight: bold;
+  font-weight: 700;
+  margin: 0;
 }
 
 .form-grid {
   display: flex;
-  gap: 40px;
+  gap: 32px;
 }
 
 .col {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  margin-bottom: 12px;
+  gap: 6px;
 }
 
 .form-group label {
-  font-size: 12px;
-  font-weight: bold;
-  margin-bottom: 4px;
   color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
 }
 
 .form-group input,
 .form-group select {
   width: 100%;
-  height: 30px;
-  border: 1.5px solid #2e5d2e;
-  border-radius: 4px;
-  padding: 0 8px;
-  font-size: 13px;
+  height: 38px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 0 12px;
+  font-size: 14px;
+  font-family: inherit;
   color: #1e3e1e;
   background-color: #ffffff;
+  outline: none;
+  transition: box-shadow 0.15s ease;
+}
+
+.form-group select {
+  cursor: pointer;
+}
+
+.form-group select:invalid {
+  color: #6d7d70;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #8fbe4a;
+  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
 }
 
 .form-group input::placeholder {
-  color: #1e3e1e;
+  color: #8fa093;
 }
 
 .campo-obs {
-  font-size: 10px;
-  color: #888;
-  margin-top: 2px;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
 }
 
 .btn-criar {
-  margin-top: 15px;
-  background: #2e5d2e;
-  color: white;
+  background: #6ba13f;
+  color: #ffffff;
   border: none;
-  padding: 10px 30px;
-  border-radius: 5px;
-  font-weight: bold;
+  padding: 13px 36px;
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.btn-criar:hover:not(:disabled) {
+  background: #7caf49;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
 }
 
 .btn-criar:disabled {
@@ -330,7 +474,33 @@ async function handleCadastro() {
   cursor: not-allowed;
 }
 
-.btn-criar:hover:not(:disabled) {
-  background: #163216;
+.linha-divisoria {
+  height: 8px;
+  background: #ffffff;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .main-content {
+    padding: 28px 20px 40px 20px;
+  }
+
+  .cadastro-painel {
+    padding: 32px 26px;
+  }
+
+  .cadastro-card {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .form-grid {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form-footer {
+    justify-content: center;
+  }
 }
 </style>

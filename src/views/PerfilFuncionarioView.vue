@@ -1,3 +1,69 @@
+<template>
+  <div class="perfil-funcionario-page">
+    <main class="main-content">
+      <section class="perfil-painel">
+        <div class="perfil-card">
+          <div class="foto-coluna">
+            <div class="foto-box" :class="{ 'foto-box--vazia': !administrador.foto_url }">
+              <img
+                v-if="administrador.foto_url"
+                :src="administrador.foto_url"
+                alt="Foto de perfil"
+                class="foto-img"
+              />
+
+              <svg
+                v-else
+                class="icone-foto-vazia"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4Zm0 2.1c-3.5 0-7 1.76-7 5.25V21h14v-1.65c0-3.49-3.5-5.25-7-5.25Z"
+                  fill="#ffffff"
+                  opacity="0.75"
+                />
+              </svg>
+            </div>
+
+            <button class="btn-editar" @click="$router.push('/editar-perfil')">EDITAR CONTA</button>
+
+            <button class="btn-sair" @click="sair">SAIR DA CONTA</button>
+          </div>
+
+          <div class="info-coluna">
+            <h1 class="nome">{{ administrador.nome || '...' }}</h1>
+
+            <div class="titulo-pill">
+              <span>{{ cargoFormatado }}</span>
+            </div>
+
+            <div class="bloco-info">
+              <p class="linha-info">
+                <span class="label">E-mail:</span>
+                <span class="valor">{{ administrador.email || '...' }}</span>
+              </p>
+
+              <p class="linha-info">
+                <span class="label">Telefone:</span>
+                <span class="valor">{{ telefoneFormatado }}</span>
+              </p>
+
+              <p class="linha-info">
+                <span class="label">Data de Registro:</span>
+                <span class="valor">{{ dataFormatada }}</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="linha-divisoria"></div>
+  </div>
+</template>
+
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -44,8 +110,6 @@ const dataFormatada = computed(() => {
 async function buscarDados() {
   try {
     const response = await api.get('/administradores/me/')
-    console.log('Foto:', response.data.foto_url)
-    console.log(response.data)
     administrador.value = response.data
   } catch (error) {
     router.push('/login')
@@ -61,202 +125,200 @@ function sair() {
 }
 </script>
 
-<template>
-  <div class="perfil-page">
-    <div class="top-line"></div>
-
-    <main class="main-content">
-      <div class="perfil-card">
-        <div class="avatar-section">
-          <div class="avatar-circle">
-            <img
-              :src="administrador.foto_url || '/src/assets/images/icone-login.png'"
-              alt="Foto de perfil"
-              class="avatar-img"
-            />
-          </div>
-
-          <h1 class="nome">{{ administrador.nome || '...' }}</h1>
-          <p class="cargo">Cargo: {{ cargoFormatado }}</p>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="info-section">
-          <div class="info-item">
-            <span class="info-label">E-MAIL:</span>
-            <span class="info-valor">
-              {{ administrador.email || '...' }}
-            </span>
-          </div>
-
-          <div class="info-item">
-            <span class="info-label">TELEFONE:</span>
-            <span class="info-valor">
-              {{ telefoneFormatado }}
-            </span>
-          </div>
-
-          <div class="info-item">
-            <span class="info-label">DATA DE REGISTRO:</span>
-            <span class="info-valor">
-              {{ dataFormatada }}
-            </span>
-          </div>
-
-          <div class="botoes">
-            <button class="btn-editar" @click="$router.push('/editar-perfil')">EDITAR CONTA</button>
-
-            <button class="btn-sair" @click="sair">SAIR DA CONTA</button>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div>
-</template>
-
 <style scoped>
 * {
   box-sizing: border-box;
 }
 
-.top-line {
-  width: 100%;
-  height: 1.3vw;
-  background: #2e5d2e;
-}
-
-.main-content {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 80px 20px;
-}
-
-.perfil-card {
-  width: 100%;
-  max-width: 70vw;
-  min-height: 450px;
-
-  border: 3px solid #3a7d44;
-  border-radius: 12px;
-
-  padding: 28px 36px 24px 36px;
-
-  display: flex;
-  gap: 40px;
-  align-items: center;
-}
-
-.divider {
-  width: 1px;
-  align-self: stretch;
-  background: #d0d0d0;
-  flex-shrink: 0;
-}
-
-.avatar-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  min-width: 220px;
-  gap: 10px;
-}
-
-.avatar-circle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.avatar-img {
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  object-fit: contain;
-}
-
-.nome {
-  font-size: 20px;
-  font-weight: bold;
-  color: #1e3e1e;
-  text-align: center;
-  margin: 0;
-}
-
-.cargo {
-  font-size: 15px;
-  color: #555;
-  text-align: center;
-  margin: 0;
-}
-
-.info-section {
+.perfil-funcionario-page {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 18px;
 }
 
-.info-item {
+.main-content {
+  flex: 1;
+  background: #2e5d2e;
+  padding: 48px 60px 56px 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Painel: mesmo tratamento de card usado no perfil do residente,
+   para que as duas telas leiam como parte do mesmo sistema. */
+.perfil-painel {
+  width: 100%;
+  max-width: 1080px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+  padding: 52px 58px;
+}
+
+.perfil-card {
+  display: flex;
+  gap: 56px;
+  align-items: flex-start;
+}
+
+.foto-coluna {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
 }
 
-.info-label {
-  font-size: 13px;
-  font-weight: 700;
-  color: #1e3e1e;
-  letter-spacing: 0.6px;
-}
-
-.info-valor {
-  font-size: 14px;
-  color: #333;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 8px;
-}
-
-.botoes {
+.foto-box {
+  width: 260px;
+  height: 290px;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #d9d9d9;
   display: flex;
-  gap: 12px;
-  margin-top: 16px;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+.foto-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.icone-foto-vazia {
+  width: 64px;
+  height: 64px;
+  opacity: 0.55;
 }
 
 .btn-editar {
-  background: #1e3e1e;
-  color: white;
+  width: 100%;
+  background: #6ba13f;
+  color: #ffffff;
   border: none;
-  padding: 10px 22px;
-  border-radius: 5px;
-  font-weight: bold;
+  padding: 12px 0;
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   cursor: pointer;
-  font-size: 13px;
-  transition: background 0.2s;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
 }
 
 .btn-editar:hover {
-  background: #163216;
+  background: #7caf49;
+  transform: translateY(-2px);
 }
 
 .btn-sair {
+  width: 100%;
   background: transparent;
-  color: #1e3e1e;
-  border: 2px solid #1e3e1e;
-  padding: 10px 22px;
-  border-radius: 5px;
-  font-weight: bold;
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  padding: 11px 0;
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   cursor: pointer;
-  font-size: 13px;
-  transition: background 0.2s;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .btn-sair:hover {
-  background: #f0f0f0;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #ffffff;
+}
+
+.info-coluna {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+}
+
+.nome {
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.15;
+}
+
+.titulo-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-start;
+  background: #6ba13f;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 10px 26px;
+  border-radius: 6px;
+}
+
+.bloco-info {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  padding-top: 22px;
+}
+
+.linha-info {
+  color: #ffffff;
+  font-size: 15px;
+  margin: 0;
+}
+
+.label {
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+.valor {
+  font-weight: 400;
+}
+
+.linha-divisoria {
+  height: 8px;
+  background: #ffffff;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .main-content {
+    padding: 28px 20px 40px 20px;
+  }
+
+  .perfil-painel {
+    padding: 32px 26px;
+  }
+
+  .perfil-card {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .foto-coluna {
+    width: 100%;
+    max-width: 260px;
+  }
+
+  .foto-box {
+    width: 100%;
+    height: 220px;
+  }
 }
 </style>
-```

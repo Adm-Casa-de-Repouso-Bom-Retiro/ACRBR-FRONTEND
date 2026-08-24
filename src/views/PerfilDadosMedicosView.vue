@@ -1,40 +1,60 @@
 <template>
   <div class="dados-medicos-page">
-    <div class="top-line"></div>
-
     <main class="main-content">
-      <div class="dados-card">
+      <section class="dados-painel">
         <div class="card-header">
           <div class="header-left">
-            <div class="avatar"></div>
-            <span class="residente-nome">Dados Médicos - {{ nomeResidente }}</span>
+            <div class="avatar">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                class="avatar-icone"
+              >
+                <path
+                  d="M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4Zm0 2.1c-3.5 0-7 1.76-7 5.25V21h14v-1.65c0-3.49-3.5-5.25-7-5.25Z"
+                  fill="#ffffff"
+                  opacity="0.75"
+                />
+              </svg>
+            </div>
+
+            <div class="titulo-pill">
+              <span>Dados Médicos - {{ nomeResidente }}</span>
+            </div>
           </div>
-          <button class="btn-editar" @click="toggleEdicao">
+
+          <button
+            class="btn-editar"
+            :class="{ 'btn-editar--cancelar': modoEdicao }"
+            @click="toggleEdicao"
+          >
             {{ modoEdicao ? 'CANCELAR' : 'EDITAR DADOS' }}
           </button>
         </div>
 
         <p v-if="erro" class="msg-erro">{{ erro }}</p>
         <p v-if="sucesso" class="msg-sucesso">{{ sucesso }}</p>
+
         <div class="form-grid">
           <div class="form-group">
-            <label>Condições Médicas:</label>
-            <textarea v-model="condicoesMedicas" :disabled="!modoEdicao" />
+            <label>CONDIÇÕES MÉDICAS:</label>
+            <textarea v-model="condicoesMedicas" :disabled="!modoEdicao"></textarea>
           </div>
 
           <div class="form-group">
-            <label>Alergias:</label>
-            <textarea v-model="alergias" :disabled="!modoEdicao" />
+            <label>ALERGIAS:</label>
+            <textarea v-model="alergias" :disabled="!modoEdicao"></textarea>
           </div>
 
           <div class="form-group">
-            <label>Observações:</label>
-            <textarea v-model="observacoes" :disabled="!modoEdicao" />
+            <label>OBSERVAÇÕES:</label>
+            <textarea v-model="observacoes" :disabled="!modoEdicao"></textarea>
           </div>
 
           <div class="form-group">
-            <label>Peso e Altura:</label>
-            <textarea v-model="pesoAltura" :disabled="!modoEdicao" />
+            <label>PESO E ALTURA:</label>
+            <textarea v-model="pesoAltura" :disabled="!modoEdicao"></textarea>
           </div>
         </div>
 
@@ -42,11 +62,12 @@
           <table class="medicamentos-table">
             <thead>
               <tr>
-                <th>Medicamentos:</th>
-                <th>Dosagem:</th>
-                <th>Horário:</th>
+                <th>MEDICAMENTOS</th>
+                <th>DOSAGEM</th>
+                <th>HORÁRIO</th>
               </tr>
             </thead>
+
             <tbody>
               <tr
                 v-for="(med, index) in medicamentos"
@@ -62,8 +83,9 @@
                     placeholder="Nome do medicamento"
                     @click.stop
                   />
-                  <template v-else>{{ med.nome }}</template>
+                  <template v-else>{{ med.nome || '—' }}</template>
                 </td>
+
                 <td>
                   <input
                     v-if="modoEdicao"
@@ -72,8 +94,9 @@
                     placeholder="Dosagem"
                     @click.stop
                   />
-                  <template v-else>{{ med.dosagem }}</template>
+                  <template v-else>{{ med.dosagem || '—' }}</template>
                 </td>
+
                 <td>
                   <input
                     v-if="modoEdicao"
@@ -82,13 +105,18 @@
                     placeholder="Horário"
                     @click.stop
                   />
-                  <template v-else>{{ med.horario }}</template>
+                  <template v-else>{{ med.horario || '—' }}</template>
                 </td>
               </tr>
             </tbody>
           </table>
 
-          <button v-if="modoEdicao" class="btn-adicionar" @click="adicionarMedicamento">
+          <button
+            v-if="modoEdicao"
+            class="btn-adicionar"
+            type="button"
+            @click="adicionarMedicamento"
+          >
             + ADICIONAR MEDICAMENTO
           </button>
         </div>
@@ -98,8 +126,10 @@
             {{ carregando ? 'SALVANDO...' : 'SALVAR ALTERAÇÕES' }}
           </button>
         </div>
-      </div>
+      </section>
     </main>
+
+    <div class="linha-divisoria"></div>
   </div>
 </template>
 
@@ -118,7 +148,12 @@ export default {
       medicamentos: [
         { nome: 'Losartana', dosagem: '50 mg', horario: '08:00h', selecionado: false },
         { nome: 'Metformina', dosagem: '850 mg', horario: '08:00h e 20:00h', selecionado: false },
-        { nome: 'Cálcio + Vitamina D', dosagem: '1 comprimido', horario: '12:00h', selecionado: false },
+        {
+          nome: 'Cálcio + Vitamina D',
+          dosagem: '1 comprimido',
+          horario: '12:00h',
+          selecionado: false,
+        },
       ],
       erro: '',
       sucesso: '',
@@ -178,136 +213,175 @@ export default {
   box-sizing: border-box;
 }
 
-.top-line {
-  width: 100%;
-  height: 1.3vw;
-  background: #2e5d2e;
+.dados-medicos-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
+  flex: 1;
+  background: #2e5d2e;
+  padding: 48px 60px 56px 60px;
   display: flex;
+  align-items: center;
   justify-content: center;
-  align-items: flex-start;
-  padding: 40px 20px;
 }
 
-.dados-card {
-  width: 80vw;
-  border: 3px solid #3a7d44;
-  border-radius: 12px;
-  padding: 24px 32px;
+/* Painel: mesmo tratamento de card usado no perfil do residente,
+   para que as duas telas leiam como parte do mesmo sistema. */
+.dados-painel {
+  width: 100%;
+  max-width: 1080px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+  padding: 52px 58px;
 }
 
-/* Header */
 .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
 }
 
 .avatar {
-  width: 42px;
-  height: 42px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
-  background: #ccc;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 
-.residente-nome {
-  background: #3a7d44;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 4px;
+.avatar-icone {
+  width: 24px;
+  height: 24px;
+}
+
+.titulo-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #6ba13f;
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  padding: 10px 26px;
+  border-radius: 6px;
 }
 
 .btn-editar {
-  background: #3a7d44;
-  color: #fff;
+  background: #6ba13f;
+  color: #ffffff;
   border: none;
-  padding: 6px 16px;
-  border-radius: 4px;
-  font-size: 13px;
+  padding: 11px 26px;
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 12px;
   font-weight: 700;
-  cursor: pointer;
   letter-spacing: 0.5px;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease;
 }
 
 .btn-editar:hover {
-  background: #1e3e1e;
+  background: #7caf49;
+  transform: translateY(-2px);
+}
+
+.btn-editar--cancelar {
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
+}
+
+.btn-editar--cancelar:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 /* Mensagens */
 .msg-erro {
-  color: #c0392b;
+  color: #ffdada;
   font-size: 13px;
-  margin-bottom: 10px;
+  margin: 0 0 16px 0;
 }
 
 .msg-sucesso {
-  color: #1e3e1e;
+  color: #d9f2c2;
   font-size: 13px;
-  margin-bottom: 10px;
-  font-weight: bold;
+  font-weight: 700;
+  margin: 0 0 16px 0;
 }
 
 /* Grid 2x2 */
 .form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px 24px;
-  margin-bottom: 20px;
+  gap: 20px 32px;
+  margin-bottom: 28px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 7px;
 }
 
 .form-group label {
-  font-size: 13px;
+  color: #ffffff;
+  font-size: 12px;
   font-weight: 700;
-  color: #1e3e1e;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.6px;
 }
 
 .form-group textarea {
   width: 100%;
-  height: 90px;
-  border: 2px solid #3a7d44;
-  border-radius: 6px;
-  padding: 8px;
+  min-height: 100px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: inherit;
   font-size: 13px;
   color: #1e3e1e;
-  resize: none;
+  resize: vertical;
   outline: none;
-  background: #fff;
+  background: #ffffff;
+  transition: box-shadow 0.15s ease;
 }
 
 .form-group textarea:disabled {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #f0f0f0;
   cursor: default;
 }
 
-.form-group textarea:focus {
-  border-color: #1e3e1e;
+.form-group textarea:focus:not(:disabled) {
+  border-color: #8fbe4a;
+  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
 }
 
 /* Tabela de medicamentos */
 .medicamentos-section {
-  border: 2px solid #3a7d44;
-  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
   overflow: hidden;
-  margin-bottom: 16px;
 }
 
 .medicamentos-table {
@@ -316,22 +390,20 @@ export default {
   font-size: 13px;
 }
 
-.medicamentos-table thead tr {
-  background: #fff;
-}
-
 .medicamentos-table th {
   text-align: left;
-  padding: 10px 14px;
+  padding: 12px 16px;
   font-weight: 700;
-  color: #1e3e1e;
-  border-bottom: 1px solid #3a7d44;
+  letter-spacing: 0.6px;
+  color: #ffffff;
+  background: rgba(107, 161, 63, 0.35);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .medicamentos-table td {
-  padding: 8px 14px;
-  color: inherit;
-  border-bottom: 1px solid #e0ece2;
+  padding: 11px 16px;
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .medicamentos-table tbody tr:last-child td {
@@ -339,91 +411,139 @@ export default {
 }
 
 .medicamentos-table tbody tr {
-  color: #1e3e1e;
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .medicamentos-table tbody tr:hover {
-  background: #e0ece2;
+  background: rgba(255, 255, 255, 0.06);
 }
 
 .checkbox-icon {
   display: inline-block;
-  width: 14px;
-  height: 14px;
-  margin-right: 8px;
+  width: 16px;
+  height: 13px;
+  margin-right: 10px;
   vertical-align: middle;
-  border: 2px solid #3a7d44;
-  border-radius: 3px;
-  background: #fff;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  border-radius: 4px;
+  border: 1px solid #78a84b;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .checkbox-icon.marcado {
-  background: #1e3e1e;
-  border-color: #1e3e1e;
+  background: #8fbe4a;
+  border-color: #8fbe4a;
 }
 
 .med-input {
-  width: 100%;
+  width: calc(100% - 26px);
   border: none;
-  border-bottom: 1px solid #3a7d44;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
   background: transparent;
-  color: inherit;
+  color: #ffffff;
+  font-family: inherit;
   font-size: 13px;
   padding: 2px 4px;
   outline: none;
 }
 
+.med-input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
 .med-input:focus {
-  border-bottom-color: #1e3e1e;
+  border-bottom-color: #8fbe4a;
 }
 
 /* Botão adicionar medicamento */
 .btn-adicionar {
   display: block;
   width: 100%;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.05);
   border: none;
-  border-top: 1px solid #3a7d44;
-  color: #3a7d44;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+  font-family: inherit;
   font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.5px;
-  padding: 10px 14px;
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  padding: 13px 14px;
   cursor: pointer;
   text-align: center;
+  transition: background 0.2s ease;
 }
 
 .btn-adicionar:hover {
-  background: #e0ece2;
-  color: #1e3e1e;
+  background: rgba(143, 190, 74, 0.25);
 }
 
-/* Footer do card */
+/* Footer do painel */
 .form-footer {
   display: flex;
   justify-content: flex-end;
-  margin-top: 12px;
+  margin-top: 26px;
 }
 
 .btn-salvar {
-  background: none;
+  background: #6ba13f;
   border: none;
-  color: #3a7d44;
+  color: #ffffff;
+  font-family: inherit;
   font-weight: 700;
-  font-size: 14px;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  padding: 12px 34px;
+  border-radius: 7px;
   cursor: pointer;
-  letter-spacing: 0.6px;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .btn-salvar:hover:not(:disabled) {
-  color: #1e3e1e;
+  background: #7caf49;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
 }
 
 .btn-salvar:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.linha-divisoria {
+  height: 8px;
+  background: #ffffff;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .main-content {
+    padding: 28px 20px 40px 20px;
+  }
+
+  .dados-painel {
+    padding: 32px 26px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btn-editar {
+    align-self: flex-start;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .medicamentos-section {
+    overflow-x: auto;
+  }
 }
 </style>
