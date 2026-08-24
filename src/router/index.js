@@ -59,7 +59,7 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
       {
-      path: '/residente/:id',
+      path: '/contatosprontuario',
       name: 'contatosprontuario',
       component: () => import('../views/ContatosProntuarioView.vue'),
       meta: { requiresAuth: true },
