@@ -102,11 +102,6 @@ onMounted(buscarResidente)
 
         <div class="info-coluna">
           <div class="titulo-pill">
-            <img
-              src="/src/assets/images/icone-telefone.png"
-              alt="Ícone de telefone"
-              class="titulo-icone"
-            />
             <span>Contatos - {{ residente.nome_completo }}</span>
           </div>
 
@@ -229,8 +224,8 @@ onMounted(buscarResidente)
 }
 
 .btn-editar {
-  background: #ffffff;
-  color: #2e5d2e;
+  background: #6BA13F;
+  color: #ffffff;
   border: none;
   padding: 10px 22px;
   border-radius: 6px;
@@ -259,13 +254,13 @@ onMounted(buscarResidente)
   align-items: center;
   gap: 10px;
   align-self: flex-start;
-  background: #ffffff;
+  background: #6BA13F;
   color: #2e5d2e;
   font-size: 17px;
   font-weight: 700;
   letter-spacing: 0.4px;
   padding: 8px 22px;
-  border-radius: 30px;
+  border-radius: 5px;
 }
 
 .titulo-icone {
