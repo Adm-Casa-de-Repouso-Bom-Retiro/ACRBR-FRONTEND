@@ -58,6 +58,12 @@ const router = createRouter({
       component: () => import('../views/ContatosResidentesView.vue'),
       meta: { requiresAuth: true },
     },
+      {
+      path: '/residente/:id',
+      name: 'contatosprontuario',
+      component: () => import('../views/ContatosProntuarioView.vue'),
+      meta: { requiresAuth: true },
+    },
   ],  
 })
 router.beforeEach((to, from, next) => {
