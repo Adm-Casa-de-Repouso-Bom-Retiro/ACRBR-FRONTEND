@@ -64,7 +64,7 @@ function irParaPerfil() {
 .residente-nome {
   font-size: 12px;
   font-weight: bold;
-  color: #000000;
+  color: white;
   text-align: center;
 }
 </style>
