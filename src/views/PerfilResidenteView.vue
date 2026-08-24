@@ -156,7 +156,7 @@ onMounted(buscarResidente)
 
             <button
               class="btn-menu"
-              @click="irPara('contatosprontuario')"
+              @click="irPara('contatosprontuario', { params: { id: residente.id } })"
             >
               CONTATOS
             </button>
