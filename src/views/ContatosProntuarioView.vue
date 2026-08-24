@@ -255,7 +255,7 @@ onMounted(buscarResidente)
   gap: 10px;
   align-self: flex-start;
   background: #6BA13F;
-  color: #2e5d2e;
+  color: #ffffff;
   font-size: 17px;
   font-weight: 700;
   letter-spacing: 0.4px;
