@@ -109,9 +109,12 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import api from '@/services/api'
 import { useResidenteStore } from '@/stores/residente'
+
+const router = useRouter()
 
 const residenteStore = useResidenteStore()
 const {
@@ -186,6 +189,7 @@ async function handleSubmit() {
 
     sucesso.value = 'Residente cadastrado com sucesso!'
     residenteStore.limpar()
+    setTimeout(() => router.push('/prontuario'), 1500)
   } catch (error) {
     if (error.response && error.response.data) {
       const erros = error.response.data

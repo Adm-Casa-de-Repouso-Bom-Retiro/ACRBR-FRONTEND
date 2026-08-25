@@ -35,10 +35,11 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/cuidadospessoais',
+      path: '/cuidadospessoais/:id',
       name: 'cuidadospessoais',
       component: () => import('../views/CuidadosPessoaisView.vue'),
       meta: { requiresAuth: true },
+      props: true,
     },
     {
       path: '/prontuario',
@@ -53,10 +54,11 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/perfildadosmedicos',
+      path: '/perfildadosmedicos/:id',
       name: 'perfildadosmedicos',
       component: () => import('../views/PerfilDadosMedicosView.vue'),
       meta: { requiresAuth: true },
+      props: true,
     },
     {
       path: '/contatosresidentes',
@@ -74,6 +76,13 @@ const router = createRouter({
       path: '/residente/:id',
       name: 'residente',
       component: () => import('../views/PerfilResidenteView.vue'),
+      meta: { requiresAuth: true },
+      props: true,
+    },
+    {
+      path: '/editarresidente/:id',
+      name: 'editarresidente',
+      component: () => import('../views/EditarResidenteView.vue'),
       meta: { requiresAuth: true },
       props: true,
     },

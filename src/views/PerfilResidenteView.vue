@@ -158,7 +158,7 @@ onMounted(buscarResidente)
             </div>
 
             <nav class="perfil-menu">
-              <button class="btn-menu" @click="irPara('dadosmedicos')">DADOS MÉDICOS</button>
+              <button class="btn-menu" @click="irPara('perfildadosmedicos')">DADOS MÉDICOS</button>
 
               <button
                 class="btn-menu"

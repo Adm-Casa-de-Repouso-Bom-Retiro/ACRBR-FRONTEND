@@ -4,8 +4,16 @@
       <section class="dados-painel">
         <div class="card-header">
           <div class="header-left">
-            <div class="avatar">
+            <div class="avatar" :class="{ 'avatar--foto': residente.foto }">
+              <img
+                v-if="residente.foto"
+                :src="residente.foto.url"
+                alt="Foto do residente"
+                class="avatar-img"
+              />
+
               <svg
+                v-else
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -65,6 +73,7 @@
                 <th>MEDICAMENTOS</th>
                 <th>DOSAGEM</th>
                 <th>HORÁRIO</th>
+                <th v-if="modoEdicao" class="th-acao"></th>
               </tr>
             </thead>
 
@@ -107,6 +116,20 @@
                   />
                   <template v-else>{{ med.horario || '—' }}</template>
                 </td>
+
+                <td v-if="modoEdicao" class="td-acao">
+                  <button
+                    type="button"
+                    class="btn-remover"
+                    title="Excluir medicamento"
+                    @click.stop="removerMedicamento(index)"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -134,12 +157,24 @@
 </template>
 
 <script>
+import api from '@/services/api'
+
 export default {
   name: 'PerfilDadosMedicosView',
 
+  props: {
+    id: {
+      type: [String, Number],
+      default: null
+    }
+  },
+
   data() {
     return {
-      nomeResidente: 'Ana Paula Dominoni',
+      nomeResidente: '',
+      residente: {
+        foto: null
+      },
       modoEdicao: false,
       condicoesMedicas: '',
       alergias: '',
@@ -161,7 +196,40 @@ export default {
     }
   },
 
+  computed: {
+    idResidente() {
+      if (this.id !== null && this.id !== undefined && this.id !== '') {
+        return this.id
+      }
+
+      const params = this.$route?.params || {}
+      if (params.id !== undefined && params.id !== '') {
+        return params.id
+      }
+
+      return null
+    }
+  },
+
+  created() {
+    this.carregarResidente()
+  },
+
   methods: {
+    async carregarResidente() {
+      const id = this.idResidente
+
+      if (!id) return
+
+      try {
+        const resposta = await api.get(`/residentes/${id}/`)
+        this.nomeResidente = resposta.data?.nome_completo || resposta.data?.nome || ''
+        this.residente.foto = resposta.data?.foto || null
+      } catch (erro) {
+        console.error('Erro ao carregar residente:', erro)
+      }
+    },
+
     toggleEdicao() {
       this.modoEdicao = !this.modoEdicao
       this.erro = ''
@@ -174,6 +242,10 @@ export default {
 
     adicionarMedicamento() {
       this.medicamentos.push({ nome: '', dosagem: '', horario: '', selecionado: false })
+    },
+
+    removerMedicamento(index) {
+      this.medicamentos.splice(index, 1)
     },
 
     async handleSalvar() {
@@ -270,6 +342,18 @@ export default {
 .avatar-icone {
   width: 24px;
   height: 24px;
+}
+
+.avatar--foto {
+  background: #d9d9d9;
+  border-color: #ffffff;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .titulo-pill {
@@ -477,6 +561,33 @@ export default {
 
 .btn-adicionar:hover {
   background: rgba(143, 190, 74, 0.25);
+}
+
+.th-acao {
+  width: 48px;
+}
+
+.td-acao {
+  text-align: center;
+  width: 48px;
+}
+
+.btn-remover {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.45);
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.btn-remover:hover {
+  color: #ff6b6b;
+  background: rgba(255, 107, 107, 0.15);
 }
 
 /* Footer do painel */
