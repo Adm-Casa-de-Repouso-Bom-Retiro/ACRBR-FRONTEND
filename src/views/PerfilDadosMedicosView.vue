@@ -124,7 +124,17 @@
                     title="Excluir medicamento"
                     @click.stop="removerMedicamento(index)"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
                       <line x1="18" y1="6" x2="6" y2="18" />
                       <line x1="6" y1="6" x2="18" y2="18" />
                     </svg>
@@ -165,15 +175,15 @@ export default {
   props: {
     id: {
       type: [String, Number],
-      default: null
-    }
+      default: null,
+    },
   },
 
   data() {
     return {
       nomeResidente: '',
       residente: {
-        foto: null
+        foto: null,
       },
       modoEdicao: false,
       condicoesMedicas: '',
@@ -208,7 +218,7 @@ export default {
       }
 
       return null
-    }
+    },
   },
 
   created() {
@@ -293,46 +303,38 @@ export default {
 
 .main-content {
   flex: 1;
-  background: #2e5d2e;
-  padding: 48px 60px 56px 60px;
+  background: linear-gradient(160deg, #2e5d2e 0%, #3c7039 45%, #6ba13f 100%);
+  padding: 28px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Painel: mesmo tratamento de card usado no perfil do residente,
-   para que as duas telas leiam como parte do mesmo sistema. */
 .dados-painel {
   width: 100%;
   max-width: 1080px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-  padding: 52px 58px;
 }
 
 .card-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  flex-wrap: wrap;
-  margin-bottom: 28px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  margin-bottom: 20px;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .avatar {
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  background: #d9d9d9;
+  border: 2px solid #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -360,21 +362,22 @@ export default {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: #6ba13f;
-  color: #ffffff;
-  font-size: 17px;
+  background: #ffffff;
+  color: #2e5d2e;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.4px;
-  padding: 10px 26px;
-  border-radius: 6px;
+  padding: 8px 18px;
+  border-radius: 999px;
 }
 
 .btn-editar {
   background: #6ba13f;
   color: #ffffff;
   border: none;
-  padding: 11px 26px;
-  border-radius: 7px;
+  padding: 12px 0;
+  width: 100%;
+  border-radius: 12px;
   font-family: inherit;
   font-size: 12px;
   font-weight: 700;
@@ -391,23 +394,24 @@ export default {
 }
 
 .btn-editar--cancelar {
-  background: transparent;
-  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  background: #ffffff;
+  border: none;
+  color: #2e5d2e;
 }
 
 .btn-editar--cancelar:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: #e8f0e8;
 }
 
 /* Mensagens */
 .msg-erro {
-  color: #ffdada;
+  color: #c0392b;
   font-size: 13px;
   margin: 0 0 16px 0;
 }
 
 .msg-sucesso {
-  color: #d9f2c2;
+  color: #2e5d2e;
   font-size: 13px;
   font-weight: 700;
   margin: 0 0 16px 0;
@@ -416,9 +420,9 @@ export default {
 /* Grid 2x2 */
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px 32px;
-  margin-bottom: 28px;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
 }
 
 .form-group {
@@ -428,8 +432,8 @@ export default {
 }
 
 .form-group label {
-  color: #ffffff;
-  font-size: 12px;
+  color: #2e5d2e;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.6px;
 }
@@ -437,16 +441,18 @@ export default {
 .form-group textarea {
   width: 100%;
   min-height: 100px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 10px 12px;
+  border: 1.5px solid #d9d9d9;
+  border-radius: 12px;
+  padding: 11px 14px;
   font-family: inherit;
   font-size: 13px;
   color: #1e3e1e;
   resize: vertical;
   outline: none;
   background: #ffffff;
-  transition: box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .form-group textarea:disabled {
@@ -458,14 +464,15 @@ export default {
 
 .form-group textarea:focus:not(:disabled) {
   border-color: #8fbe4a;
-  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
+  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.25);
 }
 
 /* Tabela de medicamentos */
 .medicamentos-section {
   border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
+  border-radius: 16px;
   overflow: hidden;
+  background: #ffffff;
 }
 
 .medicamentos-table {
@@ -476,18 +483,18 @@ export default {
 
 .medicamentos-table th {
   text-align: left;
-  padding: 12px 16px;
+  padding: 12px 14px;
   font-weight: 700;
   letter-spacing: 0.6px;
   color: #ffffff;
-  background: rgba(107, 161, 63, 0.35);
+  background: #6ba13f;
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .medicamentos-table td {
-  padding: 11px 16px;
-  color: #ffffff;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 11px 14px;
+  color: #1e3e1e;
+  border-bottom: 1px solid #e2e8e0;
 }
 
 .medicamentos-table tbody tr:last-child td {
@@ -500,7 +507,7 @@ export default {
 }
 
 .medicamentos-table tbody tr:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: #f2f6f0;
 }
 
 .checkbox-icon {
@@ -524,9 +531,9 @@ export default {
 .med-input {
   width: calc(100% - 26px);
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+  border-bottom: 1px solid #c9d4c5;
   background: transparent;
-  color: #ffffff;
+  color: #1e3e1e;
   font-family: inherit;
   font-size: 13px;
   padding: 2px 4px;
@@ -534,7 +541,7 @@ export default {
 }
 
 .med-input::placeholder {
-  color: rgba(255, 255, 255, 0.55);
+  color: #8fa093;
 }
 
 .med-input:focus {
@@ -545,9 +552,8 @@ export default {
 .btn-adicionar {
   display: block;
   width: 100%;
-  background: rgba(255, 255, 255, 0.05);
+  background: #6ba13f;
   border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.25);
   color: #ffffff;
   font-family: inherit;
   font-weight: 700;
@@ -560,7 +566,7 @@ export default {
 }
 
 .btn-adicionar:hover {
-  background: rgba(143, 190, 74, 0.25);
+  background: #7caf49;
 }
 
 .th-acao {
@@ -577,27 +583,30 @@ export default {
   border: none;
   padding: 4px;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.45);
+  color: #2e5d2e;
   border-radius: 4px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.15s ease, background 0.15s ease;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
 }
 
 .btn-remover:hover {
-  color: #ff6b6b;
-  background: rgba(255, 107, 107, 0.15);
+  color: #c0392b;
+  background: rgba(192, 57, 43, 0.1);
 }
 
 /* Footer do painel */
 .form-footer {
   display: flex;
   justify-content: flex-end;
-  margin-top: 26px;
+  margin-top: 20px;
 }
 
 .btn-salvar {
+  width: 100%;
   background: #6ba13f;
   border: none;
   color: #ffffff;
@@ -605,8 +614,8 @@ export default {
   font-weight: 700;
   font-size: 13px;
   letter-spacing: 0.5px;
-  padding: 12px 34px;
-  border-radius: 7px;
+  padding: 14px 0;
+  border-radius: 12px;
   cursor: pointer;
   transition:
     background 0.2s ease,
@@ -631,30 +640,138 @@ export default {
   width: 100%;
 }
 
-@media (max-width: 900px) {
+@media (min-width: 768px) {
   .main-content {
-    padding: 28px 20px 40px 20px;
+    background: #2e5d2e;
+    padding: 48px 60px 56px 60px;
   }
 
   .dados-painel {
-    padding: 32px 26px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.045);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+    padding: 52px 58px;
   }
 
   .card-header {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 28px;
+  }
+
+  .avatar {
+    background: rgba(255, 255, 255, 0.14);
+    border: 1.5px solid rgba(255, 255, 255, 0.45);
+  }
+
+  .titulo-pill {
+    background: #6ba13f;
+    color: #ffffff;
+    font-size: 17px;
+    padding: 10px 26px;
+    border-radius: 6px;
   }
 
   .btn-editar {
-    align-self: flex-start;
+    width: auto;
+    padding: 11px 26px;
+    border-radius: 7px;
+  }
+
+  .btn-editar--cancelar {
+    background: transparent;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+    color: #ffffff;
+  }
+
+  .btn-editar--cancelar:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .msg-erro {
+    color: #ffdada;
+  }
+
+  .msg-sucesso {
+    color: #d9f2c2;
   }
 
   .form-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 32px;
+    margin-bottom: 28px;
+  }
+
+  .form-group label {
+    color: #ffffff;
+    font-size: 12px;
+  }
+
+  .form-group textarea {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 10px 12px;
   }
 
   .medicamentos-section {
-    overflow-x: auto;
+    border-color: rgba(255, 255, 255, 0.3);
+    background: transparent;
+  }
+
+  .medicamentos-table th {
+    background: rgba(107, 161, 63, 0.35);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  .medicamentos-table td {
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  }
+
+  .medicamentos-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .med-input {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+    color: #ffffff;
+  }
+
+  .med-input::placeholder {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .btn-adicionar {
+    background: rgba(255, 255, 255, 0.05);
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+  }
+
+  .btn-adicionar:hover {
+    background: rgba(143, 190, 74, 0.25);
+  }
+
+  .btn-remover {
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .btn-remover:hover {
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.15);
+  }
+
+  .form-footer {
+    margin-top: 26px;
+  }
+
+  .btn-salvar {
+    width: auto;
+    padding: 12px 34px;
+    border-radius: 7px;
   }
 }
 </style>

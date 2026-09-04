@@ -138,48 +138,46 @@ function sair() {
 
 .main-content {
   flex: 1;
-  background: #2e5d2e;
-  padding: 48px 60px 56px 60px;
+  background: linear-gradient(160deg, #2e5d2e 0%, #3c7039 45%, #6ba13f 100%);
+  padding: 28px 16px 24px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Painel: mesmo tratamento de card usado no perfil do residente,
-   para que as duas telas leiam como parte do mesmo sistema. */
 .perfil-painel {
   width: 100%;
   max-width: 1080px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-  padding: 52px 58px;
 }
 
 .perfil-card {
   display: flex;
-  gap: 56px;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
 }
 
 .foto-coluna {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   flex-shrink: 0;
+  width: 100%;
 }
 
 .foto-box {
-  width: 260px;
-  height: 290px;
-  border-radius: 10px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
   overflow: hidden;
   background-color: #d9d9d9;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 4px solid #ffffff;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
 }
 
 .foto-img {
@@ -189,26 +187,31 @@ function sair() {
 }
 
 .icone-foto-vazia {
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
   opacity: 0.55;
 }
 
-.btn-editar {
+.btn-editar,
+.btn-sair {
   width: 100%;
-  background: #6ba13f;
-  color: #ffffff;
-  border: none;
-  padding: 12px 0;
-  border-radius: 7px;
+  max-width: 280px;
+  border-radius: 12px;
   font-family: inherit;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.5px;
+  padding: 13px 0;
   cursor: pointer;
   transition:
     background 0.2s ease,
     transform 0.15s ease;
+}
+
+.btn-editar {
+  background: #6ba13f;
+  color: #ffffff;
+  border: none;
 }
 
 .btn-editar:hover {
@@ -217,73 +220,68 @@ function sair() {
 }
 
 .btn-sair {
-  width: 100%;
-  background: transparent;
-  color: #ffffff;
-  border: 1.5px solid rgba(255, 255, 255, 0.7);
-  padding: 11px 0;
-  border-radius: 7px;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
+  background: #ffffff;
+  color: #2e5d2e;
+  border: none;
 }
 
 .btn-sair:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #ffffff;
+  background: #e8f0e8;
 }
 
 .info-coluna {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  align-items: center;
+  gap: 16px;
   min-width: 0;
+  width: 100%;
 }
 
 .nome {
   color: #ffffff;
-  font-size: 28px;
-  font-weight: 600;
+  font-size: 26px;
+  font-weight: 800;
   margin: 0;
   line-height: 1.15;
+  text-align: center;
 }
 
 .titulo-pill {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  align-self: flex-start;
-  background: #6ba13f;
-  color: #ffffff;
-  font-size: 17px;
+  background: #ffffff;
+  color: #2e5d2e;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.4px;
-  padding: 10px 26px;
-  border-radius: 6px;
+  padding: 7px 20px;
+  border-radius: 999px;
 }
 
 .bloco-info {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.4);
-  padding-top: 22px;
+  gap: 10px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
 }
 
 .linha-info {
-  color: #ffffff;
-  font-size: 15px;
+  color: #4a5f4e;
+  font-size: 14px;
   margin: 0;
+  text-align: center;
 }
 
 .label {
   font-weight: 700;
+  color: #2e5d2e;
   margin-right: 6px;
 }
 
@@ -297,28 +295,98 @@ function sair() {
   width: 100%;
 }
 
-@media (max-width: 900px) {
+@media (min-width: 768px) {
   .main-content {
-    padding: 28px 20px 40px 20px;
+    background: #2e5d2e;
+    padding: 48px 60px 56px 60px;
   }
 
   .perfil-painel {
-    padding: 32px 26px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.045);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+    padding: 52px 58px;
   }
 
   .perfil-card {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    gap: 56px;
+    align-items: flex-start;
   }
 
   .foto-coluna {
-    width: 100%;
     max-width: 260px;
+    gap: 16px;
   }
 
   .foto-box {
-    width: 100%;
-    height: 220px;
+    width: 260px;
+    height: 290px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: none;
+  }
+
+  .icone-foto-vazia {
+    width: 64px;
+    height: 64px;
+  }
+
+  .btn-editar,
+  .btn-sair {
+    max-width: none;
+    border-radius: 7px;
+    font-size: 12px;
+    padding: 12px 0;
+  }
+
+  .btn-sair {
+    background: transparent;
+    color: #ffffff;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+  }
+
+  .btn-sair:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .info-coluna {
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .nome {
+    font-size: 28px;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  .titulo-pill {
+    background: #6ba13f;
+    color: #ffffff;
+    font-size: 17px;
+    padding: 10px 26px;
+    border-radius: 6px;
+  }
+
+  .bloco-info {
+    gap: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.4);
+    padding-top: 22px;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .linha-info {
+    color: #ffffff;
+    font-size: 15px;
+    text-align: left;
+  }
+
+  .label {
+    color: #ffffff;
   }
 }
 </style>

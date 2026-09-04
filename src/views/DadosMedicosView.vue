@@ -4,7 +4,7 @@
       <section class="dados-painel">
         <div class="titulo-pill">
           <img
-            src="/src/assets/images/icone-dados-medicos.png"
+            :src="iconeDadosMedicos"
             alt=""
             aria-hidden="true"
             class="titulo-icone"
@@ -55,6 +55,7 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import iconeDadosMedicos from '@/assets/images/icone-dados-medicos.png'
 
 const router = useRouter()
 const emit = defineEmits(['dados-medicos'])
@@ -108,23 +109,16 @@ async function handleProximo() {
 
 .main-content {
   flex: 1;
-  background: #2e5d2e;
-  padding: 48px 60px 56px 60px;
+  background: linear-gradient(160deg, #2e5d2e 0%, #3c7039 45%, #6ba13f 100%);
+  padding: 28px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Painel: mesmo tratamento de card usado no perfil do residente,
-   para que as duas telas leiam como parte do mesmo sistema. */
 .dados-painel {
   width: 100%;
   max-width: 1080px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-  padding: 52px 58px;
 }
 
 .titulo-pill {
@@ -132,40 +126,49 @@ async function handleProximo() {
   align-items: center;
   gap: 10px;
   align-self: flex-start;
-  background: #6ba13f;
-  color: #ffffff;
-  font-size: 17px;
+  background: #ffffff;
+  color: #2e5d2e;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.4px;
-  padding: 10px 26px;
-  border-radius: 6px;
-  margin-bottom: 28px;
+  padding: 8px 20px;
+  border-radius: 999px;
+  margin-bottom: 20px;
 }
 
 .titulo-icone {
   width: 18px;
   height: 18px;
   object-fit: contain;
-  filter: brightness(0) invert(1);
+  filter: brightness(0) saturate(100%) invert(35%) sepia(24%) saturate(1200%) hue-rotate(70deg);
 }
 
 .msg-erro {
-  color: #ffdada;
+  color: #c0392b;
   font-size: 13px;
   margin: 0 0 16px 0;
 }
 
 .msg-sucesso {
-  color: #d9f2c2;
+  color: #2e5d2e;
   font-size: 13px;
   font-weight: 700;
   margin: 0 0 16px 0;
 }
 
+.dados-form {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 20px 18px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+}
+
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px 32px;
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
 
 .form-group {
@@ -175,8 +178,8 @@ async function handleProximo() {
 }
 
 .form-group label {
-  color: #ffffff;
-  font-size: 12px;
+  color: #2e5d2e;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.6px;
 }
@@ -184,30 +187,33 @@ async function handleProximo() {
 .form-group textarea {
   width: 100%;
   min-height: 110px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 10px 12px;
+  border: 1.5px solid #d9d9d9;
+  border-radius: 12px;
+  padding: 11px 14px;
   font-family: inherit;
   font-size: 14px;
   color: #1e3e1e;
   background: #ffffff;
   resize: vertical;
   outline: none;
-  transition: box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .form-group textarea:focus {
   border-color: #8fbe4a;
-  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
+  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.25);
 }
 
 .form-footer {
   display: flex;
   justify-content: flex-end;
-  margin-top: 24px;
+  margin-top: 20px;
 }
 
 .btn-proximo {
+  width: 100%;
   background: #6ba13f;
   border: none;
   color: #ffffff;
@@ -215,11 +221,12 @@ async function handleProximo() {
   font-weight: 700;
   font-size: 13px;
   letter-spacing: 0.5px;
-  padding: 12px 34px;
-  border-radius: 7px;
+  padding: 14px 0;
+  border-radius: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   transition:
     background 0.2s ease,
@@ -248,17 +255,67 @@ async function handleProximo() {
   width: 100%;
 }
 
-@media (max-width: 900px) {
+@media (min-width: 768px) {
   .main-content {
-    padding: 28px 20px 40px 20px;
+    background: #2e5d2e;
+    padding: 48px 60px 56px 60px;
   }
 
   .dados-painel {
-    padding: 32px 26px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.045);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+    padding: 52px 58px;
+  }
+
+  .titulo-pill {
+    background: #6ba13f;
+    color: #ffffff;
+    font-size: 17px;
+    padding: 10px 26px;
+    border-radius: 6px;
+  }
+
+  .titulo-icone {
+    filter: brightness(0) invert(1);
+  }
+
+  .msg-erro {
+    color: #ffdada;
+  }
+
+  .msg-sucesso {
+    color: #d9f2c2;
+  }
+
+  .dados-form {
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
   }
 
   .form-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px 32px;
+  }
+
+  .form-group label {
+    color: #ffffff;
+    font-size: 12px;
+  }
+
+  .form-group textarea {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+
+  .btn-proximo {
+    width: auto;
+    padding: 12px 34px;
+    border-radius: 7px;
   }
 }
 </style>

@@ -199,10 +199,11 @@ onMounted(buscarResidente)
 .perfil-residente {
   flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 60px 70px 68px 70px;
-  background: #2e5d2e;
+  justify-content: flex-start;
+  padding: 24px 16px 28px;
+  background: linear-gradient(160deg, #2e5d2e 0%, #3c7039 45%, #6ba13f 100%);
   position: relative;
   min-height: 0;
 }
@@ -218,39 +219,36 @@ onMounted(buscarResidente)
   text-align: center;
 }
 
-/* Painel: dá ao conteúdo um limite visual definido em vez de
-   texto solto sobre o fundo verde, e ocupa proporcionalmente
-   o espaço disponível na tela. */
 .perfil-painel {
   width: 100%;
   max-width: 1180px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-  padding: 56px 64px;
 }
 
 .perfil-conteudo {
   display: flex;
-  gap: 70px;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
 }
 
 .grupo-foto {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
   flex-shrink: 0;
+  width: 100%;
 }
 
 .perfil-foto {
-  width: 260px;
-  height: 290px;
-  border-radius: 14px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
   background: #d9d9d9;
   overflow: hidden;
+  border: 4px solid #ffffff;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
 }
 
 .perfil-img {
@@ -261,13 +259,14 @@ onMounted(buscarResidente)
 
 .btn-editar {
   width: 100%;
+  max-width: 260px;
   background: #ffffff;
   border: none;
   color: #2e5d2e;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 13px;
   padding: 12px 0;
-  border-radius: 7px;
+  border-radius: 12px;
   cursor: pointer;
   transition:
     transform 0.15s ease,
@@ -284,65 +283,74 @@ onMounted(buscarResidente)
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 24px;
+  width: 100%;
 }
 
 .grupo-informacoes {
   display: flex;
-  gap: 80px;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.perfil-dados,
+.perfil-dependencia,
+.observacoes-box {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
 }
 
 .perfil-dados {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding-top: 5px;
-  flex: 1;
-  min-width: 0;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
 }
 
 .residente-nome {
-  color: #ffffff;
-  font-size: 28px;
-  font-weight: 600;
-  margin: 0 0 8px 0;
+  color: #2e5d2e;
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0 0 6px 0;
   line-height: 1.15;
 }
 
 .dado-linha {
-  color: #ffffff;
-  font-size: 16px;
+  color: #4a5f4e;
+  font-size: 14px;
   font-weight: 400;
   margin: 0;
 }
 
 .dado-linha strong {
-  font-weight: 600;
+  font-weight: 700;
+  color: #2e5d2e;
 }
 
 .perfil-dependencia {
   display: flex;
   flex-direction: column;
-  gap: 13px;
-  padding-top: 46px;
-  flex-shrink: 0;
+  gap: 12px;
 }
 
 .dependencia-titulo {
-  color: #ffffff;
-  font-size: 17px;
-  font-weight: 600;
-  margin: 0 0 6px 0;
+  color: #2e5d2e;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
 }
 
 .dependencia-item {
   display: flex;
   align-items: center;
-  gap: 9px;
-  color: #ffffff;
-  font-size: 15px;
-  font-weight: 400;
+  gap: 10px;
+  color: #4a5f4e;
+  font-size: 13px;
+  font-weight: 500;
   white-space: nowrap;
 }
 
@@ -361,20 +369,21 @@ onMounted(buscarResidente)
 
 .perfil-menu {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px 18px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
   width: 100%;
 }
 
 .btn-menu {
-  background-color: #72a840;
-  color: #ffffff;
-  font-weight: 600;
+  background-color: #ffffff;
+  color: #2e5d2e;
+  font-weight: 700;
   font-size: 13px;
   border: none;
-  border-radius: 8px;
-  padding: 14px 12px;
+  border-radius: 14px;
+  padding: 18px 12px;
   cursor: pointer;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16);
   transition:
     background-color 0.2s ease,
     transform 0.2s ease;
@@ -382,22 +391,18 @@ onMounted(buscarResidente)
 
 .btn-menu:hover {
   background-color: #7caf49;
+  color: #ffffff;
   transform: translateY(-1px);
 }
 
-/* Caixa de observações: mesmo tratamento visual usado na tela de
-   contatos, movida para o perfil do residente. */
 .observacoes-box {
-  border: 1.5px solid #ffffff;
-  border-radius: 8px;
-  padding: 16px 20px;
-  min-height: 110px;
-  color: #ffffff;
+  color: #4a5f4e;
 }
 
 .observacoes-box .label {
   display: block;
   font-weight: 700;
+  color: #2e5d2e;
   margin-bottom: 8px;
 }
 
@@ -405,7 +410,6 @@ onMounted(buscarResidente)
   margin: 0;
   font-size: 13px;
   font-weight: 400;
-  color: #f0f0f0;
   white-space: pre-line;
 }
 
@@ -418,33 +422,142 @@ onMounted(buscarResidente)
   left: 0;
 }
 
-@media (max-width: 900px) {
+@media (min-width: 768px) {
   .perfil-residente {
-    padding: 40px 24px 48px 24px;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 70px 68px 70px;
+    background: #2e5d2e;
   }
 
   .perfil-painel {
-    padding: 36px 28px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.045);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+    padding: 56px 64px;
   }
 
   .perfil-conteudo {
-    flex-direction: column;
-    align-items: center;
-    gap: 32px;
+    flex-direction: row;
+    gap: 70px;
+    align-items: flex-start;
+  }
+
+  .grupo-foto {
+    gap: 24px;
+    max-width: 260px;
+  }
+
+  .perfil-foto {
+    width: 260px;
+    height: 290px;
+    border-radius: 14px;
+    border: none;
+    box-shadow: none;
+  }
+
+  .btn-editar {
+    max-width: none;
+    background: #ffffff;
+    color: #2e5d2e;
+    border-radius: 7px;
+    font-weight: 600;
+  }
+
+  .grupo-conteudo {
+    gap: 40px;
   }
 
   .grupo-informacoes {
+    flex-direction: row;
+    gap: 80px;
+    align-items: flex-start;
+  }
+
+  .perfil-dados {
+    display: flex;
     flex-direction: column;
-    gap: 32px;
-    width: 100%;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 5px 0 0;
+    text-align: left;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .residente-nome {
+    color: #ffffff;
+    font-size: 28px;
+    font-weight: 600;
+  }
+
+  .dado-linha {
+    color: #ffffff;
+    font-size: 16px;
+  }
+
+  .dado-linha strong {
+    font-weight: 600;
+    color: #ffffff;
   }
 
   .perfil-dependencia {
-    padding-top: 0;
+    gap: 13px;
+    padding-top: 46px;
+    flex-shrink: 0;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .dependencia-titulo {
+    color: #ffffff;
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  .dependencia-item {
+    color: #ffffff;
+    font-size: 15px;
   }
 
   .perfil-menu {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px 18px;
+  }
+
+  .btn-menu {
+    background-color: #72a840;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 13px;
+    border-radius: 8px;
+    padding: 14px 12px;
+    box-shadow: none;
+  }
+
+  .btn-menu:hover {
+    background-color: #7caf49;
+  }
+
+  .observacoes-box {
+    border: 1.5px solid #ffffff;
+    border-radius: 8px;
+    padding: 16px 20px;
+    min-height: 110px;
+    color: #ffffff;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .observacoes-box .label {
+    color: #ffffff;
+  }
+
+  .observacoes-texto {
+    color: #f0f0f0;
   }
 }
 </style>

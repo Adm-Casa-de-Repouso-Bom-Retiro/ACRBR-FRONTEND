@@ -299,34 +299,33 @@ onMounted(buscarResidentes)
 
 .main-content {
   flex: 1;
-  background: #2e5d2e;
-  padding: 30px 50px;
+  background: linear-gradient(160deg, #2e5d2e 0%, #3c7039 40%, #6ba13f 100%);
+  padding: 28px 16px 24px;
   display: flex;
   flex-direction: column;
 }
 
 .barra-topo {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-  gap: 20px;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
 .campo-busca {
   position: relative;
-  flex: 1;
-  max-width: 500px;
+  width: 100%;
 }
 
 .campo-busca input {
   width: 100%;
-  height: 38px;
+  height: 46px;
   border: none;
-  border-radius: 20px;
-  padding: 0 40px 0 16px;
-  font-size: 13px;
+  border-radius: 14px;
+  padding: 0 44px 0 16px;
+  font-size: 14px;
   color: #1e3e1e;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.14);
 }
 
 .campo-busca svg {
@@ -340,20 +339,23 @@ onMounted(buscarResidentes)
 .btn-filtros {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  background: transparent;
-  border: 1.5px solid #ffffff;
-  border-radius: 20px;
-  padding: 8px 18px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  border-radius: 14px;
+  padding: 11px 18px;
   color: #ffffff;
   font-size: 12px;
   font-weight: bold;
+  font-family: inherit;
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
 .btn-filtros:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.22);
 }
 
 .btn-filtros.ativo {
@@ -363,14 +365,14 @@ onMounted(buscarResidentes)
 
 .painel-filtros {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 18px 36px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  border-radius: 14px;
-  padding: 16px 20px;
-  margin-bottom: 26px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
 }
 
 .filtro-grupo {
@@ -380,7 +382,7 @@ onMounted(buscarResidentes)
 }
 
 .filtro-titulo {
-  color: #cfe0cd;
+  color: #6ba13f;
   font-size: 11px;
   font-weight: bold;
   letter-spacing: 0.8px;
@@ -393,11 +395,11 @@ onMounted(buscarResidentes)
 }
 
 .filtro-btn {
-  background: transparent;
-  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  background: #eef4ec;
+  border: 1.5px solid transparent;
   border-radius: 20px;
-  padding: 6px 14px;
-  color: #ffffff;
+  padding: 7px 14px;
+  color: #4a5f4e;
   font-family: inherit;
   font-size: 11px;
   font-weight: bold;
@@ -405,23 +407,25 @@ onMounted(buscarResidentes)
   cursor: pointer;
   transition:
     background 0.15s ease,
-    border-color 0.15s ease;
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .filtro-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: #e2ecdf;
 }
 
 .filtro-btn.ativo {
   background: #6ba13f;
   border-color: #6ba13f;
+  color: #ffffff;
 }
 
 .btn-limpar-filtros {
-  margin-left: auto;
+  align-self: flex-end;
   background: none;
   border: none;
-  color: #ffffff;
+  color: #6ba13f;
   font-family: inherit;
   font-size: 11px;
   font-weight: bold;
@@ -450,7 +454,7 @@ onMounted(buscarResidentes)
 }
 
 .msg-erro {
-  color: #ffdada;
+  color: #c0392b;
   font-size: 13px;
   margin-bottom: 16px;
 }
@@ -470,10 +474,11 @@ onMounted(buscarResidentes)
   justify-content: center;
   gap: 10px;
   text-align: center;
+  padding: 20px 0;
 }
 
 .icone-vazio {
-  opacity: 0.85;
+  opacity: 0.6;
   margin-bottom: 8px;
 }
 
@@ -485,7 +490,7 @@ onMounted(buscarResidentes)
 }
 
 .msg-vazio-sub {
-  color: #d7e3d4;
+  color: #e4eee2;
   font-size: 13px;
   margin: 0 0 14px 0;
 }
@@ -494,13 +499,14 @@ onMounted(buscarResidentes)
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #ffffff;
-  color: #305126;
+  background: #6ba13f;
+  color: #ffffff;
   border: none;
-  padding: 12px 28px;
-  border-radius: 6px;
+  padding: 12px 24px;
+  border-radius: 12px;
   font-size: 13px;
   font-weight: bold;
+  font-family: inherit;
   cursor: pointer;
   transition:
     background 0.2s ease,
@@ -508,19 +514,126 @@ onMounted(buscarResidentes)
 }
 
 .btn-cadastrar:hover {
-  background: #e8f0e8;
+  background: #7caf49;
   transform: translateY(-2px);
 }
 
 .residentes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 26px;
+  grid-template-columns: 1fr;
+  gap: 12px;
 }
 
 .linha-divisoria {
   height: 1vw;
   background: #ffffff;
   width: 100%;
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    background: #2e5d2e;
+    padding: 30px 50px;
+  }
+
+  .barra-topo {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 20px;
+  }
+
+  .campo-busca {
+    flex: 1;
+    max-width: 500px;
+  }
+
+  .campo-busca input {
+    height: 38px;
+    border-radius: 20px;
+    padding: 0 40px 0 16px;
+    font-size: 13px;
+    box-shadow: none;
+  }
+
+  .btn-filtros {
+    width: auto;
+    justify-content: flex-start;
+    background: transparent;
+    border: 1.5px solid #ffffff;
+    border-radius: 20px;
+    padding: 8px 18px;
+  }
+
+  .btn-filtros:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .btn-filtros.ativo {
+    background: #6ba13f;
+    border-color: #6ba13f;
+  }
+
+  .painel-filtros {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 18px 36px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+    padding: 16px 20px;
+    box-shadow: none;
+  }
+
+  .filtro-titulo {
+    color: #cfe0cd;
+  }
+
+  .filtro-btn {
+    background: transparent;
+    border: 1.5px solid rgba(255, 255, 255, 0.5);
+    color: #ffffff;
+  }
+
+  .filtro-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .filtro-btn.ativo {
+    background: #6ba13f;
+    border-color: #6ba13f;
+    color: #ffffff;
+  }
+
+  .btn-limpar-filtros {
+    margin-left: auto;
+    align-self: auto;
+    color: #ffffff;
+  }
+
+  .msg-erro {
+    color: #ffdada;
+  }
+
+  .msg-vazio-sub {
+    color: #d7e3d4;
+  }
+
+  .btn-cadastrar {
+    background: #ffffff;
+    color: #305126;
+    border-radius: 6px;
+  }
+
+  .btn-cadastrar:hover {
+    background: #e8f0e8;
+  }
+
+  .residentes-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 26px;
+  }
 }
 </style>

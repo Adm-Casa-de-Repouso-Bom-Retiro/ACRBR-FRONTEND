@@ -28,8 +28,14 @@
 
     <div class="residente-corpo">
       <span class="residente-nome">{{ residente.nome_completo }}</span>
-      <span class="residente-meta">Quarto {{ residente.quarto || '—' }} · {{ rotuloGrau }}</span>
+
+      <div class="residente-chips">
+        <span class="chip">Quarto {{ residente.quarto || '—' }}</span>
+        <span class="chip">{{ rotuloGrau }}</span>
+      </div>
     </div>
+
+    <span class="residente-seta">→</span>
   </div>
 </template>
 
@@ -62,24 +68,24 @@ function irParaPerfil() {
   box-sizing: border-box;
 }
 
-/* Card minimalista: foto, identificação e nada além disso.
-   O clique em qualquer área leva ao perfil. */
+/* Card mobile: linha com foto à esquerda e metadados, estilo app. */
 .residente-card {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 14px;
   background: #ffffff;
-  border-radius: 12px;
-  overflow: hidden;
+  border-radius: 16px;
+  padding: 12px;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease;
 }
 
 .residente-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.26);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
 }
 
 .residente-card:focus-visible {
@@ -88,8 +94,10 @@ function irParaPerfil() {
 }
 
 .residente-foto {
-  width: 100%;
-  height: 140px;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+  border-radius: 12px;
   background-color: #d9d9d9;
   display: flex;
   align-items: center;
@@ -101,35 +109,89 @@ function irParaPerfil() {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.25s ease;
-}
-
-.residente-card:hover .residente-img {
-  transform: scale(1.04);
 }
 
 .icone-foto-vazia {
-  width: 38px;
-  height: 38px;
+  width: 24px;
+  height: 24px;
   opacity: 0.5;
 }
 
 .residente-corpo {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 3px;
-  padding: 12px 14px 14px 14px;
+  gap: 6px;
 }
 
 .residente-nome {
   color: #2e5d2e;
-  font-size: 13px;
-  font-weight: bold;
-  line-height: 1.3;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.residente-meta {
-  color: #6b7d6f;
-  font-size: 11.5px;
+.residente-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  background: #eef4ec;
+  color: #4a5f4e;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+}
+
+.residente-seta {
+  color: #6ba13f;
+  font-size: 20px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Desktop: card em coluna (foto grande no topo). */
+@media (min-width: 768px) {
+  .residente-card {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  }
+
+  .residente-foto {
+    width: 100%;
+    height: 140px;
+    border-radius: 0;
+  }
+
+  .icone-foto-vazia {
+    width: 38px;
+    height: 38px;
+  }
+
+  .residente-corpo {
+    padding: 12px 14px 14px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .residente-nome {
+    white-space: normal;
+  }
+
+  .residente-seta {
+    display: none;
+  }
 }
 </style>

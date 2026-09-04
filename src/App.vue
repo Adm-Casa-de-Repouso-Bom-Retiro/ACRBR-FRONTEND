@@ -1,4 +1,5 @@
 <script setup>
+import BottomNav from './components/BottomNav.vue'
 import FooterComponent from './components/FooterComponent.vue'
 import HeaderComponent from './components/HeaderComponent.vue'
 </script>
@@ -10,6 +11,7 @@ import HeaderComponent from './components/HeaderComponent.vue'
       <router-view />
     </main>
     <FooterComponent />
+    <BottomNav />
   </div>
 </template>
 
@@ -46,5 +48,11 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
+}
+
+@media (max-width: 767px) {
+  .app-main {
+    padding-bottom: 74px;
+  }
 }
 </style>

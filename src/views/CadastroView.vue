@@ -244,36 +244,31 @@ async function handleCadastro() {
 
 .main-content {
   flex: 1;
-  background: #2e5d2e;
-  padding: 48px 60px 56px 60px;
+  background: linear-gradient(160deg, #2e5d2e 0%, #3c7039 45%, #6ba13f 100%);
+  padding: 28px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Painel: mesmo tratamento de card usado no perfil do residente,
-   para que todas as telas leiam como parte do mesmo sistema. */
 .cadastro-painel {
   width: 100%;
   max-width: 1080px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-  padding: 52px 58px;
 }
 
 .cadastro-card {
   display: flex;
-  gap: 56px;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
 }
 
 .foto-coluna {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 12px;
   flex-shrink: 0;
 }
 
@@ -283,20 +278,21 @@ async function handleCadastro() {
 }
 
 .avatar-circle {
-  width: 150px;
-  height: 150px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.14);
-  border: 2px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.2);
+  border: 3px solid #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
   transition: border-color 0.2s ease;
 }
 
 .avatar-wrap:hover .avatar-circle {
-  border-color: rgba(255, 255, 255, 0.75);
+  border-color: #6ba13f;
 }
 
 .avatar-circle--foto {
@@ -308,7 +304,7 @@ async function handleCadastro() {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  padding: 18px;
+  padding: 16px;
 }
 
 .avatar-img--foto {
@@ -318,10 +314,10 @@ async function handleCadastro() {
 
 .cam-btn {
   position: absolute;
-  bottom: 4px;
-  right: 4px;
-  width: 36px;
-  height: 36px;
+  bottom: 0;
+  right: 0;
+  width: 34px;
+  height: 34px;
   background: #6ba13f;
   border-radius: 50%;
   border: 2px solid #ffffff;
@@ -336,7 +332,7 @@ async function handleCadastro() {
 }
 
 .foto-dica {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.8px;
@@ -346,8 +342,13 @@ async function handleCadastro() {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 18px;
   min-width: 0;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 20px 18px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
 }
 
 .titulo-pill {
@@ -357,21 +358,21 @@ async function handleCadastro() {
   align-self: flex-start;
   background: #6ba13f;
   color: #ffffff;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.4px;
-  padding: 10px 26px;
-  border-radius: 6px;
+  padding: 8px 18px;
+  border-radius: 999px;
 }
 
 .msg-erro {
-  color: #ffdada;
+  color: #c0392b;
   font-size: 13px;
   margin: 0;
 }
 
 .msg-sucesso {
-  color: #d9f2c2;
+  color: #2e5d2e;
   font-size: 13px;
   font-weight: 700;
   margin: 0;
@@ -379,14 +380,15 @@ async function handleCadastro() {
 
 .form-grid {
   display: flex;
-  gap: 32px;
+  flex-direction: column;
+  gap: 18px;
 }
 
 .col {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 
 .form-group {
@@ -396,8 +398,8 @@ async function handleCadastro() {
 }
 
 .form-group label {
-  color: #ffffff;
-  font-size: 12px;
+  color: #2e5d2e;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.6px;
 }
@@ -405,16 +407,18 @@ async function handleCadastro() {
 .form-group input,
 .form-group select {
   width: 100%;
-  height: 38px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  padding: 0 12px;
+  height: 46px;
+  border: 1.5px solid #d9d9d9;
+  border-radius: 12px;
+  padding: 0 14px;
   font-size: 14px;
   font-family: inherit;
   color: #1e3e1e;
   background-color: #ffffff;
   outline: none;
-  transition: box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .form-group select {
@@ -428,7 +432,7 @@ async function handleCadastro() {
 .form-group input:focus,
 .form-group select:focus {
   border-color: #8fbe4a;
-  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
+  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.25);
 }
 
 .form-group input::placeholder {
@@ -437,21 +441,22 @@ async function handleCadastro() {
 
 .campo-obs {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.65);
+  color: #6b7d6f;
 }
 
 .form-footer {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   margin-top: 6px;
 }
 
 .btn-criar {
+  width: 100%;
   background: #6ba13f;
   color: #ffffff;
   border: none;
-  padding: 13px 36px;
-  border-radius: 7px;
+  padding: 14px 0;
+  border-radius: 12px;
   font-family: inherit;
   font-size: 13px;
   font-weight: 700;
@@ -480,27 +485,100 @@ async function handleCadastro() {
   width: 100%;
 }
 
-@media (max-width: 900px) {
+@media (min-width: 768px) {
   .main-content {
-    padding: 28px 20px 40px 20px;
+    background: #2e5d2e;
+    padding: 48px 60px 56px 60px;
   }
 
   .cadastro-painel {
-    padding: 32px 26px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.045);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+    padding: 52px 58px;
   }
 
   .cadastro-card {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    gap: 56px;
+    align-items: flex-start;
+  }
+
+  .foto-coluna {
+    gap: 18px;
+  }
+
+  .avatar-circle {
+    width: 150px;
+    height: 150px;
+    border: 2px solid rgba(255, 255, 255, 0.45);
+    background: rgba(255, 255, 255, 0.14);
+    box-shadow: none;
+  }
+
+  .avatar-img {
+    padding: 18px;
+  }
+
+  .foto-dica {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .info-coluna {
+    gap: 22px;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .titulo-pill {
+    background: #6ba13f;
+    color: #ffffff;
+    font-size: 17px;
+    padding: 10px 26px;
+    border-radius: 6px;
+  }
+
+  .msg-erro {
+    color: #ffdada;
+  }
+
+  .msg-sucesso {
+    color: #d9f2c2;
   }
 
   .form-grid {
-    flex-direction: column;
-    gap: 16px;
+    flex-direction: row;
+    gap: 32px;
+  }
+
+  .form-group label {
+    color: #ffffff;
+    font-size: 12px;
+  }
+
+  .form-group input,
+  .form-group select {
+    height: 38px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 0 12px;
+  }
+
+  .campo-obs {
+    color: rgba(255, 255, 255, 0.65);
   }
 
   .form-footer {
-    justify-content: center;
+    justify-content: flex-end;
+  }
+
+  .btn-criar {
+    width: auto;
+    padding: 13px 36px;
+    border-radius: 7px;
   }
 }
 </style>

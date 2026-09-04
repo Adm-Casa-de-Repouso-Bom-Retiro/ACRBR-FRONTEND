@@ -38,13 +38,7 @@
             :disabled="salvando"
             @click="editarOuSalvar"
           >
-            {{
-              salvando
-                ? 'SALVANDO...'
-                : editando
-                  ? 'SALVAR DADOS'
-                  : 'EDITAR DADOS'
-            }}
+            {{ salvando ? 'SALVANDO...' : editando ? 'SALVAR DADOS' : 'EDITAR DADOS' }}
           </button>
         </div>
 
@@ -60,11 +54,7 @@
                 </div>
               </div>
 
-              <div
-                v-for="item in higieneItems"
-                :key="item.key"
-                class="check-row"
-              >
+              <div v-for="item in higieneItems" :key="item.key" class="check-row">
                 <span>{{ item.label }}</span>
 
                 <div class="check-pair">
@@ -72,7 +62,7 @@
                     type="button"
                     class="check-box"
                     :class="{
-                      active: cuidados.higiene[item.key] === true
+                      active: cuidados.higiene[item.key] === true,
                     }"
                     :disabled="!editando || salvando"
                     @click="alternarValor('higiene', item.key, true)"
@@ -82,7 +72,7 @@
                     type="button"
                     class="check-box"
                     :class="{
-                      active: cuidados.higiene[item.key] === false
+                      active: cuidados.higiene[item.key] === false,
                     }"
                     :disabled="!editando || salvando"
                     @click="alternarValor('higiene', item.key, false)"
@@ -103,11 +93,7 @@
                 </div>
               </div>
 
-              <div
-                v-for="item in locomocaoItems"
-                :key="item.key"
-                class="check-row"
-              >
+              <div v-for="item in locomocaoItems" :key="item.key" class="check-row">
                 <span>{{ item.label }}</span>
 
                 <div class="check-pair">
@@ -115,7 +101,7 @@
                     type="button"
                     class="check-box"
                     :class="{
-                      active: cuidados.locomocao[item.key] === true
+                      active: cuidados.locomocao[item.key] === true,
                     }"
                     :disabled="!editando || salvando"
                     @click="alternarValor('locomocao', item.key, true)"
@@ -125,7 +111,7 @@
                     type="button"
                     class="check-box"
                     :class="{
-                      active: cuidados.locomocao[item.key] === false
+                      active: cuidados.locomocao[item.key] === false,
                     }"
                     :disabled="!editando || salvando"
                     @click="alternarValor('locomocao', item.key, false)"
@@ -144,11 +130,7 @@
                 </div>
               </div>
 
-              <div
-                v-for="item in alimentacaoItems"
-                :key="item.key"
-                class="check-row"
-              >
+              <div v-for="item in alimentacaoItems" :key="item.key" class="check-row">
                 <span>{{ item.label }}</span>
 
                 <div class="check-pair">
@@ -156,7 +138,7 @@
                     type="button"
                     class="check-box"
                     :class="{
-                      active: cuidados.alimentacao[item.key] === true
+                      active: cuidados.alimentacao[item.key] === true,
                     }"
                     :disabled="!editando || salvando"
                     @click="alternarValor('alimentacao', item.key, true)"
@@ -166,7 +148,7 @@
                     type="button"
                     class="check-box"
                     :class="{
-                      active: cuidados.alimentacao[item.key] === false
+                      active: cuidados.alimentacao[item.key] === false,
                     }"
                     :disabled="!editando || salvando"
                     @click="alternarValor('alimentacao', item.key, false)"
@@ -207,8 +189,8 @@ export default {
   props: {
     id: {
       type: [String, Number],
-      default: null
-    }
+      default: null,
+    },
   },
 
   data() {
@@ -221,7 +203,7 @@ export default {
 
       residente: {
         nome: '',
-        foto: null
+        foto: null,
       },
 
       cuidadosId: null,
@@ -232,20 +214,20 @@ export default {
           ajudaHigieneIntima: null,
           ajudaHigieneBucal: null,
           ajudaUsarBanheiro: null,
-          ajudaVestirRoupas: null
+          ajudaVestirRoupas: null,
         },
 
         locomocao: {
           ajudaLocomocao: null,
-          riscoQueda: null
+          riscoQueda: null,
         },
 
         alimentacao: {
           ajudaAlimentar: null,
-          possuiRestricoes: null
+          possuiRestricoes: null,
         },
 
-        observacoes: ''
+        observacoes: '',
       },
 
       higieneItems: [
@@ -253,18 +235,18 @@ export default {
         { key: 'ajudaHigieneIntima', label: 'Ajuda na higiene intima?' },
         { key: 'ajudaHigieneBucal', label: 'Ajuda na higiene bucal?' },
         { key: 'ajudaUsarBanheiro', label: 'Ajuda ao usar o banheiro?' },
-        { key: 'ajudaVestirRoupas', label: 'Ajuda para vestir roupas' }
+        { key: 'ajudaVestirRoupas', label: 'Ajuda para vestir roupas' },
       ],
 
       locomocaoItems: [
         { key: 'ajudaLocomocao', label: 'Ajuda na locomocao?' },
-        { key: 'riscoQueda', label: 'Possui risco de queda?' }
+        { key: 'riscoQueda', label: 'Possui risco de queda?' },
       ],
 
       alimentacaoItems: [
         { key: 'ajudaAlimentar', label: 'Ajuda ao se alimentar?' },
-        { key: 'possuiRestricoes', label: 'Possui restricoes?' }
-      ]
+        { key: 'possuiRestricoes', label: 'Possui restricoes?' },
+      ],
     }
   },
 
@@ -286,7 +268,7 @@ export default {
       }
 
       return null
-    }
+    },
   },
 
   created() {
@@ -336,10 +318,7 @@ export default {
       const id = this.idResidente
 
       if (id === null || id === undefined || id === '') {
-        this.mostrarMensagem(
-          'Nao foi possivel identificar o residente.',
-          'erro'
-        )
+        this.mostrarMensagem('Nao foi possivel identificar o residente.', 'erro')
         return
       }
 
@@ -358,7 +337,7 @@ export default {
           lista = respostaCuidados.data?.results || []
         }
 
-        const cuidado = lista.find(item => {
+        const cuidado = lista.find((item) => {
           if (item.residente && typeof item.residente === 'object') {
             return Number(item.residente.id) === Number(id)
           }
@@ -386,7 +365,6 @@ export default {
         this.cuidados.alimentacao.possuiRestricoes = cuidado.possui_restricoes ?? null
 
         this.cuidados.observacoes = cuidado.observacoes || ''
-
       } catch (erro) {
         console.error('ERRO AO CARREGAR:', erro.response?.data || erro)
 
@@ -398,10 +376,7 @@ export default {
       const id = this.idResidente
 
       if (id === null || id === undefined || id === '') {
-        this.mostrarMensagem(
-          'Nao foi possivel identificar o residente.',
-          'erro'
-        )
+        this.mostrarMensagem('Nao foi possivel identificar o residente.', 'erro')
         return
       }
 
@@ -427,17 +402,14 @@ export default {
         ajuda_alimentar: this.cuidados.alimentacao.ajudaAlimentar,
         possui_restricoes: this.cuidados.alimentacao.possuiRestricoes,
 
-        observacoes: this.cuidados.observacoes
+        observacoes: this.cuidados.observacoes,
       }
 
       try {
         let resposta
 
         if (this.cuidadosId) {
-          resposta = await api.patch(
-            `/cuidadospessoais/${this.cuidadosId}/`,
-            dados
-          )
+          resposta = await api.patch(`/cuidadospessoais/${this.cuidadosId}/`, dados)
         } else {
           resposta = await api.post('/cuidadospessoais/', dados)
 
@@ -449,7 +421,6 @@ export default {
         this.editando = false
 
         this.mostrarMensagem('Dados salvos com sucesso!', 'sucesso')
-
       } catch (erro) {
         console.error('ERRO AO SALVAR:', erro.response?.data || erro)
 
@@ -480,12 +451,11 @@ export default {
         this.editando = true
 
         this.mostrarMensagem(mensagemErro, 'erro')
-
       } finally {
         this.salvando = false
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -502,8 +472,8 @@ export default {
 
 .main-content {
   flex: 1;
-  background: #2e5d2e;
-  padding: 48px 60px 56px 60px;
+  background: linear-gradient(160deg, #2e5d2e 0%, #3c7039 45%, #6ba13f 100%);
+  padding: 24px 16px 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -512,34 +482,28 @@ export default {
 .cuidados-painel {
   width: 100%;
   max-width: 1080px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-  padding: 52px 58px;
 }
 
 .card-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 18px;
-  flex-wrap: wrap;
-  margin-bottom: 32px;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  margin-bottom: 20px;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .avatar {
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  background: #d9d9d9;
+  border: 2px solid #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -567,22 +531,23 @@ export default {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: #6ba13f;
-  color: #ffffff;
-  font-size: 17px;
+  background: #ffffff;
+  color: #2e5d2e;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.4px;
-  padding: 10px 26px;
-  border-radius: 6px;
+  padding: 8px 18px;
+  border-radius: 999px;
 }
 
 .btn-editar {
   flex-shrink: 0;
+  width: 100%;
   background: #6ba13f;
   color: #ffffff;
   border: none;
-  padding: 11px 26px;
-  border-radius: 7px;
+  padding: 12px 0;
+  border-radius: 12px;
   font-family: inherit;
   font-size: 12px;
   font-weight: 700;
@@ -604,32 +569,33 @@ export default {
 }
 
 .btn-editar--cancelar {
-  background: transparent;
-  border: 1.5px solid rgba(255, 255, 255, 0.7);
+  background: #ffffff;
+  color: #2e5d2e;
 }
 
 .btn-editar--cancelar:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
+  background: #e8f0e8;
 }
 
 .grid-sections {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px 32px;
+  grid-template-columns: 1fr;
+  gap: 16px;
   align-items: start;
-  margin-bottom: 28px;
+  margin-bottom: 16px;
 }
 
 .coluna {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
 .box {
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
-  padding: 16px 20px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
 }
 
 .box h2 {
@@ -637,7 +603,7 @@ export default {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.6px;
-  color: #ffffff;
+  color: #2e5d2e;
   line-height: 1.2;
 }
 
@@ -648,7 +614,7 @@ export default {
   gap: 18px;
   margin-bottom: 10px;
   padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid #e2e8e0;
 }
 
 .col-labels {
@@ -657,7 +623,7 @@ export default {
   font-weight: 700;
   font-size: 11px;
   letter-spacing: 0.6px;
-  color: rgba(255, 255, 255, 0.7);
+  color: #6ba13f;
   flex-shrink: 0;
 }
 
@@ -674,7 +640,7 @@ export default {
   min-height: 32px;
   font-size: 13px;
   font-weight: 600;
-  color: #ffffff;
+  color: #1e3e1e;
   padding: 5px 0;
 }
 
@@ -701,7 +667,7 @@ export default {
   max-height: 18px;
   flex: 0 0 auto;
   aspect-ratio: 1 / 1;
-  border: 1.5px solid rgba(255, 255, 255, 0.6);
+  border: 1.5px solid #78a84b;
   border-radius: 4px;
   background-color: transparent;
   cursor: pointer;
@@ -711,11 +677,13 @@ export default {
   outline: none;
   line-height: 0;
   font-size: 0;
-  transition: background 0.15s ease, border-color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
 }
 
 .check-box:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.15);
+  background: #eef4ec;
 }
 
 .check-box.active {
@@ -740,21 +708,23 @@ textarea {
   display: block;
   width: 100%;
   min-height: 80px;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 10px 12px;
+  border: 1.5px solid #d9d9d9;
+  border-radius: 12px;
+  padding: 11px 14px;
   font-family: inherit;
   font-size: 13px;
   resize: vertical;
   color: #1e3e1e;
   background: #ffffff;
   outline: none;
-  transition: box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 textarea:focus:not(:disabled) {
   border-color: #8fbe4a;
-  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
+  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.25);
 }
 
 textarea::placeholder {
@@ -762,20 +732,20 @@ textarea::placeholder {
 }
 
 textarea:disabled {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.25);
-  color: #f0f0f0;
+  background: #f2f5f0;
+  border-color: #e2e8e0;
+  color: #4a5f4e;
   cursor: default;
 }
 
 .msg-erro {
-  color: #ffdada;
+  color: #c0392b;
   font-size: 13px;
   margin: 16px 0 0 0;
 }
 
 .msg-sucesso {
-  color: #d9f2c2;
+  color: #2e5d2e;
   font-size: 13px;
   font-weight: 700;
   margin: 16px 0 0 0;
@@ -787,61 +757,131 @@ textarea:disabled {
   width: 100%;
 }
 
-@media (max-width: 900px) {
+@media (min-width: 768px) {
   .main-content {
-    padding: 28px 20px 40px 20px;
+    background: #2e5d2e;
+    padding: 48px 60px 56px 60px;
   }
 
   .cuidados-painel {
-    padding: 32px 26px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.045);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+    padding: 52px 58px;
   }
 
-  .grid-sections {
-    gap: 20px;
-  }
-}
-
-@media (max-width: 768px) {
   .card-header {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
   }
 
-  .btn-editar {
-    align-self: flex-start;
-  }
-
-  .grid-sections {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-}
-
-@media (max-width: 480px) {
-  .cuidados-painel {
-    padding: 20px 16px;
+  .avatar {
+    background: rgba(255, 255, 255, 0.14);
+    border: 1.5px solid rgba(255, 255, 255, 0.45);
   }
 
   .titulo-pill {
-    font-size: 14px;
-    padding: 8px 18px;
+    background: #6ba13f;
+    color: #ffffff;
+    font-size: 17px;
+    padding: 10px 26px;
+    border-radius: 6px;
+  }
+
+  .btn-editar {
+    width: auto;
+    padding: 11px 26px;
+    border-radius: 7px;
+  }
+
+  .btn-editar--cancelar {
+    background: transparent;
+    color: #ffffff;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+  }
+
+  .btn-editar--cancelar:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .grid-sections {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 32px;
+    margin-bottom: 28px;
+  }
+
+  .coluna {
+    gap: 20px;
   }
 
   .box {
-    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    padding: 16px 20px;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .box h2 {
+    color: #ffffff;
+  }
+
+  .box-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   }
 
   .col-labels {
-    gap: 10px;
-  }
-
-  .check-pair {
-    gap: 10px;
+    color: rgba(255, 255, 255, 0.7);
   }
 
   .check-row {
-    gap: 10px;
-    font-size: 12px;
+    color: #ffffff;
+  }
+
+  .check-box {
+    border: 1.5px solid rgba(255, 255, 255, 0.6);
+  }
+
+  .check-box:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .check-box.active {
+    background: #8fbe4a;
+    border-color: #8fbe4a;
+  }
+
+  .box-observacoes {
+    margin-top: 4px;
+  }
+
+  textarea {
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+
+  textarea:focus:not(:disabled) {
+    box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
+  }
+
+  textarea:disabled {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #f0f0f0;
+  }
+
+  .msg-erro {
+    color: #ffdada;
+  }
+
+  .msg-sucesso {
+    color: #d9f2c2;
   }
 }
 </style>

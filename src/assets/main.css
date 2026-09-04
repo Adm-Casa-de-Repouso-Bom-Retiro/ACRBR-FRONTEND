@@ -1,12 +1,78 @@
+:root {
+  --verde: #2e5d2e;
+  --verde-escuro: #1e3e1e;
+  --verde-medio: #6ba13f;
+  --verde-claro: #8fbe4a;
+  --verde-hover: #7caf49;
+  --texto: #1e3e1e;
+  --texto-suave: #4a5f4e;
+  --texto-fraco: #6b7d6f;
+  --branco: #ffffff;
+  --cinza: #d9d9d9;
+  --cinza-claro: #f2f4f2;
+  --erro: #c0392b;
+  --erro-fundo: #ffdada;
+
+  --raio: 16px;
+  --raio-p: 12px;
+  --raio-pill: 999px;
+  --sombra: 0 6px 20px rgba(0, 0, 0, 0.1);
+  --sombra-suave: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
 * {
-  margin:0;
+  margin: 0;
   padding: 0;
   font-family: 'Inter', sans-serif;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+}
+
+body {
+  background: var(--cinza-claro);
+  color: var(--texto);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── UTILITÁRIOS GLOBAIS ─────────────────────────────── */
+
+.card {
+  background: var(--branco);
+  border-radius: var(--raio);
+  box-shadow: var(--sombra-suave);
+  padding: 20px;
+}
+
+.rotulo {
+  color: var(--verde);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.titulo-tela {
+  color: var(--branco);
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.msg-erro-global {
+  color: var(--erro);
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+@media (min-width: 768px) {
+  .titulo-tela {
+    font-size: 28px;
+  }
 }

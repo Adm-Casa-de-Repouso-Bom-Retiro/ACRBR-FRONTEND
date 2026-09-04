@@ -119,7 +119,9 @@ async function salvarEdicao() {
     residente.value = { ...residente.value, ...dados }
     modoEdicao.value = false
     sucesso.value = 'Contatos atualizados com sucesso!'
-    setTimeout(() => { sucesso.value = '' }, 3000)
+    setTimeout(() => {
+      sucesso.value = ''
+    }, 3000)
   } catch (error) {
     if (error.response?.data) {
       const erros = error.response.data
@@ -163,12 +165,7 @@ onMounted(buscarResidente)
               </svg>
             </div>
 
-            <button
-              v-if="!modoEdicao"
-              class="btn-editar"
-              type="button"
-              @click="iniciarEdicao"
-            >
+            <button v-if="!modoEdicao" class="btn-editar" type="button" @click="iniciarEdicao">
               EDITAR DADOS
             </button>
           </div>
@@ -189,12 +186,7 @@ onMounted(buscarResidente)
                   CANCELAR
                 </button>
 
-                <button
-                  class="btn-salvar"
-                  type="button"
-                  :disabled="salvando"
-                  @click="salvarEdicao"
-                >
+                <button class="btn-salvar" type="button" :disabled="salvando" @click="salvarEdicao">
                   {{ salvando ? 'SALVANDO...' : 'SALVAR ALTERAÇÕES' }}
                 </button>
               </div>
@@ -327,24 +319,25 @@ onMounted(buscarResidente)
 
 .main-content {
   flex: 1;
-  background: #2e5d2e;
-  padding: 48px 60px 56px 60px;
+  background: linear-gradient(160deg, #2e5d2e 0%, #3c7039 45%, #6ba13f 100%);
+  padding: 24px 16px 28px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
 .msg-erro {
-  color: #ffdada;
+  color: #c0392b;
   font-size: 13px;
   margin-bottom: 16px;
 }
 
 .msg-sucesso {
-  color: #d9f2c2;
+  color: #2e5d2e;
   font-size: 13px;
   font-weight: 700;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .msg-carregando {
@@ -356,52 +349,53 @@ onMounted(buscarResidente)
 .contatos-painel {
   width: 100%;
   max-width: 1080px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-  padding: 52px 58px;
 }
 
 .contatos-card {
   display: flex;
-  gap: 56px;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
 }
 
 .foto-coluna {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 14px;
   flex-shrink: 0;
+  width: 100%;
 }
 
 .foto-box {
-  width: 260px;
-  height: 290px;
-  border-radius: 10px;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
   background-color: #d9d9d9;
   background-size: cover;
   background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 4px solid #ffffff;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
 }
 
 .icone-foto-vazia {
-  width: 52px;
-  height: 52px;
+  width: 36px;
+  height: 36px;
   opacity: 0.6;
 }
 
 .btn-editar {
   width: 100%;
+  max-width: 260px;
   background: #6ba13f;
   color: #ffffff;
   border: none;
   padding: 12px 0;
-  border-radius: 7px;
+  border-radius: 12px;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.5px;
@@ -420,68 +414,64 @@ onMounted(buscarResidente)
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 26px;
+  gap: 14px;
   min-width: 0;
+  width: 100%;
 }
 
 .card-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
 }
 
 .botoes-header {
   display: flex;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .titulo-pill {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: #6ba13f;
-  color: #ffffff;
-  font-size: 18px;
+  background: #ffffff;
+  color: #2e5d2e;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.4px;
-  padding: 10px 26px;
-  border-radius: 6px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  align-self: flex-start;
 }
 
-.btn-cancelar {
-  background: transparent;
-  color: #ffffff;
-  border: 1.5px solid rgba(255, 255, 255, 0.7);
-  padding: 10px 20px;
-  border-radius: 7px;
+.btn-cancelar,
+.btn-salvar {
+  width: 100%;
+  padding: 12px 0;
+  border-radius: 12px;
   font-family: inherit;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.5px;
   cursor: pointer;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
+}
+
+.btn-cancelar {
+  background: #ffffff;
+  color: #2e5d2e;
+  border: none;
 }
 
 .btn-cancelar:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #ffffff;
+  background: #e8f0e8;
 }
 
 .btn-salvar {
   background: #6ba13f;
   color: #ffffff;
   border: none;
-  padding: 11px 26px;
-  border-radius: 7px;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  cursor: pointer;
   transition:
     background 0.2s ease,
     transform 0.15s ease;
@@ -501,24 +491,29 @@ onMounted(buscarResidente)
 .bloco-responsavel {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
 }
 
 .bloco-titulo {
-  color: rgba(255, 255, 255, 0.85);
+  color: #6ba13f;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
 }
 
 .linha-info {
-  color: #ffffff;
-  font-size: 15px;
+  color: #4a5f4e;
+  font-size: 14px;
   margin: 0;
 }
 
 .label {
   font-weight: 700;
+  color: #2e5d2e;
   margin-right: 6px;
 }
 
@@ -528,14 +523,14 @@ onMounted(buscarResidente)
 
 .linha-dupla {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px 70px;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .divisoria {
   height: 1px;
   background: rgba(255, 255, 255, 0.4);
-  margin: 4px 0;
+  margin: 2px 0;
 }
 
 .form-group {
@@ -545,8 +540,8 @@ onMounted(buscarResidente)
 }
 
 .form-group label {
-  color: #ffffff;
-  font-size: 12px;
+  color: #2e5d2e;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.6px;
 }
@@ -554,16 +549,18 @@ onMounted(buscarResidente)
 .campo-input,
 .campo-select {
   width: 100%;
-  height: 38px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  padding: 0 12px;
+  height: 46px;
+  border: 1.5px solid #d9d9d9;
+  border-radius: 12px;
+  padding: 0 14px;
   font-family: inherit;
   font-size: 14px;
   color: #1e3e1e;
   background: #ffffff;
   outline: none;
-  transition: box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .campo-select {
@@ -573,7 +570,7 @@ onMounted(buscarResidente)
 .campo-input:focus,
 .campo-select:focus {
   border-color: #8fbe4a;
-  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
+  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.25);
 }
 
 .linha-divisoria {
@@ -582,42 +579,147 @@ onMounted(buscarResidente)
   width: 100%;
 }
 
-@media (max-width: 900px) {
+@media (min-width: 768px) {
   .main-content {
-    padding: 28px 20px 40px 20px;
+    background: #2e5d2e;
+    padding: 48px 60px 56px 60px;
   }
 
   .contatos-painel {
-    padding: 32px 26px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.045);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+    padding: 52px 58px;
+  }
+
+  .msg-erro {
+    color: #ffdada;
+  }
+
+  .msg-sucesso {
+    color: #d9f2c2;
   }
 
   .contatos-card {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    gap: 56px;
+    align-items: flex-start;
   }
 
   .foto-coluna {
-    width: 100%;
+    gap: 18px;
     max-width: 260px;
   }
 
   .foto-box {
-    width: 100%;
-    height: 220px;
+    width: 260px;
+    height: 290px;
+    border-radius: 10px;
+    border: none;
+    box-shadow: none;
+  }
+
+  .icone-foto-vazia {
+    width: 52px;
+    height: 52px;
+  }
+
+  .btn-editar {
+    max-width: none;
+    border-radius: 7px;
+  }
+
+  .info-coluna {
+    gap: 26px;
   }
 
   .card-header {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
   }
 
   .botoes-header {
-    flex-direction: column;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .titulo-pill {
+    background: #6ba13f;
+    color: #ffffff;
+    font-size: 18px;
+    padding: 10px 26px;
+    border-radius: 6px;
+  }
+
+  .btn-cancelar,
+  .btn-salvar {
+    width: auto;
+    padding: 10px 20px;
+    border-radius: 7px;
+  }
+
+  .btn-cancelar {
+    background: transparent;
+    color: #ffffff;
+    border: 1.5px solid rgba(255, 255, 255, 0.7);
+  }
+
+  .btn-cancelar:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #ffffff;
+  }
+
+  .btn-salvar {
+    padding: 11px 26px;
+  }
+
+  .bloco-responsavel {
+    gap: 16px;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .bloco-titulo {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .linha-info {
+    color: #ffffff;
+    font-size: 15px;
+  }
+
+  .label {
+    color: #ffffff;
   }
 
   .linha-dupla {
-    flex-direction: column;
-    gap: 10px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 12px 70px;
+  }
+
+  .form-group label {
+    color: #ffffff;
+    font-size: 12px;
+  }
+
+  .campo-input,
+  .campo-select {
+    height: 38px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 0 12px;
+  }
+
+  .campo-input:focus,
+  .campo-select:focus {
+    box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
   }
 }
 </style>

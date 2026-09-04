@@ -191,56 +191,52 @@ function proximo() {
 
 .main-content {
   flex: 1;
-  background: #2e5d2e;
-  padding: 48px 60px 56px 60px;
+  background: linear-gradient(160deg, #2e5d2e 0%, #3c7039 45%, #6ba13f 100%);
+  padding: 24px 16px 28px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Painel: mesmo tratamento de card usado no perfil do residente,
-   para que as duas telas leiam como parte do mesmo sistema. */
 .cadastro-painel {
   width: 100%;
   max-width: 1080px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-  padding: 52px 58px;
 }
 
 .cadastro-card {
   display: flex;
-  gap: 56px;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
 }
 
 .foto-coluna {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 12px;
   flex-shrink: 0;
 }
 
 .foto-box {
-  width: 260px;
-  height: 290px;
-  border: none;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.14);
+  width: 150px;
+  height: 150px;
+  border: 4px solid #ffffff;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
   background-size: cover;
   background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
   transition: background-color 0.2s ease;
 }
 
 .foto-box:hover {
-  background-color: rgba(255, 255, 255, 0.22);
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .foto-box--preenchida:hover {
@@ -248,8 +244,8 @@ function proximo() {
 }
 
 .icone-camera {
-  width: 52px;
-  height: 52px;
+  width: 40px;
+  height: 40px;
   opacity: 0.75;
 }
 
@@ -258,7 +254,7 @@ function proximo() {
 }
 
 .foto-dica {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.8px;
@@ -268,8 +264,13 @@ function proximo() {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
   min-width: 0;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 20px 18px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
 }
 
 .titulo-pill {
@@ -279,17 +280,17 @@ function proximo() {
   align-self: flex-start;
   background: #6ba13f;
   color: #ffffff;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.4px;
-  padding: 10px 26px;
-  border-radius: 6px;
+  padding: 8px 18px;
+  border-radius: 999px;
 }
 
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px 32px;
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
 
 .form-group {
@@ -305,8 +306,8 @@ function proximo() {
 
 .form-group label,
 .campo-label {
-  color: #ffffff;
-  font-size: 12px;
+  color: #2e5d2e;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.6px;
 }
@@ -314,21 +315,23 @@ function proximo() {
 .campo-input,
 .campo-textarea {
   width: 100%;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  padding: 9px 12px;
+  border: 1.5px solid #d9d9d9;
+  border-radius: 12px;
+  padding: 11px 14px;
   font-size: 14px;
   font-family: inherit;
   color: #1e3e1e;
   outline: none;
   background: #ffffff;
-  transition: box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .campo-input:focus,
 .campo-textarea:focus {
   border-color: #8fbe4a;
-  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
+  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.25);
 }
 
 .campo-textarea {
@@ -381,13 +384,13 @@ function proximo() {
 }
 
 .opcao-texto {
-  color: #ffffff;
-  font-size: 14px;
-  white-space: nowrap;
+  color: #1e3e1e;
+  font-size: 13px;
+  white-space: normal;
 }
 
 .mensagem-erro {
-  color: #ffdada;
+  color: #c0392b;
   font-size: 13px;
   margin: -10px 0 0 0;
 }
@@ -405,8 +408,8 @@ function proximo() {
   font-weight: 700;
   font-size: 13px;
   letter-spacing: 0.5px;
-  padding: 12px 34px;
-  border-radius: 7px;
+  padding: 13px 28px;
+  border-radius: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -433,36 +436,99 @@ function proximo() {
   width: 100%;
 }
 
-@media (max-width: 900px) {
+@media (min-width: 768px) {
   .main-content {
-    padding: 28px 20px 40px 20px;
+    background: #2e5d2e;
+    padding: 48px 60px 56px 60px;
   }
 
   .cadastro-painel {
-    padding: 32px 26px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.045);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+    padding: 52px 58px;
   }
 
   .cadastro-card {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    gap: 56px;
+    align-items: flex-start;
   }
 
   .foto-coluna {
-    width: 100%;
+    gap: 18px;
     max-width: 260px;
   }
 
   .foto-box {
-    width: 100%;
-    height: 220px;
+    width: 260px;
+    height: 290px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.14);
+    box-shadow: none;
+  }
+
+  .icone-camera {
+    width: 52px;
+    height: 52px;
+  }
+
+  .foto-dica {
+    color: rgba(255, 255, 255, 0.85);
   }
 
   .info-coluna {
-    width: 100%;
+    gap: 24px;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .titulo-pill {
+    background: #6ba13f;
+    color: #ffffff;
+    font-size: 17px;
+    padding: 10px 26px;
+    border-radius: 6px;
   }
 
   .form-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 32px;
+  }
+
+  .form-group label,
+  .campo-label {
+    color: #ffffff;
+  }
+
+  .campo-input,
+  .campo-textarea {
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 9px 12px;
+  }
+
+  .campo-input:focus,
+  .campo-textarea:focus {
+    box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
+  }
+
+  .opcao-texto {
+    color: #ffffff;
+    white-space: nowrap;
+  }
+
+  .mensagem-erro {
+    color: #ffdada;
+  }
+
+  .btn-proximo {
+    padding: 12px 34px;
+    border-radius: 7px;
   }
 }
 </style>

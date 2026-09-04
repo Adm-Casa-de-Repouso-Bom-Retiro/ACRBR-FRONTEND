@@ -8,7 +8,13 @@
               type="button"
               class="foto-box"
               :class="{ 'foto-box--preenchida': fotoPreview || fotoAtual }"
-              :style="fotoPreview ? { backgroundImage: `url(${fotoPreview})` } : fotoAtual ? { backgroundImage: `url(${fotoAtual})` } : {}"
+              :style="
+                fotoPreview
+                  ? { backgroundImage: `url(${fotoPreview})` }
+                  : fotoAtual
+                    ? { backgroundImage: `url(${fotoAtual})` }
+                    : {}
+              "
               @click="abrirSeletorFoto"
             >
               <svg
@@ -64,12 +70,7 @@
 
               <div class="form-group">
                 <label for="entrada">DATA DE ENTRADA:</label>
-                <input
-                  id="entrada"
-                  v-model="form.data_admissao"
-                  type="date"
-                  class="campo-input"
-                />
+                <input id="entrada" v-model="form.data_admissao" type="date" class="campo-input" />
               </div>
 
               <div class="form-group">
@@ -128,12 +129,7 @@
             </div>
 
             <div class="form-footer">
-              <button
-                class="btn-salvar"
-                type="button"
-                :disabled="carregando"
-                @click="salvar"
-              >
+              <button class="btn-salvar" type="button" :disabled="carregando" @click="salvar">
                 {{ carregando ? 'SALVANDO...' : 'SALVAR ALTERAÇÕES' }}
               </button>
             </div>
@@ -292,8 +288,8 @@ onMounted(carregarResidente)
 
 .main-content {
   flex: 1;
-  background: #2e5d2e;
-  padding: 48px 60px 56px 60px;
+  background: linear-gradient(160deg, #2e5d2e 0%, #3c7039 45%, #6ba13f 100%);
+  padding: 24px 16px 28px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -302,44 +298,42 @@ onMounted(carregarResidente)
 .editar-painel {
   width: 100%;
   max-width: 1080px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-  padding: 52px 58px;
 }
 
 .editar-card {
   display: flex;
-  gap: 56px;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
 }
 
 .foto-coluna {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
+  gap: 12px;
   flex-shrink: 0;
 }
 
 .foto-box {
-  width: 260px;
-  height: 290px;
-  border: none;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.14);
+  width: 150px;
+  height: 150px;
+  border: 4px solid #ffffff;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
   background-size: cover;
   background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
   transition: background-color 0.2s ease;
 }
 
 .foto-box:hover {
-  background-color: rgba(255, 255, 255, 0.22);
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .foto-box--preenchida {
@@ -351,8 +345,8 @@ onMounted(carregarResidente)
 }
 
 .icone-camera {
-  width: 52px;
-  height: 52px;
+  width: 40px;
+  height: 40px;
   opacity: 0.75;
 }
 
@@ -361,7 +355,7 @@ onMounted(carregarResidente)
 }
 
 .foto-dica {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.8px;
@@ -371,8 +365,13 @@ onMounted(carregarResidente)
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 20px;
   min-width: 0;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 20px 18px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
 }
 
 .titulo-pill {
@@ -382,21 +381,21 @@ onMounted(carregarResidente)
   align-self: flex-start;
   background: #6ba13f;
   color: #ffffff;
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.4px;
-  padding: 10px 26px;
-  border-radius: 6px;
+  padding: 8px 18px;
+  border-radius: 999px;
 }
 
 .msg-erro {
-  color: #ffdada;
+  color: #c0392b;
   font-size: 13px;
   margin: 0;
 }
 
 .msg-sucesso {
-  color: #d9f2c2;
+  color: #2e5d2e;
   font-size: 13px;
   font-weight: 700;
   margin: 0;
@@ -404,8 +403,8 @@ onMounted(carregarResidente)
 
 .form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 18px 32px;
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
 
 .form-group {
@@ -421,8 +420,8 @@ onMounted(carregarResidente)
 
 .form-group label,
 .campo-label {
-  color: #ffffff;
-  font-size: 12px;
+  color: #2e5d2e;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.6px;
 }
@@ -430,21 +429,23 @@ onMounted(carregarResidente)
 .campo-input,
 .campo-textarea {
   width: 100%;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  padding: 9px 12px;
+  border: 1.5px solid #d9d9d9;
+  border-radius: 12px;
+  padding: 11px 14px;
   font-size: 14px;
   font-family: inherit;
   color: #1e3e1e;
   outline: none;
   background: #ffffff;
-  transition: box-shadow 0.15s ease;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .campo-input:focus,
 .campo-textarea:focus {
   border-color: #8fbe4a;
-  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
+  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.25);
 }
 
 .campo-textarea {
@@ -497,9 +498,9 @@ onMounted(carregarResidente)
 }
 
 .opcao-texto {
-  color: #ffffff;
-  font-size: 14px;
-  white-space: nowrap;
+  color: #1e3e1e;
+  font-size: 13px;
+  white-space: normal;
 }
 
 .form-footer {
@@ -508,6 +509,7 @@ onMounted(carregarResidente)
 }
 
 .btn-salvar {
+  width: 100%;
   background: #6ba13f;
   border: none;
   color: #ffffff;
@@ -515,8 +517,8 @@ onMounted(carregarResidente)
   font-weight: 700;
   font-size: 13px;
   letter-spacing: 0.5px;
-  padding: 13px 36px;
-  border-radius: 7px;
+  padding: 14px 0;
+  border-radius: 12px;
   cursor: pointer;
   transition:
     background 0.2s ease,
@@ -541,32 +543,104 @@ onMounted(carregarResidente)
   width: 100%;
 }
 
-@media (max-width: 900px) {
+@media (min-width: 768px) {
   .main-content {
-    padding: 28px 20px 40px 20px;
+    background: #2e5d2e;
+    padding: 48px 60px 56px 60px;
   }
 
   .editar-painel {
-    padding: 32px 26px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.045);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+    padding: 52px 58px;
   }
 
   .editar-card {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    gap: 56px;
+    align-items: flex-start;
   }
 
   .foto-coluna {
-    width: 100%;
+    gap: 18px;
     max-width: 260px;
   }
 
   .foto-box {
-    width: 100%;
-    height: 220px;
+    width: 260px;
+    height: 290px;
+    border: none;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.14);
+    box-shadow: none;
+  }
+
+  .icone-camera {
+    width: 52px;
+    height: 52px;
+  }
+
+  .foto-dica {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .info-coluna {
+    gap: 22px;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .titulo-pill {
+    background: #6ba13f;
+    color: #ffffff;
+    font-size: 17px;
+    padding: 10px 26px;
+    border-radius: 6px;
+  }
+
+  .msg-erro {
+    color: #ffdada;
+  }
+
+  .msg-sucesso {
+    color: #d9f2c2;
   }
 
   .form-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 32px;
+  }
+
+  .form-group label,
+  .campo-label {
+    color: #ffffff;
+    font-size: 12px;
+  }
+
+  .campo-input,
+  .campo-textarea {
+    border: 1px solid transparent;
+    border-radius: 6px;
+    padding: 9px 12px;
+  }
+
+  .opcao-texto {
+    color: #ffffff;
+    white-space: nowrap;
+  }
+
+  .form-footer {
+    justify-content: flex-end;
+  }
+
+  .btn-salvar {
+    width: auto;
+    padding: 13px 36px;
+    border-radius: 7px;
   }
 }
 </style>

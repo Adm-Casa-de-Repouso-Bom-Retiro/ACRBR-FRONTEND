@@ -64,4 +64,19 @@
 .menu a:hover::after {
   transform: translateX(-50%) scaleX(1);
 }
+
+@media (max-width: 767px) {
+  .header {
+    justify-content: center;
+    padding: 8px 16px;
+  }
+
+  .menu {
+    display: none;
+  }
+
+  .logo img {
+    height: 48px;
+  }
+}
 </style>

@@ -88,4 +88,10 @@
   font-size: 14px;
   font-weight: 500;
 }
+
+@media (max-width: 767px) {
+  .footer {
+    display: none;
+  }
+}
 </style>

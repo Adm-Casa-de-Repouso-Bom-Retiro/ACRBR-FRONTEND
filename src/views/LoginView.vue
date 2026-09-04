@@ -1,16 +1,18 @@
 <template>
   <div class="login-page">
-    <div class="login-line"></div>
     <main class="main-content">
       <div class="photo-side">
-        <img src="/src/assets/images/tela-login.png" alt="Cuidadora com idoso" class="photo-img" />
+        <img :src="telaLogin" alt="Cuidadora com idoso" class="photo-img" />
       </div>
 
       <div class="form-side">
         <div class="login-card">
           <div class="avatar-circle">
-            <img src="/src/assets/images/icone-login.png" alt="Usuário" class="avatar-img" />
+            <img :src="iconeLogin" alt="Usuário" class="avatar-img" />
           </div>
+
+          <h1 class="login-titulo">Entrar na conta</h1>
+          <p class="login-sub">Acesse a área administrativa da ACRBR</p>
 
           <p v-if="erro" class="msg-erro">{{ erro }}</p>
 
@@ -58,6 +60,8 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/services/api'
+import iconeLogin from '@/assets/images/icone-login.png'
+import telaLogin from '@/assets/images/tela-login.png'
 
 const router = useRouter()
 
@@ -102,64 +106,69 @@ async function handleLogin() {
   padding: 0;
 }
 
-.login-line {
-  width: 100%;
-  height: 1.3vw;
-  background: #2e5d2e;
+.login-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
   flex: 1;
   width: 100%;
-  height: calc(100vh - 140px);
-  display: flex;
-}
-
-.photo-side {
-  flex: 1;
-  overflow: hidden;
-  position: relative;
-}
-
-.photo-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center;
-  display: block;
-}
-
-.form-side {
-  flex: 1;
+  min-height: calc(100vh - 100px);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2.5rem 2rem;
-  background: #ffffff;
+  background: linear-gradient(160deg, #2e5d2e 0%, #3c7039 100%);
+  padding: 32px 20px;
 }
 
 .login-card {
   width: 100%;
-  max-width: 340px;
+  max-width: 380px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+  padding: 32px 26px;
 }
 
-.avatar-img {
-  width: 72px;
-  height: 72px;
-  object-fit: contain;
+.avatar-circle {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: #e8f0e8;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 14px;
+}
+
+.avatar-img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.login-titulo {
+  color: #2e5d2e;
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.login-sub {
+  color: #6b7d6f;
+  font-size: 13px;
+  margin: 4px 0 18px;
 }
 
 .msg-erro {
-  color: #c0392b;
+  color: var(--erro);
   font-size: 13px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .login-form {
@@ -175,43 +184,48 @@ async function handleLogin() {
   flex-direction: column;
   align-items: flex-start;
   margin-bottom: 14px;
+  text-align: left;
 }
 
 .form-label {
   font-size: 12px;
   font-weight: 700;
-  color: #333333;
-  margin-bottom: 4px;
+  color: #2e5d2e;
+  margin-bottom: 6px;
+  letter-spacing: 0.6px;
 }
 
 .form-input {
   width: 100%;
-  height: 30px;
-  border: 1.5px solid #bbbbbb;
-  border-radius: 3px;
+  height: 46px;
+  border: 1.5px solid #d9d9d9;
+  border-radius: 12px;
   background: #ffffff;
-  padding: 0 8px;
-  font-size: 13px;
-  color: #333333;
+  padding: 0 14px;
+  font-size: 14px;
+  color: #1e3e1e;
   outline: none;
   font-family: inherit;
-  transition: border-color 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 }
 
 .form-input:focus {
-  border-color: #2e5c2e;
+  border-color: #8fbe4a;
+  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.25);
 }
 
 .signup-text {
   font-size: 12.5px;
-  color: #444444;
-  margin-bottom: 1.5rem;
+  color: #4a5f4e;
+  margin-bottom: 20px;
   margin-top: 4px;
   text-align: center;
 }
 
 .signup-link {
-  color: #1a3f1a;
+  color: #6ba13f;
   font-weight: 700;
   text-decoration: none;
 }
@@ -221,17 +235,20 @@ async function handleLogin() {
 }
 
 .btn-entrar {
-  background: #2e5c2e;
+  width: 100%;
+  background: #6ba13f;
   color: #ffffff;
   border: none;
-  padding: 10px 40px;
-  border-radius: 4px;
+  padding: 14px 0;
+  border-radius: 12px;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 1px;
   cursor: pointer;
   font-family: inherit;
-  transition: background 0.2s;
+  transition:
+    background 0.2s,
+    transform 0.15s ease;
 }
 
 .btn-entrar:disabled {
@@ -240,6 +257,59 @@ async function handleLogin() {
 }
 
 .btn-entrar:hover:not(:disabled) {
-  background: #1e3e1e;
+  background: #7caf49;
+  transform: translateY(-1px);
+}
+
+.photo-side {
+  display: none;
+}
+
+.form-side {
+  width: 100%;
+}
+
+/* ── DESKTOP: layout com foto ───────────────────────── */
+@media (min-width: 768px) {
+  .main-content {
+    height: calc(100vh - 140px);
+    min-height: 0;
+    align-items: stretch;
+    justify-content: stretch;
+    padding: 0;
+    background: transparent;
+  }
+
+  .photo-side {
+    display: block;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  .form-side {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 2rem;
+    background: #ffffff;
+  }
+
+  .login-card {
+    max-width: 340px;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+  }
 }
 </style>
