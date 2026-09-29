@@ -1,5 +1,6 @@
 <template>
   <div class="login-page">
+    <div class="login-line"></div>
     <main class="main-content">
       <div class="photo-side">
         <img :src="telaLogin" alt="Cuidadora com idoso" class="photo-img" />
@@ -168,7 +169,7 @@ async function handleLogin() {
 .msg-erro {
   color: var(--erro);
   font-size: 13px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .login-form {
@@ -271,6 +272,12 @@ async function handleLogin() {
 
 /* ── DESKTOP: layout com foto ───────────────────────── */
 @media (min-width: 768px) {
+  .login-line {
+    width: 100%;
+    height: 1.3vw;
+    background: #2e5d2e;
+  }
+
   .main-content {
     height: calc(100vh - 140px);
     min-height: 0;
@@ -310,6 +317,70 @@ async function handleLogin() {
     border-radius: 0;
     box-shadow: none;
     padding: 0;
+  }
+
+  /* Título e subtítulo são exclusivos da interface mobile. */
+  .login-titulo,
+  .login-sub {
+    display: none;
+  }
+
+  /* Avatar no tamanho do original: ícone solto, sem círculo. */
+  .avatar-circle {
+    width: auto;
+    height: auto;
+    background: transparent;
+    border-radius: 0;
+    margin-bottom: 0;
+  }
+
+  .avatar-img {
+    width: 72px;
+    height: 72px;
+    display: flex;
+  }
+
+  .form-label {
+    color: #333333;
+    letter-spacing: normal;
+    margin-bottom: 4px;
+  }
+
+  .form-input {
+    height: 30px;
+    border-color: #bbbbbb;
+    border-radius: 3px;
+    padding: 0 8px;
+    font-size: 13px;
+    color: #333333;
+    transition: border-color 0.2s;
+  }
+
+  .form-input:focus {
+    border-color: #2e5c2e;
+    box-shadow: none;
+  }
+
+  .signup-text {
+    color: #444444;
+    margin-bottom: 1.5rem;
+  }
+
+  .signup-link {
+    color: #1a3f1a;
+  }
+
+  .btn-entrar {
+    width: auto;
+    padding: 10px 40px;
+    border-radius: 4px;
+    background: #2e5c2e;
+    transition: background 0.2s;
+  }
+
+  .btn-entrar:hover:not(:disabled) {
+    background: #1e3e1e;
+    transform: none;
   }
 }
 </style>
