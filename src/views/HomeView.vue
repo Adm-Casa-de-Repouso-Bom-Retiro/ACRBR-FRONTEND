@@ -2,16 +2,30 @@
   <main class="home">
     <section class="hero">
       <div class="hero-conteudo">
-        <div class="intro">
-          <span class="intro-caps">ACRBR · SISTEMA DE GESTÃO</span>
-          <h1 class="hero-titulo">Gestão simples e segura para a sua casa de repouso</h1>
-          <p class="hero-texto">
-            Bem-vindo(a)! Cadastre, organize e acompanhe as informações dos residentes de forma
-            prática e segura.
-          </p>
+        <div class="hero-coluna">
+          <div class="welcome-card">
+            <span class="intro-caps">ACRBR · SISTEMA DE GESTÃO</span>
+
+            <h1 class="hero-titulo">Gestão simples e segura para a sua casa de repouso</h1>
+
+            <p class="hero-texto">
+              Bem-vindo(a) ao sistema de gestão do asilo. Aqui você pode cadastrar, organizar e
+              acompanhar as informações dos residentes de forma prática e segura, auxiliando na
+              rotina de cuidados.
+            </p>
+
+            <div class="cta-row">
+              <router-link to="/prontuario" class="btn btn-primario">VER PRONTUÁRIOS</router-link>
+              <router-link to="/cadastroresidente" class="btn btn-secundario">
+                CADASTRAR RESIDENTE
+              </router-link>
+            </div>
+          </div>
         </div>
 
-        <img src="@/assets/images/idoso4k.png" alt="Casal de idosos" class="hero-foto" />
+        <div class="hero-imagem">
+          <img src="@/assets/images/idoso4k.png" alt="Casal de idosos" class="hero-foto" />
+        </div>
 
         <div class="acoes">
           <router-link to="/prontuario" class="acao-card">
@@ -102,14 +116,20 @@
   padding: 36px 20px 32px;
 }
 
-.intro {
+/* ── ESQUERDA (mobile: texto solto, sem card) ───────── */
+.hero-coluna {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+}
+
+.welcome-card {
+  display: flex;
+  flex-direction: column;
   text-align: center;
 }
 
 .intro-caps {
+  margin-bottom: 10px;
   color: #d7e3d4;
   font-size: 11px;
   font-weight: 700;
@@ -117,19 +137,31 @@
 }
 
 .hero-titulo {
+  margin: 0 0 14px 0;
   color: #ffffff;
   font-size: 28px;
   font-weight: 800;
-  line-height: 1.18;
-  margin: 0;
+  line-height: 1.2;
 }
 
 .hero-texto {
-  color: #e4eee2;
-  font-size: 14px;
-  line-height: 1.55;
   margin: 0 auto;
   max-width: 420px;
+  color: #e4eee2;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* No mobile as ações ficam nos cards abaixo. */
+.cta-row {
+  display: none;
+}
+
+/* ── DIREITA ────────────────────────────────────────── */
+.hero-imagem {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero-foto {
@@ -141,6 +173,7 @@
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
 }
 
+/* ── AÇÕES (exclusivo mobile) ───────────────────────── */
 .acoes {
   display: flex;
   flex-direction: column;
@@ -207,7 +240,7 @@
   font-weight: 700;
 }
 
-/* ── DESKTOP: mantém o hero original ───────────────── */
+/* ── DESKTOP / TABLET: hero original ────────────────── */
 @media (min-width: 768px) {
   .hero {
     position: relative;
@@ -229,11 +262,16 @@
     min-height: inherit;
   }
 
-  .intro {
-    max-width: 560px;
-    text-align: left;
+  .hero-coluna {
+    flex: 1;
     align-items: flex-start;
     gap: 22px;
+    max-width: 560px;
+  }
+
+  .welcome-card {
+    width: 100%;
+    text-align: left;
     background: #ffffff;
     border-radius: 16px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
@@ -241,7 +279,7 @@
   }
 
   .intro-caps {
-    color: #6ba13f;
+    display: none;
   }
 
   .hero-titulo {
@@ -250,15 +288,68 @@
   }
 
   .hero-texto {
+    margin: 0;
+    max-width: none;
     color: #4a5f4e;
     font-size: 15px;
-    margin: 0;
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 26px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 13px 28px;
+    border-radius: 8px;
+    transition:
+      background 0.2s ease,
+      transform 0.15s ease,
+      box-shadow 0.15s ease,
+      border-color 0.2s ease;
+  }
+
+  .btn-primario {
+    background: #6ba13f;
+    color: #ffffff;
+  }
+
+  .btn-primario:hover {
+    background: #7caf49;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(46, 93, 46, 0.28);
+  }
+
+  .btn-secundario {
+    background: transparent;
+    color: #2e5d2e;
+    border: 1.5px solid #2e5d2e;
+  }
+
+  .btn-secundario:hover {
+    background: rgba(46, 93, 46, 0.08);
+    transform: translateY(-2px);
+  }
+
+  .hero-imagem {
+    flex-shrink: 0;
+    align-items: flex-end;
   }
 
   .hero-foto {
-    height: 460px;
+    width: auto;
     max-width: none;
-    margin-right: 100px;
+    height: 460px;
+    margin: 0 100px 0 0;
     border-radius: 0;
     object-fit: contain;
     filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.15));
@@ -270,7 +361,8 @@
   }
 }
 
-@media (max-width: 900px) and (min-width: 768px) {
+/* ── TABLET: hero empilhado ─────────────────────────── */
+@media (min-width: 768px) and (max-width: 900px) {
   .hero-conteudo {
     flex-direction: column;
     justify-content: center;
@@ -278,14 +370,26 @@
     gap: 32px;
   }
 
-  .intro {
+  .hero-coluna {
     max-width: none;
     align-items: stretch;
   }
 
+  .welcome-card {
+    padding: 28px 24px;
+  }
+
+  .hero-titulo {
+    font-size: 26px;
+  }
+
+  .cta-row .btn {
+    flex: 1;
+  }
+
   .hero-foto {
     height: 320px;
-    margin-right: 0;
+    margin: 0 auto;
   }
 }
 </style>
