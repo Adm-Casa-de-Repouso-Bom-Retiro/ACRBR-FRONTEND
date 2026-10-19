@@ -19,10 +19,10 @@
       >
         <path
           d="M4 8a2 2 0 0 1 2-2h1.17a2 2 0 0 0 1.63-.84l.4-.57A2 2 0 0 1 10.8 3.6h2.4a2 2 0 0 1 1.6.98l.4.57A2 2 0 0 0 16.83 6H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z"
-          stroke="#ffffff"
+          stroke="#3e7a2b"
           stroke-width="1.4"
         />
-        <circle cx="12" cy="13" r="3.2" stroke="#ffffff" stroke-width="1.4" />
+        <circle cx="12" cy="13" r="3.2" stroke="#3e7a2b" stroke-width="1.4" />
       </svg>
     </div>
 
@@ -68,10 +68,11 @@ function irParaPerfil() {
   display: flex;
   flex-direction: column;
   background: #ffffff;
-  border-radius: 12px;
+  border: 1px solid #dde7d8;
+  border-radius: 14px;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16);
+  box-shadow: 0 4px 16px rgba(47, 90, 43, 0.06);
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease;
@@ -79,18 +80,19 @@ function irParaPerfil() {
 
 .residente-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.26);
+  border-color: #3e7a2b;
+  box-shadow: 0 10px 22px rgba(47, 90, 43, 0.12);
 }
 
 .residente-card:focus-visible {
-  outline: 3px solid rgba(143, 190, 74, 0.9);
+  outline: 2px solid #3e7a2b;
   outline-offset: 2px;
 }
 
 .residente-foto {
   width: 100%;
   height: 140px;
-  background-color: #d9d9d9;
+  background-color: #e8f1e3;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -111,7 +113,6 @@ function irParaPerfil() {
 .icone-foto-vazia {
   width: 38px;
   height: 38px;
-  opacity: 0.5;
 }
 
 .residente-corpo {
@@ -122,14 +123,14 @@ function irParaPerfil() {
 }
 
 .residente-nome {
-  color: #2e5d2e;
+  color: #1f2d1c;
   font-size: 13px;
-  font-weight: bold;
+  font-weight: 700;
   line-height: 1.3;
 }
 
 .residente-meta {
-  color: #6b7d6f;
+  color: #4a5a47;
   font-size: 11.5px;
 }
 </style>

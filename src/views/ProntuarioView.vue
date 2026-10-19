@@ -1,16 +1,14 @@
 <script setup>
 import { computed, onMounted, ref, watch } from 'vue'
-import api from '@/services/api'
+import { useResidentesStore } from '@/stores/residentes.js'
 import ResidenteCard from '@/components/ResidenteCard.vue'
 
-const residentes = ref([])
+const store = useResidentesStore()
+
 const residentesFiltrados = ref([])
 const termoBusca = ref('')
 const mostrarFiltros = ref(false)
-const carregando = ref(false)
-const erro = ref('')
 
-const filtroSexo = ref('')
 const filtroIdade = ref(null)
 
 const faixasIdade = [
@@ -20,7 +18,7 @@ const faixasIdade = [
   { rotulo: '90+ anos', min: 91, max: Infinity },
 ]
 
-const temFiltrosAtivos = computed(() => filtroSexo.value !== '' || filtroIdade.value !== null)
+const temFiltrosAtivos = computed(() => filtroIdade.value !== null)
 
 function calcularIdade(dataNascimento) {
   if (!dataNascimento) return null
@@ -39,21 +37,6 @@ function calcularIdade(dataNascimento) {
   return idade >= 0 ? idade : null
 }
 
-function correspondeAoSexo(residente) {
-  if (!filtroSexo.value) return true
-
-  const sexo = String(residente.sexo ?? residente.genero ?? '')
-    .trim()
-    .toUpperCase()
-
-  if (!sexo) return false
-
-  return (
-    sexo[0] === filtroSexo.value ||
-    (filtroSexo.value === 'M' ? sexo.startsWith('MAS') : sexo.startsWith('FEM'))
-  )
-}
-
 function correspondeAhIdade(residente) {
   if (!filtroIdade.value) return true
 
@@ -62,37 +45,17 @@ function correspondeAhIdade(residente) {
   return idade !== null && idade >= filtroIdade.value.min && idade <= filtroIdade.value.max
 }
 
-async function buscarResidentes() {
-  carregando.value = true
-  erro.value = ''
-
-  try {
-    // TODO: ajustar endpoint quando o backend estiver pronto
-    const resposta = await api.get('/residentes/')
-    residentes.value = resposta.data.results
-    filtrarResidentes()
-  } catch (error) {
-    erro.value = 'Erro ao carregar residentes. Tente novamente.'
-    residentes.value = []
-    residentesFiltrados.value = []
-  } finally {
-    carregando.value = false
-  }
-}
-
 function filtrarResidentes() {
   const termo = termoBusca.value.trim().toLowerCase()
 
-  residentesFiltrados.value = residentes.value.filter(
+  residentesFiltrados.value = store.residentes.filter(
     (residente) =>
       (!termo || residente.nome_completo.toLowerCase().includes(termo)) &&
-      correspondeAoSexo(residente) &&
       correspondeAhIdade(residente),
   )
 }
 
 function limparFiltros() {
-  filtroSexo.value = ''
   filtroIdade.value = null
 }
 
@@ -102,10 +65,15 @@ function limparBuscaEFiltros() {
   filtrarResidentes()
 }
 
-watch([filtroSexo, filtroIdade], filtrarResidentes)
+watch(() => store.residentes, filtrarResidentes, { immediate: true })
 
-onMounted(buscarResidentes)
+watch(filtroIdade, filtrarResidentes)
+
+onMounted(() => {
+  store.fetchResidentes()
+})
 </script>
+
 <template>
   <div class="prontuarios-page">
     <main class="main-content">
@@ -123,7 +91,7 @@ onMounted(buscarResidentes)
             height="18"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="#2e5d2e"
+            stroke="#3e7a2b"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -144,7 +112,7 @@ onMounted(buscarResidentes)
             height="14"
             viewBox="0 0 24 24"
             fill="none"
-            stroke="white"
+            stroke="currentColor"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -157,36 +125,6 @@ onMounted(buscarResidentes)
 
       <transition name="filtros">
         <div v-if="mostrarFiltros" class="painel-filtros">
-          <div class="filtro-grupo">
-            <span class="filtro-titulo">SEXO</span>
-            <div class="filtro-opcoes">
-              <button
-                type="button"
-                class="filtro-btn"
-                :class="{ ativo: filtroSexo === '' }"
-                @click="filtroSexo = ''"
-              >
-                TODOS
-              </button>
-              <button
-                type="button"
-                class="filtro-btn"
-                :class="{ ativo: filtroSexo === 'M' }"
-                @click="filtroSexo = 'M'"
-              >
-                MASCULINO
-              </button>
-              <button
-                type="button"
-                class="filtro-btn"
-                :class="{ ativo: filtroSexo === 'F' }"
-                @click="filtroSexo = 'F'"
-              >
-                FEMININO
-              </button>
-            </div>
-          </div>
-
           <div class="filtro-grupo">
             <span class="filtro-titulo">IDADE</span>
             <div class="filtro-opcoes">
@@ -222,9 +160,9 @@ onMounted(buscarResidentes)
         </div>
       </transition>
 
-      <p v-if="erro" class="msg-erro">{{ erro }}</p>
+      <p v-if="store.error" class="error-message">{{ store.error }}</p>
 
-      <div v-if="carregando" class="msg-carregando">Carregando residentes...</div>
+      <div v-if="store.loading" class="loading-message">Carregando residentes...</div>
 
       <div v-else-if="residentesFiltrados.length === 0" class="estado-vazio">
         <svg
@@ -234,7 +172,7 @@ onMounted(buscarResidentes)
           height="64"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#ffffff"
+          stroke="#3e7a2b"
           stroke-width="1.5"
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -260,7 +198,7 @@ onMounted(buscarResidentes)
               height="14"
               viewBox="0 0 24 24"
               fill="none"
-              stroke="#305126"
+              stroke="#ffffff"
               stroke-width="2.5"
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -281,8 +219,6 @@ onMounted(buscarResidentes)
         />
       </div>
     </main>
-
-    <div class="linha-divisoria"></div>
   </div>
 </template>
 
@@ -295,12 +231,15 @@ onMounted(buscarResidentes)
   flex: 1;
   display: flex;
   flex-direction: column;
+  background: #f2f7f0;
 }
 
 .main-content {
   flex: 1;
-  background: #2e5d2e;
-  padding: 30px 50px;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 28px 24px 48px 24px;
   display: flex;
   flex-direction: column;
 }
@@ -309,7 +248,7 @@ onMounted(buscarResidentes)
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom: 24px;
   gap: 20px;
 }
 
@@ -321,12 +260,20 @@ onMounted(buscarResidentes)
 
 .campo-busca input {
   width: 100%;
-  height: 38px;
-  border: none;
-  border-radius: 20px;
+  height: 44px;
+  background: #ffffff;
+  border: 1px solid #dde7d8;
+  border-radius: 10px;
   padding: 0 40px 0 16px;
-  font-size: 13px;
-  color: #1e3e1e;
+  font-family: inherit;
+  font-size: 14px;
+  color: #1f2d1c;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.campo-busca input:focus {
+  border-color: #3e7a2b;
 }
 
 .campo-busca svg {
@@ -341,24 +288,26 @@ onMounted(buscarResidentes)
   display: flex;
   align-items: center;
   gap: 8px;
-  background: transparent;
-  border: 1.5px solid #ffffff;
-  border-radius: 20px;
-  padding: 8px 18px;
-  color: #ffffff;
+  background: #ffffff;
+  border: 1px solid #3e7a2b;
+  border-radius: 10px;
+  padding: 10px 18px;
+  color: #3e7a2b;
+  font-family: inherit;
   font-size: 12px;
-  font-weight: bold;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.15s ease;
 }
 
 .btn-filtros:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: #f2f7f0;
 }
 
 .btn-filtros.ativo {
-  background: #6ba13f;
-  border-color: #6ba13f;
+  background: #3e7a2b;
+  border-color: #3e7a2b;
+  color: #ffffff;
 }
 
 .painel-filtros {
@@ -366,11 +315,12 @@ onMounted(buscarResidentes)
   flex-wrap: wrap;
   align-items: flex-end;
   gap: 18px 36px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #ffffff;
+  border: 1px solid #dde7d8;
   border-radius: 14px;
   padding: 16px 20px;
-  margin-bottom: 26px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px rgba(47, 90, 43, 0.06);
 }
 
 .filtro-grupo {
@@ -380,9 +330,9 @@ onMounted(buscarResidentes)
 }
 
 .filtro-titulo {
-  color: #cfe0cd;
+  color: #4a5a47;
   font-size: 11px;
-  font-weight: bold;
+  font-weight: 700;
   letter-spacing: 0.8px;
 }
 
@@ -393,46 +343,47 @@ onMounted(buscarResidentes)
 }
 
 .filtro-btn {
-  background: transparent;
-  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  background: #ffffff;
+  border: 1px solid #dde7d8;
   border-radius: 20px;
   padding: 6px 14px;
-  color: #ffffff;
+  color: #4a5a47;
   font-family: inherit;
   font-size: 11px;
-  font-weight: bold;
+  font-weight: 700;
   letter-spacing: 0.4px;
   cursor: pointer;
   transition:
     background 0.15s ease,
-    border-color 0.15s ease;
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .filtro-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  border-color: #3e7a2b;
+  color: #3e7a2b;
 }
 
 .filtro-btn.ativo {
-  background: #6ba13f;
-  border-color: #6ba13f;
+  background: #3e7a2b;
+  border-color: #3e7a2b;
+  color: #ffffff;
 }
 
 .btn-limpar-filtros {
   margin-left: auto;
   background: none;
   border: none;
-  color: #ffffff;
+  color: #3e7a2b;
   font-family: inherit;
   font-size: 11px;
-  font-weight: bold;
+  font-weight: 700;
   letter-spacing: 0.5px;
   padding: 8px 4px;
-  opacity: 0.85;
   cursor: pointer;
 }
 
 .btn-limpar-filtros:hover {
-  opacity: 1;
   text-decoration: underline;
 }
 
@@ -449,17 +400,22 @@ onMounted(buscarResidentes)
   transform: translateY(-6px);
 }
 
-.msg-erro {
-  color: #ffdada;
-  font-size: 13px;
-  margin-bottom: 16px;
+.error-message {
+  margin: 0 0 16px 0;
+  padding: 10px 14px;
+  background: #fbe9e9;
+  border: 1px solid #e4b4b4;
+  border-radius: 8px;
+  color: #8a1f1f;
+  font-size: 14px;
+  font-weight: 700;
 }
 
-.msg-carregando {
-  color: #ffffff;
+.loading-message {
+  margin: 40px 0 0 0;
+  color: #4a5a47;
   font-size: 14px;
   text-align: center;
-  margin-top: 40px;
 }
 
 .estado-vazio {
@@ -470,22 +426,22 @@ onMounted(buscarResidentes)
   justify-content: center;
   gap: 10px;
   text-align: center;
+  padding: 40px 0;
 }
 
 .icone-vazio {
-  opacity: 0.85;
   margin-bottom: 8px;
 }
 
 .msg-vazio {
-  color: #ffffff;
+  color: #1f2d1c;
   font-size: 17px;
-  font-weight: bold;
+  font-weight: 700;
   margin: 0;
 }
 
 .msg-vazio-sub {
-  color: #d7e3d4;
+  color: #4a5a47;
   font-size: 13px;
   margin: 0 0 14px 0;
 }
@@ -494,33 +450,42 @@ onMounted(buscarResidentes)
   display: flex;
   align-items: center;
   gap: 8px;
-  background: #ffffff;
-  color: #305126;
+  background: #3e7a2b;
+  color: #ffffff;
   border: none;
-  padding: 12px 28px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: bold;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
   cursor: pointer;
-  transition:
-    background 0.2s ease,
-    transform 0.15s ease;
+  transition: background 0.15s ease;
 }
 
 .btn-cadastrar:hover {
-  background: #e8f0e8;
-  transform: translateY(-2px);
+  background: #2f5a2b;
 }
 
 .residentes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 26px;
+  gap: 24px;
 }
 
-.linha-divisoria {
-  height: 1vw;
-  background: #ffffff;
-  width: 100%;
+@media (max-width: 900px) {
+  .barra-topo {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .campo-busca {
+    max-width: none;
+  }
+
+  .btn-filtros {
+    justify-content: center;
+  }
 }
 </style>

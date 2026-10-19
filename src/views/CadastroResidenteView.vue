@@ -20,10 +20,10 @@
               >
                 <path
                   d="M4 8a2 2 0 0 1 2-2h1.17a2 2 0 0 0 1.63-.84l.4-.57A2 2 0 0 1 10.8 3.6h2.4a2 2 0 0 1 1.6.98l.4.57A2 2 0 0 0 16.83 6H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z"
-                  stroke="#ffffff"
+                  stroke="#3e7a2b"
                   stroke-width="1.4"
                 />
-                <circle cx="12" cy="13" r="3.2" stroke="#ffffff" stroke-width="1.4" />
+                <circle cx="12" cy="13" r="3.2" stroke="#3e7a2b" stroke-width="1.4" />
               </svg>
             </button>
 
@@ -39,9 +39,7 @@
           </div>
 
           <div class="info-coluna">
-            <div class="titulo-pill">
-              <span>Cadastro de Residente</span>
-            </div>
+            <h1 class="section-title">Cadastro de Residente</h1>
 
             <div class="form-grid">
               <div class="form-group campo-nome">
@@ -124,7 +122,7 @@
               </div>
             </div>
 
-            <p v-if="erro" class="mensagem-erro">{{ erro }}</p>
+            <p v-if="erro" class="error-message">{{ erro }}</p>
 
             <div class="rodape-form">
               <button class="btn-proximo" type="button" @click="proximo">
@@ -136,8 +134,6 @@
         </div>
       </section>
     </main>
-
-    <div class="linha-divisoria"></div>
   </div>
 </template>
 
@@ -191,23 +187,20 @@ function proximo() {
 
 .main-content {
   flex: 1;
-  background: #2e5d2e;
-  padding: 48px 60px 56px 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 32px 24px 48px 24px;
 }
 
-/* Painel: mesmo tratamento de card usado no perfil do residente,
-   para que as duas telas leiam como parte do mesmo sistema. */
+/* Painel: card branco que agrupa o formulário de cadastro. */
 .cadastro-painel {
   width: 100%;
-  max-width: 1080px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-  padding: 52px 58px;
+  background: #ffffff;
+  border: 1px solid #dde7d8;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(47, 90, 43, 0.06);
+  padding: 40px 44px;
 }
 
 .cadastro-card {
@@ -227,20 +220,20 @@ function proximo() {
 .foto-box {
   width: 260px;
   height: 290px;
-  border: none;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.14);
+  border: 1px solid #dde7d8;
+  border-radius: 12px;
+  background-color: #e8f1e3;
   background-size: cover;
   background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 
 .foto-box:hover {
-  background-color: rgba(255, 255, 255, 0.22);
+  border-color: #3e7a2b;
 }
 
 .foto-box--preenchida:hover {
@@ -258,7 +251,7 @@ function proximo() {
 }
 
 .foto-dica {
-  color: rgba(255, 255, 255, 0.85);
+  color: #4a5a47;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.8px;
@@ -272,18 +265,11 @@ function proximo() {
   min-width: 0;
 }
 
-.titulo-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  align-self: flex-start;
-  background: #6ba13f;
-  color: #ffffff;
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  padding: 10px 26px;
-  border-radius: 6px;
+.section-title {
+  margin: 0;
+  color: #1f2d1c;
+  font-size: 22px;
+  font-weight: 800;
 }
 
 .form-grid {
@@ -305,7 +291,7 @@ function proximo() {
 
 .form-group label,
 .campo-label {
-  color: #ffffff;
+  color: #1f2d1c;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.6px;
@@ -314,21 +300,20 @@ function proximo() {
 .campo-input,
 .campo-textarea {
   width: 100%;
-  border: 1px solid transparent;
-  border-radius: 6px;
+  border: 1px solid #dde7d8;
+  border-radius: 8px;
   padding: 9px 12px;
   font-size: 14px;
   font-family: inherit;
-  color: #1e3e1e;
+  color: #1f2d1c;
   outline: none;
   background: #ffffff;
-  transition: box-shadow 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 .campo-input:focus,
 .campo-textarea:focus {
-  border-color: #8fbe4a;
-  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
+  border-color: #3e7a2b;
 }
 
 .campo-textarea {
@@ -363,7 +348,7 @@ function proximo() {
   width: 20px;
   height: 15px;
   border-radius: 4px;
-  border: 1px solid #78a84b;
+  border: 1px solid #dde7d8;
   flex-shrink: 0;
   transition:
     background 0.15s ease,
@@ -371,25 +356,30 @@ function proximo() {
 }
 
 .opcao-grau input:checked + .marcador {
-  background: #8fbe4a;
-  border-color: #8fbe4a;
+  background: #3e7a2b;
+  border-color: #3e7a2b;
 }
 
 .opcao-grau input:focus-visible + .marcador {
-  outline: 2px solid rgba(143, 190, 74, 0.7);
+  outline: 2px solid #3e7a2b;
   outline-offset: 2px;
 }
 
 .opcao-texto {
-  color: #ffffff;
+  color: #4a5a47;
   font-size: 14px;
   white-space: nowrap;
 }
 
-.mensagem-erro {
-  color: #ffdada;
-  font-size: 13px;
+.error-message {
   margin: -10px 0 0 0;
+  padding: 10px 14px;
+  background: #fbe9e9;
+  border: 1px solid #e4b4b4;
+  border-radius: 8px;
+  color: #8a1f1f;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .rodape-form {
@@ -398,7 +388,7 @@ function proximo() {
 }
 
 .btn-proximo {
-  background: #6ba13f;
+  background: #3e7a2b;
   border: none;
   color: #ffffff;
   font-family: inherit;
@@ -406,40 +396,29 @@ function proximo() {
   font-size: 13px;
   letter-spacing: 0.5px;
   padding: 12px 34px;
-  border-radius: 7px;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
-  transition:
-    background 0.2s ease,
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: background 0.2s ease;
 }
 
 .btn-proximo:hover {
-  background: #7caf49;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+  background: #2f5a2b;
 }
 
 .seta {
   font-size: 14px;
 }
 
-.linha-divisoria {
-  height: 8px;
-  background: #ffffff;
-  width: 100%;
-}
-
 @media (max-width: 900px) {
   .main-content {
-    padding: 28px 20px 40px 20px;
+    padding: 20px 16px 40px 16px;
   }
 
   .cadastro-painel {
-    padding: 32px 26px;
+    padding: 28px 20px;
   }
 
   .cadastro-card {
@@ -463,6 +442,11 @@ function proximo() {
 
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .btn-proximo {
+    width: 100%;
+    justify-content: center;
   }
 }
 </style>

@@ -12,7 +12,7 @@ export const useResidentesStore = defineStore('residentes', () => {
     error.value = ''
 
     try {
-      const resposta = await api.get('/residentes/')
+      const resposta = await api.get('/residentes/', { params: { page_size: 100 } })
       residentes.value = resposta.data.results
     } catch (erro) {
       error.value = 'Erro ao carregar residentes. Tente novamente.'

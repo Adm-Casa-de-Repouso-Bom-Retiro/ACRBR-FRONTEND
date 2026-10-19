@@ -28,6 +28,8 @@ html {
 
 body {
   min-height: 100%;
+  background: #f2f7f0;
+  color: #1f2d1c;
 }
 
 #app {

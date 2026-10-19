@@ -4,47 +4,34 @@
       <section class="cadastro-painel">
         <div class="cadastro-card">
           <div class="foto-coluna">
-            <div
-              class="avatar-wrap"
-              role="button"
-              tabindex="0"
+            <button
+              type="button"
+              class="foto-box"
+              :class="{ 'foto-box--preenchida': fotoPrevia }"
+              :style="fotoPrevia ? { backgroundImage: `url(${fotoPrevia})` } : {}"
               @click="abrirSeletorFoto"
-              @keydown.enter="abrirSeletorFoto"
-              title="Clique para adicionar foto"
             >
-              <div class="avatar-circle" :class="{ 'avatar-circle--foto': fotoPrevia }">
-                <img
-                  :src="fotoPrevia || iconeLogin"
-                  class="avatar-img"
-                  :class="{ 'avatar-img--foto': fotoPrevia }"
+              <svg
+                v-if="!fotoPrevia"
+                class="icone-camera"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4 8a2 2 0 0 1 2-2h1.17a2 2 0 0 0 1.63-.84l.4-.57A2 2 0 0 1 10.8 3.6h2.4a2 2 0 0 1 1.6.98l.4.57A2 2 0 0 0 16.83 6H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z"
+                  stroke="#3e7a2b"
+                  stroke-width="1.4"
                 />
-              </div>
-
-              <div class="cam-btn">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                >
-                  <path
-                    d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"
-                  />
-                  <circle cx="12" cy="13" r="4" />
-                </svg>
-              </div>
-            </div>
+                <circle cx="12" cy="13" r="3.2" stroke="#3e7a2b" stroke-width="1.4" />
+              </svg>
+            </button>
 
             <input
               ref="inputFoto"
               type="file"
-              accept="image/jpeg,image/png"
-              style="display: none"
+              accept="image/*"
+              class="input-foto-oculto"
               @change="selecionarFoto"
             />
 
@@ -52,11 +39,9 @@
           </div>
 
           <div class="info-coluna">
-            <div class="titulo-pill">
-              <span>Cadastre-se como Administrador</span>
-            </div>
+            <h1 class="section-title">Cadastre-se como Administrador</h1>
 
-            <p v-if="erro" class="msg-erro">{{ erro }}</p>
+            <p v-if="erro" class="error-message">{{ erro }}</p>
             <p v-if="sucesso" class="msg-sucesso">{{ sucesso }}</p>
 
             <form @submit.prevent="handleCadastro" class="cadastro-form">
@@ -137,8 +122,6 @@
         </div>
       </section>
     </main>
-
-    <div class="linha-divisoria"></div>
   </div>
 </template>
 
@@ -146,7 +129,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/services/api'
-import iconeLogin from '@/assets/images/icone-login.png'
 
 const router = useRouter()
 
@@ -244,23 +226,20 @@ async function handleCadastro() {
 
 .main-content {
   flex: 1;
-  background: #2e5d2e;
-  padding: 48px 60px 56px 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 32px 24px 48px 24px;
 }
 
-/* Painel: mesmo tratamento de card usado no perfil do residente,
-   para que todas as telas leiam como parte do mesmo sistema. */
+/* Painel: card branco que agrupa o formulário de cadastro. */
 .cadastro-painel {
   width: 100%;
-  max-width: 1080px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-  padding: 52px 58px;
+  background: #ffffff;
+  border: 1px solid #dde7d8;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(47, 90, 43, 0.06);
+  padding: 40px 44px;
 }
 
 .cadastro-card {
@@ -277,66 +256,41 @@ async function handleCadastro() {
   flex-shrink: 0;
 }
 
-.avatar-wrap {
-  position: relative;
-  cursor: pointer;
-}
-
-.avatar-circle {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.14);
-  border: 2px solid rgba(255, 255, 255, 0.45);
+.foto-box {
+  width: 260px;
+  height: 290px;
+  border: 1px solid #dde7d8;
+  border-radius: 12px;
+  background-color: #e8f1e3;
+  background-size: cover;
+  background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  cursor: pointer;
   transition: border-color 0.2s ease;
 }
 
-.avatar-wrap:hover .avatar-circle {
-  border-color: rgba(255, 255, 255, 0.75);
+.foto-box:hover {
+  border-color: #3e7a2b;
 }
 
-.avatar-circle--foto {
-  background: #d9d9d9;
-  border-color: #ffffff;
+.foto-box--preenchida:hover {
+  filter: brightness(1.08);
 }
 
-.avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  padding: 18px;
+.icone-camera {
+  width: 52px;
+  height: 52px;
+  opacity: 0.75;
 }
 
-.avatar-img--foto {
-  object-fit: cover;
-  padding: 0;
-}
-
-.cam-btn {
-  position: absolute;
-  bottom: 4px;
-  right: 4px;
-  width: 36px;
-  height: 36px;
-  background: #6ba13f;
-  border-radius: 50%;
-  border: 2px solid #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s ease;
-}
-
-.avatar-wrap:hover .cam-btn {
-  background: #7caf49;
+.input-foto-oculto {
+  display: none;
 }
 
 .foto-dica {
-  color: rgba(255, 255, 255, 0.85);
+  color: #4a5a47;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.8px;
@@ -346,32 +300,30 @@ async function handleCadastro() {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 24px;
   min-width: 0;
 }
 
-.titulo-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  align-self: flex-start;
-  background: #6ba13f;
-  color: #ffffff;
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  padding: 10px 26px;
-  border-radius: 6px;
+.section-title {
+  margin: 0;
+  color: #1f2d1c;
+  font-size: 22px;
+  font-weight: 800;
 }
 
-.msg-erro {
-  color: #ffdada;
-  font-size: 13px;
+.error-message {
   margin: 0;
+  padding: 10px 14px;
+  background: #fbe9e9;
+  border: 1px solid #e4b4b4;
+  border-radius: 8px;
+  color: #8a1f1f;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .msg-sucesso {
-  color: #d9f2c2;
+  color: #2f5a2b;
   font-size: 13px;
   font-weight: 700;
   margin: 0;
@@ -386,7 +338,7 @@ async function handleCadastro() {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
 .form-group {
@@ -396,7 +348,7 @@ async function handleCadastro() {
 }
 
 .form-group label {
-  color: #ffffff;
+  color: #1f2d1c;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.6px;
@@ -406,15 +358,15 @@ async function handleCadastro() {
 .form-group select {
   width: 100%;
   height: 38px;
-  border: 1px solid transparent;
-  border-radius: 6px;
+  border: 1px solid #dde7d8;
+  border-radius: 8px;
   padding: 0 12px;
   font-size: 14px;
   font-family: inherit;
-  color: #1e3e1e;
+  color: #1f2d1c;
   background-color: #ffffff;
   outline: none;
-  transition: box-shadow 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 .form-group select {
@@ -427,8 +379,7 @@ async function handleCadastro() {
 
 .form-group input:focus,
 .form-group select:focus {
-  border-color: #8fbe4a;
-  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
+  border-color: #3e7a2b;
 }
 
 .form-group input::placeholder {
@@ -437,7 +388,7 @@ async function handleCadastro() {
 
 .campo-obs {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.65);
+  color: #4a5a47;
 }
 
 .form-footer {
@@ -447,26 +398,21 @@ async function handleCadastro() {
 }
 
 .btn-criar {
-  background: #6ba13f;
+  background: #3e7a2b;
   color: #ffffff;
   border: none;
-  padding: 13px 36px;
-  border-radius: 7px;
+  padding: 12px 34px;
+  border-radius: 8px;
   font-family: inherit;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.5px;
   cursor: pointer;
-  transition:
-    background 0.2s ease,
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: background 0.2s ease;
 }
 
 .btn-criar:hover:not(:disabled) {
-  background: #7caf49;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+  background: #2f5a2b;
 }
 
 .btn-criar:disabled {
@@ -474,24 +420,29 @@ async function handleCadastro() {
   cursor: not-allowed;
 }
 
-.linha-divisoria {
-  height: 8px;
-  background: #ffffff;
-  width: 100%;
-}
-
 @media (max-width: 900px) {
   .main-content {
-    padding: 28px 20px 40px 20px;
+    padding: 20px 16px 40px 16px;
   }
 
   .cadastro-painel {
-    padding: 32px 26px;
+    padding: 28px 20px;
   }
 
   .cadastro-card {
     flex-direction: column;
     align-items: center;
+    gap: 28px;
+  }
+
+  .foto-coluna {
+    width: 100%;
+    max-width: 260px;
+  }
+
+  .foto-box {
+    width: 100%;
+    height: 220px;
   }
 
   .form-grid {
@@ -501,6 +452,10 @@ async function handleCadastro() {
 
   .form-footer {
     justify-content: center;
+  }
+
+  .btn-criar {
+    width: 100%;
   }
 }
 </style>

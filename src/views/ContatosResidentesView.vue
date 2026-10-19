@@ -2,11 +2,9 @@
   <div class="contatos-page">
     <main class="main-content">
       <section class="contatos-painel">
-        <div class="titulo-pill">
-          <span>CONTATOS</span>
-        </div>
+        <h1 class="section-title">CONTATOS</h1>
 
-        <p v-if="erro" class="msg-erro">{{ erro }}</p>
+        <p v-if="erro" class="error-message">{{ erro }}</p>
         <p v-if="sucesso" class="msg-sucesso">{{ sucesso }}</p>
 
         <form @submit.prevent="handleSubmit" class="contatos-form">
@@ -102,8 +100,6 @@
         </form>
       </section>
     </main>
-
-    <div class="linha-divisoria"></div>
   </div>
 </template>
 
@@ -217,38 +213,29 @@ async function handleSubmit() {
 
 .main-content {
   flex: 1;
-  background: #2e5d2e;
-  padding: 48px 60px 56px 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 32px 24px 48px 24px;
 }
 
-/* Painel: mesmo tratamento de card usado no perfil do residente,
-   para que as duas telas leiam como parte do mesmo sistema. */
+/* Painel: card branco que agrupa os dados de contato. */
 .contatos-painel {
   width: 100%;
-  max-width: 1080px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-  padding: 52px 58px;
+  max-width: 900px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid #dde7d8;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(47, 90, 43, 0.06);
+  padding: 40px 44px;
 }
 
-.titulo-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  align-self: flex-start;
-  background: #6ba13f;
-  color: #ffffff;
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  padding: 10px 26px;
-  border-radius: 6px;
-  margin-bottom: 28px;
+.section-title {
+  margin: 0 0 24px 0;
+  color: #1f2d1c;
+  font-size: 22px;
+  font-weight: 800;
 }
 
 .titulo-icone {
@@ -258,14 +245,19 @@ async function handleSubmit() {
   filter: brightness(0) invert(1);
 }
 
-.msg-erro {
-  color: #ffdada;
-  font-size: 13px;
+.error-message {
   margin: 0 0 16px 0;
+  padding: 10px 14px;
+  background: #fbe9e9;
+  border: 1px solid #e4b4b4;
+  border-radius: 8px;
+  color: #8a1f1f;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .msg-sucesso {
-  color: #d9f2c2;
+  color: #2f5a2b;
   font-size: 13px;
   font-weight: 700;
   margin: 0 0 16px 0;
@@ -278,7 +270,7 @@ async function handleSubmit() {
 }
 
 .bloco-titulo {
-  color: rgba(255, 255, 255, 0.85);
+  color: #4a5a47;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -297,7 +289,7 @@ async function handleSubmit() {
 }
 
 .form-group label {
-  color: #ffffff;
+  color: #1f2d1c;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.6px;
@@ -307,15 +299,15 @@ async function handleSubmit() {
 .form-group select {
   width: 100%;
   height: 38px;
-  border: 1px solid transparent;
-  border-radius: 6px;
+  border: 1px solid #dde7d8;
+  border-radius: 8px;
   padding: 0 12px;
   font-family: inherit;
   font-size: 14px;
-  color: #1e3e1e;
+  color: #1f2d1c;
   background: #ffffff;
   outline: none;
-  transition: box-shadow 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 .form-group select {
@@ -328,8 +320,7 @@ async function handleSubmit() {
 
 .form-group input:focus,
 .form-group select:focus {
-  border-color: #8fbe4a;
-  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
+  border-color: #3e7a2b;
 }
 
 .form-group input::placeholder {
@@ -342,8 +333,8 @@ async function handleSubmit() {
 
 .divisoria {
   height: 1px;
-  background: rgba(255, 255, 255, 0.4);
-  margin: 26px 0;
+  background: #dde7d8;
+  margin: 24px 0;
 }
 
 .form-footer {
@@ -353,26 +344,22 @@ async function handleSubmit() {
 }
 
 .btn-adicionar {
-  background: #6ba13f;
+  background: #3e7a2b;
   color: #ffffff;
   border: none;
-  padding: 13px 40px;
-  border-radius: 7px;
+  padding: 12px 34px;
+  border-radius: 8px;
   font-family: inherit;
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.5px;
+  text-transform: uppercase;
   cursor: pointer;
-  transition:
-    background 0.2s ease,
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: background 0.2s ease;
 }
 
 .btn-adicionar:hover:not(:disabled) {
-  background: #7caf49;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+  background: #2f5a2b;
 }
 
 .btn-adicionar:disabled {
@@ -380,19 +367,13 @@ async function handleSubmit() {
   cursor: not-allowed;
 }
 
-.linha-divisoria {
-  height: 8px;
-  background: #ffffff;
-  width: 100%;
-}
-
 @media (max-width: 900px) {
   .main-content {
-    padding: 28px 20px 40px 20px;
+    padding: 20px 16px 40px 16px;
   }
 
   .contatos-painel {
-    padding: 32px 26px;
+    padding: 28px 20px;
   }
 
   .linha-campos {
@@ -402,6 +383,10 @@ async function handleSubmit() {
 
   .campo-parentesco {
     max-width: none;
+  }
+
+  .btn-adicionar {
+    width: 100%;
   }
 }
 </style>

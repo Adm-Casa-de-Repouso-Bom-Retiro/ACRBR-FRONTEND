@@ -7,24 +7,17 @@
           <p class="footer-text">Sistema de gestão da Casa de Repouso Bom Retiro</p>
         </div>
 
-        <nav class="footer-nav" aria-label="Links rápidos">
-          <h2 class="footer-heading">Links rápidos</h2>
-          <router-link to="/">Início</router-link>
-          <router-link to="/prontuario">Prontuários</router-link>
-          <router-link to="/cadastroresidente">Cadastro de residente</router-link>
-          <router-link to="/perfilfuncionario">Administrador</router-link>
-        </nav>
+        <span class="footer-divider" aria-hidden="true"></span>
 
-        <div class="footer-col footer-contact">
-          <h2 class="footer-heading">Contato</h2>
-          <p class="footer-text">[TELEFONE]</p>
-          <p class="footer-text">[E-MAIL]</p>
-          <p class="footer-text">[ENDEREÇO]</p>
+        <div class="footer-col footer-center">
+          <nav class="footer-nav" aria-label="Links rápidos">
+            <router-link to="/">Início</router-link>
+            <router-link to="/prontuario">Prontuários</router-link>
+            <router-link to="/cadastroresidente">Cadastro de residente</router-link>
+          </nav>
+          <p class="footer-copy">© {{ ano }} ACRBR</p>
         </div>
-      </div>
 
-      <div class="footer-bottom">
-        <p class="footer-copy">© {{ ano }} ACRBR</p>
         <p class="footer-version">Versão [0.0.0]</p>
       </div>
     </div>
@@ -39,19 +32,20 @@ const ano = new Date().getFullYear()
 .footer {
   background: #ffffff;
   border-top: 1px solid #dde7d8;
+  box-shadow: 0 -4px 16px rgba(47, 90, 43, 0.06);
   font-family: inherit;
 }
 
 .footer-inner {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 40px 24px 24px 24px;
+  padding: 24px;
 }
 
 .footer-top {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
-  gap: 32px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
 }
 
 .footer-col {
@@ -62,27 +56,34 @@ const ano = new Date().getFullYear()
 
 .footer-brand {
   color: #2f5a2b;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 800;
-}
-
-.footer-heading {
-  margin: 0 0 4px 0;
-  color: #1f2d1c;
-  font-size: 14px;
-  font-weight: 700;
 }
 
 .footer-text {
   margin: 0;
   color: #4a5a47;
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.5;
+}
+
+.footer-divider {
+  width: 1px;
+  min-height: 44px;
+  align-self: stretch;
+  background: #dde7d8;
+}
+
+.footer-center {
+  flex: 1;
+  gap: 4px;
 }
 
 .footer-nav {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .footer-nav a {
@@ -90,41 +91,32 @@ const ano = new Date().getFullYear()
   align-items: center;
   min-height: 44px;
   color: #3e7a2b;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   text-decoration: none;
 }
 
 .footer-nav a:hover {
+  color: #2f5a2b;
   text-decoration: underline;
-}
-
-.footer-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-top: 28px;
-  padding-top: 16px;
-  border-top: 1px solid #dde7d8;
 }
 
 .footer-copy,
 .footer-version {
   margin: 0;
   color: #4a5a47;
-  font-size: 13px;
+  font-size: 12px;
 }
 
 @media (max-width: 900px) {
   .footer-top {
-    grid-template-columns: 1fr;
-  }
-
-  .footer-bottom {
     flex-direction: column;
     align-items: flex-start;
-    gap: 6px;
+    gap: 16px;
+  }
+
+  .footer-divider {
+    display: none;
   }
 }
 </style>

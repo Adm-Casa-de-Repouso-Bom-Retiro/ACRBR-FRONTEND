@@ -58,8 +58,10 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/services/api'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const authStore = useAuthStore()
 
 const email = ref('')
 const senha = ref('')
@@ -78,6 +80,8 @@ async function handleLogin() {
 
     localStorage.setItem('access_token', response.data.access)
     localStorage.setItem('refresh_token', response.data.refresh)
+
+    await authStore.fetchUsuario()
 
     // Redireciona para a página do perfil do funcionário após o login //
     router.push('/perfilfuncionario')

@@ -82,12 +82,12 @@ onMounted(buscarResidente)
 
 <template>
   <main class="perfil-residente">
-    <p v-if="erro" class="msg-erro">{{ erro }}</p>
+    <div class="perfil-corpo">
+      <p v-if="erro" class="error-message">{{ erro }}</p>
 
-    <div v-if="carregando" class="msg-carregando">Carregando dados do residente...</div>
+      <div v-if="carregando" class="loading-message">Carregando dados do residente...</div>
 
-    <template v-else-if="residente">
-      <section class="perfil-painel">
+      <section v-else-if="residente" class="perfil-painel">
         <div class="perfil-conteudo">
           <div class="grupo-foto">
             <div class="perfil-foto" :class="{ 'perfil-foto--vazia': !residente.foto }">
@@ -185,9 +185,7 @@ onMounted(buscarResidente)
           </div>
         </div>
       </section>
-    </template>
-
-    <div class="linha-divisoria"></div>
+    </div>
   </main>
 </template>
 
@@ -199,41 +197,49 @@ onMounted(buscarResidente)
 .perfil-residente {
   flex: 1;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 60px 70px 68px 70px;
-  background: #2e5d2e;
-  position: relative;
-  min-height: 0;
+  flex-direction: column;
+  background: #f2f7f0;
 }
 
-.msg-erro {
-  color: #ffdada;
-  font-size: 16px;
+.perfil-corpo {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 28px 24px 48px 24px;
 }
 
-.msg-carregando {
-  color: #ffffff;
-  font-size: 18px;
+.error-message {
+  margin: 0 0 16px 0;
+  padding: 10px 14px;
+  background: #fbe9e9;
+  border: 1px solid #e4b4b4;
+  border-radius: 8px;
+  color: #8a1f1f;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.loading-message {
+  margin: 0;
+  padding: 20px 0;
+  color: #4a5a47;
+  font-size: 15px;
   text-align: center;
 }
 
-/* Painel: dá ao conteúdo um limite visual definido em vez de
-   texto solto sobre o fundo verde, e ocupa proporcionalmente
-   o espaço disponível na tela. */
+/* Painel: card branco que limita o conteúdo, separando-o do fundo claro. */
 .perfil-painel {
   width: 100%;
-  max-width: 1180px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-  padding: 56px 64px;
+  background: #ffffff;
+  border: 1px solid #dde7d8;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(47, 90, 43, 0.06);
+  padding: 40px 48px;
 }
 
 .perfil-conteudo {
   display: flex;
-  gap: 70px;
+  gap: 56px;
   align-items: flex-start;
 }
 
@@ -241,7 +247,7 @@ onMounted(buscarResidente)
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
   flex-shrink: 0;
 }
 
@@ -249,7 +255,8 @@ onMounted(buscarResidente)
   width: 260px;
   height: 290px;
   border-radius: 14px;
-  background: #d9d9d9;
+  border: 1px solid #dde7d8;
+  background: #e8f1e3;
   overflow: hidden;
 }
 
@@ -261,22 +268,22 @@ onMounted(buscarResidente)
 
 .btn-editar {
   width: 100%;
-  background: #ffffff;
+  background: #3e7a2b;
   border: none;
-  color: #2e5d2e;
-  font-weight: 600;
-  font-size: 13px;
+  color: #ffffff;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
   padding: 12px 0;
-  border-radius: 7px;
+  border-radius: 8px;
   cursor: pointer;
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: background 0.15s ease;
 }
 
 .btn-editar:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+  background: #2f5a2b;
 }
 
 .grupo-conteudo {
@@ -284,40 +291,39 @@ onMounted(buscarResidente)
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 36px;
 }
 
 .grupo-informacoes {
   display: flex;
-  gap: 80px;
+  gap: 64px;
   align-items: flex-start;
 }
 
 .perfil-dados {
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  padding-top: 5px;
+  gap: 12px;
   flex: 1;
   min-width: 0;
 }
 
 .residente-nome {
-  color: #ffffff;
-  font-size: 28px;
-  font-weight: 600;
+  color: #1f2d1c;
+  font-size: 26px;
+  font-weight: 800;
   margin: 0 0 8px 0;
   line-height: 1.15;
 }
 
 .dado-linha {
-  color: #ffffff;
-  font-size: 16px;
-  font-weight: 400;
+  color: #4a5a47;
+  font-size: 15px;
   margin: 0;
 }
 
 .dado-linha strong {
+  color: #1f2d1c;
   font-weight: 600;
 }
 
@@ -325,14 +331,14 @@ onMounted(buscarResidente)
   display: flex;
   flex-direction: column;
   gap: 13px;
-  padding-top: 46px;
+  padding-top: 44px;
   flex-shrink: 0;
 }
 
 .dependencia-titulo {
-  color: #ffffff;
-  font-size: 17px;
-  font-weight: 600;
+  color: #1f2d1c;
+  font-size: 16px;
+  font-weight: 700;
   margin: 0 0 6px 0;
 }
 
@@ -340,9 +346,8 @@ onMounted(buscarResidente)
   display: flex;
   align-items: center;
   gap: 9px;
-  color: #ffffff;
-  font-size: 15px;
-  font-weight: 400;
+  color: #4a5a47;
+  font-size: 14px;
   white-space: nowrap;
 }
 
@@ -350,87 +355,81 @@ onMounted(buscarResidente)
   width: 20px;
   height: 15px;
   border-radius: 4px;
-  border: 1px solid #78a84b;
+  border: 1px solid #dde7d8;
+  background: #ffffff;
   flex-shrink: 0;
 }
 
 .dependencia-marcador.ativo {
-  background: #8fbe4a;
-  border-color: #8fbe4a;
+  background: #3e7a2b;
+  border-color: #3e7a2b;
 }
 
 .perfil-menu {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 20px 18px;
+  gap: 16px;
   width: 100%;
 }
 
 .btn-menu {
-  background-color: #72a840;
+  background-color: #3e7a2b;
   color: #ffffff;
-  font-weight: 600;
-  font-size: 13px;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
   border: none;
   border-radius: 8px;
   padding: 14px 12px;
   cursor: pointer;
-  transition:
-    background-color 0.2s ease,
-    transform 0.2s ease;
+  transition: background-color 0.15s ease;
 }
 
 .btn-menu:hover {
-  background-color: #7caf49;
-  transform: translateY(-1px);
+  background-color: #2f5a2b;
 }
 
-/* Caixa de observações: mesmo tratamento visual usado na tela de
-   contatos, movida para o perfil do residente. */
 .observacoes-box {
-  border: 1.5px solid #ffffff;
-  border-radius: 8px;
+  border: 1px solid #dde7d8;
+  border-radius: 10px;
+  background: #f2f7f0;
   padding: 16px 20px;
   min-height: 110px;
-  color: #ffffff;
 }
 
 .observacoes-box .label {
   display: block;
   font-weight: 700;
   margin-bottom: 8px;
+  color: #1f2d1c;
 }
 
 .observacoes-texto {
   margin: 0;
   font-size: 13px;
-  font-weight: 400;
-  color: #f0f0f0;
+  color: #4a5a47;
   white-space: pre-line;
 }
 
-.linha-divisoria {
-  height: 8px;
-  background: #ffffff;
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-}
-
 @media (max-width: 900px) {
-  .perfil-residente {
-    padding: 40px 24px 48px 24px;
+  .perfil-corpo {
+    padding: 20px 16px 40px 16px;
   }
 
   .perfil-painel {
-    padding: 36px 28px;
+    padding: 28px 20px;
   }
 
   .perfil-conteudo {
     flex-direction: column;
     align-items: center;
     gap: 32px;
+  }
+
+  .grupo-conteudo {
+    width: 100%;
   }
 
   .grupo-informacoes {
@@ -444,7 +443,12 @@ onMounted(buscarResidente)
   }
 
   .perfil-menu {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr;
+  }
+
+  .btn-editar,
+  .btn-menu {
+    width: 100%;
   }
 }
 </style>

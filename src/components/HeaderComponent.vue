@@ -33,42 +33,54 @@
         </span>
       </div>
 
-      <nav class="menu">
+      <nav v-if="store.usuario || store.estaLogado()" class="menu">
         <router-link to="/">INÍCIO</router-link>
         <router-link to="/prontuario">PRONTUÁRIOS</router-link>
-        <router-link to="/perfilfuncionario">ADMINISTRADOR</router-link>
         <router-link to="/cadastroresidente" class="link-cadastro">
           + Cadastro de residente
         </router-link>
       </nav>
 
-      <div v-if="store.usuario" class="user">
-        <img
-          v-if="store.usuario.foto_url"
-          :src="store.usuario.foto_url"
-          class="user-photo"
-          :alt="'Foto de ' + store.usuario.nome"
-        />
-        <span v-else class="user-avatar" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4Z" fill="#2F5A2B" />
-            <path
-              d="M12 14.1c-3.5 0-7 1.76-7 5.25V21h14v-1.65c0-3.49-3.5-5.25-7-5.25Z"
-              fill="#2F5A2B"
-            />
-          </svg>
-        </span>
-        <span class="user-info">
-          <span class="user-name">{{ store.usuario.nome }}</span>
+      <div v-if="store.usuario || store.estaLogado()" class="user">
+        <router-link
+          :to="{ name: 'perfilfuncionario' }"
+          class="user-profile"
+          aria-label="Ir para perfil do administrador"
+        >
+          <img
+            v-if="store.usuario && store.usuario.foto_url"
+            :src="store.usuario.foto_url"
+            class="user-photo"
+            :alt="'Foto de ' + (store.usuario.nome || '')"
+          />
+          <span v-else class="user-avatar" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4Z" fill="#2F5A2B" />
+              <path
+                d="M12 14.1c-3.5 0-7 1.76-7 5.25V21h14v-1.65c0-3.49-3.5-5.25-7-5.25Z"
+                fill="#2F5A2B"
+              />
+            </svg>
+          </span>
+          <span class="user-name">{{ store.usuario ? store.usuario.nome : '' }}</span>
+        </router-link>
+        <div class="user-info">
           <button type="button" class="user-logout" @click="handleLogout">Sair</button>
-        </span>
+        </div>
+      </div>
+
+      <div v-else class="auth-actions">
+        <router-link to="/login" class="btn-auth btn-secondary">Entrar</router-link>
+        <router-link to="/cadastro" class="btn-auth btn-primary">
+          Cadastrar administrador
+        </router-link>
       </div>
     </div>
   </header>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth.js'
 
@@ -80,11 +92,15 @@ function handleLogout() {
   router.push('/login')
 }
 
-onMounted(() => {
-  if (store.estaLogado()) {
-    store.fetchUsuario()
-  }
-})
+watch(
+  () => store.estaLogado(),
+  (logado) => {
+    if (logado && !store.usuario) {
+      store.fetchUsuario()
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <style scoped>
@@ -120,7 +136,7 @@ onMounted(() => {
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  background: #e8f3dc;
+  background: #e8f1e3;
 }
 
 .brand-icon svg {
@@ -195,12 +211,50 @@ onMounted(() => {
 }
 
 .link-cadastro:hover {
-  background: #35691f;
+  background: #2f5a2b;
   transform: translateY(-1px);
 }
 
 .link-cadastro::after {
   display: none;
+}
+
+/* ── AÇÕES DE AUTENTICAÇÃO ────────────────────────────── */
+.auth-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-auth {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.btn-secondary {
+  background: #ffffff;
+  border: 1px solid #3e7a2b;
+  color: #3e7a2b;
+}
+
+.btn-secondary:hover {
+  background: #f2f7f0;
+}
+
+.btn-primary {
+  background: #3e7a2b;
+  border: 1px solid #3e7a2b;
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: #2f5a2b;
 }
 
 /* ── USUÁRIO ──────────────────────────────────────────── */
@@ -210,19 +264,29 @@ onMounted(() => {
   gap: 10px;
 }
 
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  padding: 2px 4px;
+  border-radius: 999px;
+}
+
 .user-avatar,
 .user-photo {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   border: 1px solid #dde7d8;
+  flex-shrink: 0;
 }
 
 .user-avatar {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #e8f3dc;
+  background: #e8f1e3;
 }
 
 .user-photo {
@@ -234,16 +298,24 @@ onMounted(() => {
   height: 22px;
 }
 
+.user-profile.router-link-active .user-avatar,
+.user-profile.router-link-active .user-photo {
+  outline: 2px solid #3e7a2b;
+  outline-offset: 2px;
+}
+
 .user-info {
   display: flex;
   flex-direction: column;
   line-height: 1.2;
+  justify-content: center;
 }
 
 .user-name {
   color: #1f2d1c;
   font-size: 13px;
   font-weight: 700;
+  line-height: 1.2;
 }
 
 .user-logout {
@@ -256,6 +328,7 @@ onMounted(() => {
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+  margin-top: 2px;
 }
 
 .user-logout:hover {
