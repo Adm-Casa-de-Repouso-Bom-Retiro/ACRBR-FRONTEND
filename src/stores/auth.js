@@ -32,12 +32,34 @@ export const useAuthStore = defineStore('auth', () => {
     usuario.value = null
   }
 
+  async function atualizarPerfil(dados) {
+    if (!usuario.value?.id) {
+      error.value = 'Usuário não identificado.'
+      return false
+    }
+
+    loading.value = true
+    error.value = ''
+
+    try {
+      await api.patch(`/administradores/${usuario.value.id}/`, dados)
+      await fetchUsuario()
+      return true
+    } catch (erro) {
+      error.value = 'Erro ao atualizar perfil.'
+      return false
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     usuario,
     loading,
     error,
     estaLogado,
     fetchUsuario,
+    atualizarPerfil,
     logout,
   }
 })

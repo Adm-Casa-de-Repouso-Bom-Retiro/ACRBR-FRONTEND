@@ -1,19 +1,21 @@
 <template>
   <div class="dados-medicos-page">
     <main class="main-content">
-      <section class="dados-painel">
-        <div class="titulo-pill">
-          <img
-            src="/src/assets/images/icone-dados-medicos.png"
-            alt=""
-            aria-hidden="true"
-            class="titulo-icone"
-          />
-          <span>DADOS MÉDICOS</span>
-        </div>
+      <BotaoVoltar to="/" />
 
-        <p v-if="erro" class="msg-erro">{{ erro }}</p>
-        <p v-if="sucesso" class="msg-sucesso">{{ sucesso }}</p>
+      <section class="dados-painel">
+        <h1 class="section-title">
+          <span class="titulo-icone" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="4" width="16" height="16" rx="4" stroke="#3e7a2b" stroke-width="1.5" />
+              <path d="M12 8v8M8 12h8" stroke="#3e7a2b" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </span>
+          DADOS MÉDICOS
+        </h1>
+
+        <p v-if="erro" class="error-message">{{ erro }}</p>
+        <p v-if="sucesso" class="success-message">{{ sucesso }}</p>
 
         <form @submit.prevent="handleProximo" class="dados-form">
           <div class="form-grid">
@@ -47,14 +49,13 @@
         </form>
       </section>
     </main>
-
-    <div class="linha-divisoria"></div>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import BotaoVoltar from '@/components/BotaoVoltar.vue'
 
 const router = useRouter()
 const emit = defineEmits(['dados-medicos'])
@@ -108,55 +109,61 @@ async function handleProximo() {
 
 .main-content {
   flex: 1;
-  background: #2e5d2e;
-  padding: 48px 60px 56px 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #f2f7f0;
+  padding: 28px 24px 48px 24px;
 }
 
-/* Painel: mesmo tratamento de card usado no perfil do residente,
-   para que as duas telas leiam como parte do mesmo sistema. */
+/* Painel: card branco que agrupa o formulário de dados médicos. */
 .dados-painel {
   width: 100%;
-  max-width: 1080px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-  padding: 52px 58px;
+  max-width: 1240px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid #dde7d8;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(47, 90, 43, 0.06);
+  padding: 40px 44px;
 }
 
-.titulo-pill {
-  display: inline-flex;
+.section-title {
+  display: flex;
   align-items: center;
-  gap: 10px;
-  align-self: flex-start;
-  background: #6ba13f;
-  color: #ffffff;
-  font-size: 17px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  padding: 10px 26px;
-  border-radius: 6px;
-  margin-bottom: 28px;
+  gap: 12px;
+  margin: 0 0 24px 0;
+  color: #1f2d1c;
+  font-size: 22px;
+  font-weight: 800;
 }
 
 .titulo-icone {
-  width: 18px;
-  height: 18px;
-  object-fit: contain;
-  filter: brightness(0) invert(1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #e8f1e3;
+  flex-shrink: 0;
 }
 
-.msg-erro {
-  color: #ffdada;
-  font-size: 13px;
+.titulo-icone svg {
+  width: 20px;
+  height: 20px;
+}
+
+.error-message {
   margin: 0 0 16px 0;
+  padding: 10px 14px;
+  background: #fbe9e9;
+  border: 1px solid #e4b4b4;
+  border-radius: 8px;
+  color: #8a1f1f;
+  font-size: 13px;
+  font-weight: 700;
 }
 
-.msg-sucesso {
-  color: #d9f2c2;
+.success-message {
+  color: #2f5a2b;
   font-size: 13px;
   font-weight: 700;
   margin: 0 0 16px 0;
@@ -175,7 +182,7 @@ async function handleProximo() {
 }
 
 .form-group label {
-  color: #ffffff;
+  color: #1f2d1c;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.6px;
@@ -184,21 +191,20 @@ async function handleProximo() {
 .form-group textarea {
   width: 100%;
   min-height: 110px;
-  border: 1px solid transparent;
+  border: 1px solid #dde7d8;
   border-radius: 8px;
   padding: 10px 12px;
   font-family: inherit;
   font-size: 14px;
-  color: #1e3e1e;
+  color: #1f2d1c;
   background: #ffffff;
   resize: vertical;
   outline: none;
-  transition: box-shadow 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 .form-group textarea:focus {
-  border-color: #8fbe4a;
-  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
+  border-color: #3e7a2b;
 }
 
 .form-footer {
@@ -208,7 +214,7 @@ async function handleProximo() {
 }
 
 .btn-proximo {
-  background: #6ba13f;
+  background: #3e7a2b;
   border: none;
   color: #ffffff;
   font-family: inherit;
@@ -216,21 +222,16 @@ async function handleProximo() {
   font-size: 13px;
   letter-spacing: 0.5px;
   padding: 12px 34px;
-  border-radius: 7px;
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
-  transition:
-    background 0.2s ease,
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
+  transition: background 0.2s ease;
 }
 
 .btn-proximo:hover:not(:disabled) {
-  background: #7caf49;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+  background: #2f5a2b;
 }
 
 .btn-proximo:disabled {
@@ -242,23 +243,22 @@ async function handleProximo() {
   font-size: 14px;
 }
 
-.linha-divisoria {
-  height: 8px;
-  background: #ffffff;
-  width: 100%;
-}
-
 @media (max-width: 900px) {
   .main-content {
-    padding: 28px 20px 40px 20px;
+    padding: 20px 16px 40px 16px;
   }
 
   .dados-painel {
-    padding: 32px 26px;
+    padding: 28px 20px;
   }
 
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .btn-proximo {
+    width: 100%;
+    justify-content: center;
   }
 }
 </style>

@@ -21,7 +21,7 @@ const router = createRouter({
       name: 'cadastro',
       component: () => import('../views/CadastroView.vue'),
       meta: { guestOnly: true },
-    }, 
+    },
     {
       path: '/perfilfuncionario',
       name: 'perfilfuncionario',
@@ -79,14 +79,7 @@ const router = createRouter({
       meta: { requiresAuth: true },
       props: true,
     },
-    {
-      path: '/editarresidente/:id',
-      name: 'editarresidente',
-      component: () => import('../views/EditarResidenteView.vue'),
-      meta: { requiresAuth: true },
-      props: true,
-    },
-  ],  
+  ],
 })
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('access_token')

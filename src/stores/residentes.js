@@ -22,10 +22,26 @@ export const useResidentesStore = defineStore('residentes', () => {
     }
   }
 
+  async function atualizarResidente(id, dados) {
+    loading.value = true
+    error.value = ''
+
+    try {
+      await api.patch(`/residentes/${id}/`, dados)
+      return true
+    } catch (erro) {
+      error.value = 'Erro ao atualizar residente.'
+      return false
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     residentes,
     loading,
     error,
     fetchResidentes,
+    atualizarResidente,
   }
 })

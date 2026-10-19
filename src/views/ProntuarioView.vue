@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useResidentesStore } from '@/stores/residentes.js'
 import ResidenteCard from '@/components/ResidenteCard.vue'
+import BotaoVoltar from '@/components/BotaoVoltar.vue'
 
 const store = useResidentesStore()
 
@@ -77,6 +78,8 @@ onMounted(() => {
 <template>
   <div class="prontuarios-page">
     <main class="main-content">
+      <BotaoVoltar to="/" />
+
       <div class="barra-topo">
         <div class="campo-busca">
           <input

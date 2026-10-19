@@ -12,7 +12,7 @@
             <img src="/src/assets/images/icone-login.png" alt="Usuário" class="avatar-img" />
           </div>
 
-          <p v-if="erro" class="msg-erro">{{ erro }}</p>
+          <p v-if="erro" class="error-message">{{ erro }}</p>
 
           <form @submit.prevent="handleLogin" class="login-form">
             <div class="form-group">
@@ -109,7 +109,7 @@ async function handleLogin() {
 .login-line {
   width: 100%;
   height: 1.3vw;
-  background: #2e5d2e;
+  background: #2f5a2b;
 }
 
 .main-content {
@@ -160,10 +160,17 @@ async function handleLogin() {
   justify-content: center;
 }
 
-.msg-erro {
-  color: #c0392b;
-  font-size: 13px;
+.error-message {
+  width: 100%;
   margin-bottom: 10px;
+  padding: 10px 14px;
+  background: #fbe9e9;
+  border: 1px solid #e4b4b4;
+  border-radius: 8px;
+  color: #8a1f1f;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: left;
 }
 
 .login-form {
@@ -184,38 +191,42 @@ async function handleLogin() {
 .form-label {
   font-size: 12px;
   font-weight: 700;
-  color: #333333;
+  color: #1f2d1c;
   margin-bottom: 4px;
 }
 
 .form-input {
   width: 100%;
-  height: 30px;
-  border: 1.5px solid #bbbbbb;
-  border-radius: 3px;
+  height: 38px;
+  border: 1px solid #dde7d8;
+  border-radius: 8px;
   background: #ffffff;
-  padding: 0 8px;
-  font-size: 13px;
-  color: #333333;
+  padding: 0 12px;
+  font-size: 14px;
+  color: #1f2d1c;
   outline: none;
   font-family: inherit;
   transition: border-color 0.2s;
 }
 
 .form-input:focus {
-  border-color: #2e5c2e;
+  border-color: #3e7a2b;
+}
+
+.form-input::placeholder {
+  color: #8fa093;
 }
 
 .signup-text {
   font-size: 12.5px;
-  color: #444444;
+  color: #4a5a47;
   margin-bottom: 1.5rem;
   margin-top: 4px;
   text-align: center;
 }
 
 .signup-link {
-  color: #1a3f1a;
+  color: #3e7a2b;
   font-weight: 700;
   text-decoration: none;
 }
@@ -225,11 +236,11 @@ async function handleLogin() {
 }
 
 .btn-entrar {
-  background: #2e5c2e;
+  background: #3e7a2b;
   color: #ffffff;
   border: none;
-  padding: 10px 40px;
-  border-radius: 4px;
+  padding: 12px 40px;
+  border-radius: 8px;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 1px;
@@ -244,6 +255,6 @@ async function handleLogin() {
 }
 
 .btn-entrar:hover:not(:disabled) {
-  background: #1e3e1e;
+  background: #2f5a2b;
 }
 </style>

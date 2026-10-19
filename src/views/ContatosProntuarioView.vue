@@ -1,16 +1,215 @@
+<template>
+  <div class="contatos-prontuario-page">
+    <main class="main-content">
+      <BotaoVoltar :to="{ name: 'residente', params: { id: route.params.id } }" />
+
+      <p v-if="erro" class="error-message">{{ erro }}</p>
+
+      <div v-if="carregando" class="loading-message">Carregando dados do residente...</div>
+
+      <section v-else-if="residente" class="contatos-painel">
+        <div class="contatos-card">
+          <div class="foto-coluna">
+            <div class="foto-box" :style="fotoUrl ? { backgroundImage: `url(${fotoUrl})` } : {}">
+              <svg
+                v-if="!fotoUrl"
+                class="icone-foto-vazia"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4 8a2 2 0 0 1 2-2h1.17a2 2 0 0 0 1.63-.84l.4-.57A2 2 0 0 1 10.8 3.6h2.4a2 2 0 0 1 1.6.98l.4.57A2 2 0 0 0 16.83 6H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z"
+                  stroke="#3e7a2b"
+                  stroke-width="1.4"
+                />
+                <circle cx="12" cy="13" r="3.2" stroke="#3e7a2b" stroke-width="1.4" />
+              </svg>
+            </div>
+
+            <button class="btn-editar" type="button" @click="abrirModal">EDITAR DADOS</button>
+          </div>
+
+          <div class="info-coluna">
+            <div class="card-header">
+              <h1 class="section-title">Contatos - {{ residente.nome_completo }}</h1>
+            </div>
+
+            <p v-if="sucesso" class="success-message">{{ sucesso }}</p>
+
+            <div class="bloco-responsavel">
+              <p class="linha-info">
+                <span class="label">Responsável:</span>
+                <span class="valor">{{ residente.nome_responsavel || '—' }}</span>
+              </p>
+
+              <div class="linha-dupla">
+                <p class="linha-info">
+                  <span class="label">Grau de Parentesco:</span>
+                  <span class="valor">{{ formatarParentesco(residente.parentesco) }}</span>
+                </p>
+
+                <p class="linha-info">
+                  <span class="label">Telefone:</span>
+                  <span class="valor">{{ formatarTelefone(residente.telefone_responsavel) }}</span>
+                </p>
+              </div>
+            </div>
+
+            <template v-if="temResponsavelSecundario">
+              <div class="divisoria"></div>
+
+              <div class="bloco-responsavel">
+                <p class="linha-info">
+                  <span class="label">Responsável Secundário:</span>
+                  <span class="valor">{{ residente.nome_responsavel_2 || '—' }}</span>
+                </p>
+
+                <div class="linha-dupla">
+                  <p class="linha-info">
+                    <span class="label">Grau de Parentesco:</span>
+                    <span class="valor">{{ formatarParentesco(residente.parentesco_2) }}</span>
+                  </p>
+
+                  <p class="linha-info">
+                    <span class="label">Telefone:</span>
+                    <span class="valor">{{
+                      formatarTelefone(residente.telefone_responsavel_2)
+                    }}</span>
+                  </p>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div v-if="mostrarModal" class="modal-overlay" @click.self="fecharModal">
+      <div class="modal-box">
+        <button class="btn-fechar" type="button" @click="fecharModal">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M6 6l12 12M18 6 6 18"
+              stroke="#1f2d1c"
+              stroke-width="1.8"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+
+        <h3 class="modal-titulo">Editar contatos</h3>
+
+        <div class="modal-form">
+          <span class="bloco-titulo">RESPONSÁVEL 1</span>
+
+          <div class="form-group">
+            <label for="modal-responsavel-1">NOME COMPLETO:</label>
+            <input
+              id="modal-responsavel-1"
+              v-model="form.nome_responsavel"
+              type="text"
+              class="campo-input"
+            />
+          </div>
+
+          <div class="linha-dupla">
+            <div class="form-group">
+              <label for="modal-parentesco-1">GRAU DE PARENTESCO:</label>
+              <select id="modal-parentesco-1" v-model="form.parentesco" class="campo-select">
+                <option value="" disabled>Selecione</option>
+                <option value="pai">Pai</option>
+                <option value="mae">Mãe</option>
+                <option value="filho">Filho(a)</option>
+                <option value="irmao">Irmão(ã)</option>
+                <option value="neto">Neto(a)</option>
+                <option value="conjuge">Cônjuge</option>
+                <option value="outro">Outro</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="modal-telefone-1">TELEFONE:</label>
+              <input
+                id="modal-telefone-1"
+                v-model="form.telefone_responsavel"
+                type="text"
+                class="campo-input"
+              />
+            </div>
+          </div>
+
+          <div class="divisoria"></div>
+
+          <span class="bloco-titulo">RESPONSÁVEL 2 (OPCIONAL)</span>
+
+          <div class="form-group">
+            <label for="modal-responsavel-2">NOME COMPLETO:</label>
+            <input
+              id="modal-responsavel-2"
+              v-model="form.nome_responsavel_2"
+              type="text"
+              class="campo-input"
+            />
+          </div>
+
+          <div class="linha-dupla">
+            <div class="form-group">
+              <label for="modal-parentesco-2">GRAU DE PARENTESCO:</label>
+              <select id="modal-parentesco-2" v-model="form.parentesco_2" class="campo-select">
+                <option value="" disabled>Selecione</option>
+                <option value="pai">Pai</option>
+                <option value="mae">Mãe</option>
+                <option value="filho">Filho(a)</option>
+                <option value="irmao">Irmão(ã)</option>
+                <option value="neto">Neto(a)</option>
+                <option value="conjuge">Cônjuge</option>
+                <option value="outro">Outro</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="modal-telefone-2">TELEFONE:</label>
+              <input
+                id="modal-telefone-2"
+                v-model="form.telefone_responsavel_2"
+                type="text"
+                class="campo-input"
+              />
+            </div>
+          </div>
+        </div>
+
+        <p v-if="erro" class="error-message">{{ erro }}</p>
+        <p v-if="sucesso" class="success-message">{{ sucesso }}</p>
+
+        <div class="modal-footer">
+          <button class="btn-cancelar" type="button" :disabled="salvando" @click="fecharModal">
+            CANCELAR
+          </button>
+
+          <button class="btn-salvar" type="button" :disabled="salvando" @click="salvarEdicao">
+            {{ salvando ? 'SALVANDO...' : 'SALVAR ALTERAÇÕES' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
 <script setup>
 import { computed, onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import api from '@/services/api'
+import BotaoVoltar from '@/components/BotaoVoltar.vue'
 
 const route = useRoute()
-const router = useRouter()
 
 const residente = ref(null)
 const carregando = ref(false)
 const erro = ref('')
 const sucesso = ref('')
-const modoEdicao = ref(false)
+const mostrarModal = ref(false)
 const salvando = ref(false)
 
 const form = ref({
@@ -75,22 +274,21 @@ async function buscarResidente() {
   }
 }
 
-function iniciarEdicao() {
+function abrirModal() {
   form.value.nome_responsavel = residente.value.nome_responsavel || ''
   form.value.telefone_responsavel = residente.value.telefone_responsavel || ''
   form.value.parentesco = residente.value.parentesco || ''
   form.value.nome_responsavel_2 = residente.value.nome_responsavel_2 || ''
   form.value.telefone_responsavel_2 = residente.value.telefone_responsavel_2 || ''
   form.value.parentesco_2 = residente.value.parentesco_2 || ''
-  modoEdicao.value = true
   erro.value = ''
   sucesso.value = ''
+  mostrarModal.value = true
 }
 
-function cancelarEdicao() {
-  modoEdicao.value = false
+function fecharModal() {
+  mostrarModal.value = false
   erro.value = ''
-  sucesso.value = ''
 }
 
 async function salvarEdicao() {
@@ -117,9 +315,11 @@ async function salvarEdicao() {
     await api.patch(`/residentes/${route.params.id}/`, dados)
 
     residente.value = { ...residente.value, ...dados }
-    modoEdicao.value = false
+    mostrarModal.value = false
     sucesso.value = 'Contatos atualizados com sucesso!'
-    setTimeout(() => { sucesso.value = '' }, 3000)
+    setTimeout(() => {
+      sucesso.value = ''
+    }, 3000)
   } catch (error) {
     if (error.response?.data) {
       const erros = error.response.data
@@ -136,184 +336,6 @@ async function salvarEdicao() {
 onMounted(buscarResidente)
 </script>
 
-<template>
-  <div class="contatos-prontuario-page">
-    <main class="main-content">
-      <p v-if="erro" class="msg-erro">{{ erro }}</p>
-
-      <div v-if="carregando" class="msg-carregando">Carregando dados do residente...</div>
-
-      <section v-else-if="residente" class="contatos-painel">
-        <div class="contatos-card">
-          <div class="foto-coluna">
-            <div class="foto-box" :style="fotoUrl ? { backgroundImage: `url(${fotoUrl})` } : {}">
-              <svg
-                v-if="!fotoUrl"
-                class="icone-foto-vazia"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M4 8a2 2 0 0 1 2-2h1.17a2 2 0 0 0 1.63-.84l.4-.57A2 2 0 0 1 10.8 3.6h2.4a2 2 0 0 1 1.6.98l.4.57A2 2 0 0 0 16.83 6H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z"
-                  stroke="#ffffff"
-                  stroke-width="1.4"
-                />
-                <circle cx="12" cy="13" r="3.2" stroke="#ffffff" stroke-width="1.4" />
-              </svg>
-            </div>
-
-            <button
-              v-if="!modoEdicao"
-              class="btn-editar"
-              type="button"
-              @click="iniciarEdicao"
-            >
-              EDITAR DADOS
-            </button>
-          </div>
-
-          <div class="info-coluna">
-            <div class="card-header">
-              <div class="titulo-pill">
-                <span>Contatos - {{ residente.nome_completo }}</span>
-              </div>
-
-              <div v-if="modoEdicao" class="botoes-header">
-                <button
-                  class="btn-cancelar"
-                  type="button"
-                  :disabled="salvando"
-                  @click="cancelarEdicao"
-                >
-                  CANCELAR
-                </button>
-
-                <button
-                  class="btn-salvar"
-                  type="button"
-                  :disabled="salvando"
-                  @click="salvarEdicao"
-                >
-                  {{ salvando ? 'SALVANDO...' : 'SALVAR ALTERAÇÕES' }}
-                </button>
-              </div>
-            </div>
-
-            <p v-if="sucesso" class="msg-sucesso">{{ sucesso }}</p>
-
-            <div v-if="!modoEdicao" class="bloco-responsavel">
-              <p class="linha-info">
-                <span class="label">Responsável:</span>
-                <span class="valor">{{ residente.nome_responsavel || '—' }}</span>
-              </p>
-
-              <div class="linha-dupla">
-                <p class="linha-info">
-                  <span class="label">Grau de Parentesco:</span>
-                  <span class="valor">{{ formatarParentesco(residente.parentesco) }}</span>
-                </p>
-
-                <p class="linha-info">
-                  <span class="label">Telefone:</span>
-                  <span class="valor">{{ formatarTelefone(residente.telefone_responsavel) }}</span>
-                </p>
-              </div>
-            </div>
-
-            <div v-else class="bloco-responsavel">
-              <span class="bloco-titulo">RESPONSÁVEL 1</span>
-
-              <div class="form-group">
-                <label>NOME COMPLETO:</label>
-                <input v-model="form.nome_responsavel" type="text" class="campo-input" />
-              </div>
-
-              <div class="linha-dupla">
-                <div class="form-group">
-                  <label>GRAU DE PARENTESCO:</label>
-                  <select v-model="form.parentesco" class="campo-select">
-                    <option value="" disabled>Selecione</option>
-                    <option value="pai">Pai</option>
-                    <option value="mae">Mãe</option>
-                    <option value="filho">Filho(a)</option>
-                    <option value="irmao">Irmão(ã)</option>
-                    <option value="neto">Neto(a)</option>
-                    <option value="conjuge">Cônjuge</option>
-                    <option value="outro">Outro</option>
-                  </select>
-                </div>
-
-                <div class="form-group">
-                  <label>TELEFONE:</label>
-                  <input v-model="form.telefone_responsavel" type="text" class="campo-input" />
-                </div>
-              </div>
-            </div>
-
-            <template v-if="temResponsavelSecundario || modoEdicao">
-              <div class="divisoria"></div>
-
-              <div v-if="!modoEdicao" class="bloco-responsavel">
-                <p class="linha-info">
-                  <span class="label">Responsável Secundário:</span>
-                  <span class="valor">{{ residente.nome_responsavel_2 || '—' }}</span>
-                </p>
-
-                <div class="linha-dupla">
-                  <p class="linha-info">
-                    <span class="label">Grau de Parentesco:</span>
-                    <span class="valor">{{ formatarParentesco(residente.parentesco_2) }}</span>
-                  </p>
-
-                  <p class="linha-info">
-                    <span class="label">Telefone:</span>
-                    <span class="valor">{{
-                      formatarTelefone(residente.telefone_responsavel_2)
-                    }}</span>
-                  </p>
-                </div>
-              </div>
-
-              <div v-else class="bloco-responsavel">
-                <span class="bloco-titulo">RESPONSÁVEL 2 (OPCIONAL)</span>
-
-                <div class="form-group">
-                  <label>NOME COMPLETO:</label>
-                  <input v-model="form.nome_responsavel_2" type="text" class="campo-input" />
-                </div>
-
-                <div class="linha-dupla">
-                  <div class="form-group">
-                    <label>GRAU DE PARENTESCO:</label>
-                    <select v-model="form.parentesco_2" class="campo-select">
-                      <option value="" disabled>Selecione</option>
-                      <option value="pai">Pai</option>
-                      <option value="mae">Mãe</option>
-                      <option value="filho">Filho(a)</option>
-                      <option value="irmao">Irmão(ã)</option>
-                      <option value="neto">Neto(a)</option>
-                      <option value="conjuge">Cônjuge</option>
-                      <option value="outro">Outro</option>
-                    </select>
-                  </div>
-
-                  <div class="form-group">
-                    <label>TELEFONE:</label>
-                    <input v-model="form.telefone_responsavel_2" type="text" class="campo-input" />
-                  </div>
-                </div>
-              </div>
-            </template>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <div class="linha-divisoria"></div>
-  </div>
-</template>
-
 <style scoped>
 * {
   box-sizing: border-box;
@@ -327,40 +349,20 @@ onMounted(buscarResidente)
 
 .main-content {
   flex: 1;
-  background: #2e5d2e;
-  padding: 48px 60px 56px 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #f2f7f0;
+  padding: 28px 24px 48px 24px;
 }
 
-.msg-erro {
-  color: #ffdada;
-  font-size: 13px;
-  margin-bottom: 16px;
-}
-
-.msg-sucesso {
-  color: #d9f2c2;
-  font-size: 13px;
-  font-weight: 700;
-  margin-bottom: 16px;
-}
-
-.msg-carregando {
-  color: #ffffff;
-  font-size: 14px;
-  text-align: center;
-}
-
+/* Painel: card branco que agrupa os contatos do residente. */
 .contatos-painel {
   width: 100%;
-  max-width: 1080px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.045);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
-  padding: 52px 58px;
+  max-width: 1240px;
+  margin: 0 auto;
+  background: #ffffff;
+  border: 1px solid #dde7d8;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(47, 90, 43, 0.06);
+  padding: 40px 48px;
 }
 
 .contatos-card {
@@ -380,8 +382,9 @@ onMounted(buscarResidente)
 .foto-box {
   width: 260px;
   height: 290px;
-  border-radius: 10px;
-  background-color: #d9d9d9;
+  border: 1px solid #dde7d8;
+  border-radius: 12px;
+  background-color: #e8f1e3;
   background-size: cover;
   background-position: center;
   display: flex;
@@ -397,23 +400,22 @@ onMounted(buscarResidente)
 
 .btn-editar {
   width: 100%;
-  background: #6ba13f;
+  background: #3e7a2b;
   color: #ffffff;
   border: none;
   padding: 12px 0;
-  border-radius: 7px;
+  border-radius: 8px;
+  font-family: inherit;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.5px;
+  text-transform: uppercase;
   cursor: pointer;
-  transition:
-    background 0.2s ease,
-    transform 0.15s ease;
+  transition: background 0.2s ease;
 }
 
 .btn-editar:hover {
-  background: #7caf49;
-  transform: translateY(-2px);
+  background: #2f5a2b;
 }
 
 .info-coluna {
@@ -432,70 +434,11 @@ onMounted(buscarResidente)
   flex-wrap: wrap;
 }
 
-.botoes-header {
-  display: flex;
-  gap: 10px;
-}
-
-.titulo-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  background: #6ba13f;
-  color: #ffffff;
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  padding: 10px 26px;
-  border-radius: 6px;
-}
-
-.btn-cancelar {
-  background: transparent;
-  color: #ffffff;
-  border: 1.5px solid rgba(255, 255, 255, 0.7);
-  padding: 10px 20px;
-  border-radius: 7px;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
-}
-
-.btn-cancelar:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: #ffffff;
-}
-
-.btn-salvar {
-  background: #6ba13f;
-  color: #ffffff;
-  border: none;
-  padding: 11px 26px;
-  border-radius: 7px;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  transition:
-    background 0.2s ease,
-    transform 0.15s ease;
-}
-
-.btn-salvar:hover:not(:disabled) {
-  background: #7caf49;
-  transform: translateY(-2px);
-}
-
-.btn-salvar:disabled,
-.btn-cancelar:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.section-title {
+  margin: 0;
+  color: #1f2d1c;
+  font-size: 22px;
+  font-weight: 800;
 }
 
 .bloco-responsavel {
@@ -505,14 +448,14 @@ onMounted(buscarResidente)
 }
 
 .bloco-titulo {
-  color: rgba(255, 255, 255, 0.85);
+  color: #1f2d1c;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
 }
 
 .linha-info {
-  color: #ffffff;
+  color: #4a5a47;
   font-size: 15px;
   margin: 0;
 }
@@ -520,6 +463,7 @@ onMounted(buscarResidente)
 .label {
   font-weight: 700;
   margin-right: 6px;
+  color: #1f2d1c;
 }
 
 .valor {
@@ -534,7 +478,7 @@ onMounted(buscarResidente)
 
 .divisoria {
   height: 1px;
-  background: rgba(255, 255, 255, 0.4);
+  background: #dde7d8;
   margin: 4px 0;
 }
 
@@ -545,7 +489,7 @@ onMounted(buscarResidente)
 }
 
 .form-group label {
-  color: #ffffff;
+  color: #1f2d1c;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.6px;
@@ -555,15 +499,15 @@ onMounted(buscarResidente)
 .campo-select {
   width: 100%;
   height: 38px;
-  border: 1px solid transparent;
-  border-radius: 6px;
+  border: 1px solid #dde7d8;
+  border-radius: 8px;
   padding: 0 12px;
   font-family: inherit;
   font-size: 14px;
-  color: #1e3e1e;
+  color: #1f2d1c;
   background: #ffffff;
   outline: none;
-  transition: box-shadow 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 .campo-select {
@@ -572,23 +516,161 @@ onMounted(buscarResidente)
 
 .campo-input:focus,
 .campo-select:focus {
-  border-color: #8fbe4a;
-  box-shadow: 0 0 0 3px rgba(143, 190, 74, 0.35);
+  border-color: #3e7a2b;
 }
 
-.linha-divisoria {
-  height: 8px;
-  background: #ffffff;
+.error-message {
+  margin: 0 0 16px 0;
+  padding: 10px 14px;
+  background: #fbe9e9;
+  border: 1px solid #e4b4b4;
+  border-radius: 8px;
+  color: #8a1f1f;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.success-message {
+  color: #2f5a2b;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.loading-message {
+  color: #4a5a47;
+  font-size: 14px;
+  text-align: center;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(31, 45, 28, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal-box {
+  position: relative;
   width: 100%;
+  max-width: 560px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 18px 48px rgba(31, 45, 28, 0.28);
+  padding: 32px;
+}
+
+.btn-fechar {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 8px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-fechar:hover {
+  background: #f2f7f0;
+}
+
+.btn-fechar svg {
+  width: 20px;
+  height: 20px;
+}
+
+.modal-titulo {
+  margin: 0 0 24px 0;
+  color: #2f5a2b;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-form .error-message {
+  margin: 16px 0 0 0;
+}
+
+.modal-form .success-message {
+  margin: 16px 0 0 0;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 24px;
+}
+
+.btn-cancelar {
+  background: transparent;
+  color: #3e7a2b;
+  border: 1.5px solid #3e7a2b;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-cancelar:hover:not(:disabled) {
+  background: #f2f7f0;
+}
+
+.btn-salvar {
+  background: #3e7a2b;
+  color: #ffffff;
+  border: none;
+  padding: 11px 26px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-salvar:hover:not(:disabled) {
+  background: #2f5a2b;
+}
+
+.btn-salvar:disabled,
+.btn-cancelar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 @media (max-width: 900px) {
   .main-content {
-    padding: 28px 20px 40px 20px;
+    padding: 20px 16px 40px 16px;
   }
 
   .contatos-painel {
-    padding: 32px 26px;
+    padding: 28px 20px;
   }
 
   .contatos-card {
@@ -606,18 +688,31 @@ onMounted(buscarResidente)
     height: 220px;
   }
 
+  .btn-editar {
+    width: 100%;
+  }
+
   .card-header {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .botoes-header {
-    flex-direction: column;
-  }
-
   .linha-dupla {
     flex-direction: column;
     gap: 10px;
+  }
+}
+
+@media (max-width: 700px) {
+  .modal-overlay {
+    padding: 0;
+  }
+
+  .modal-box {
+    max-width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
   }
 }
 </style>

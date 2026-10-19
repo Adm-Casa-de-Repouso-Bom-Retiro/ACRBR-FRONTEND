@@ -1,6 +1,8 @@
 <template>
   <div class="cadastro-page">
     <main class="main-content">
+      <BotaoVoltar to="/login" />
+
       <section class="cadastro-painel">
         <div class="cadastro-card">
           <div class="foto-coluna">
@@ -42,7 +44,7 @@
             <h1 class="section-title">Cadastre-se como Administrador</h1>
 
             <p v-if="erro" class="error-message">{{ erro }}</p>
-            <p v-if="sucesso" class="msg-sucesso">{{ sucesso }}</p>
+            <p v-if="sucesso" class="success-message">{{ sucesso }}</p>
 
             <form @submit.prevent="handleCadastro" class="cadastro-form">
               <div class="form-grid">
@@ -129,6 +131,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api from '@/services/api'
+import BotaoVoltar from '@/components/BotaoVoltar.vue'
 
 const router = useRouter()
 
@@ -322,7 +325,7 @@ async function handleCadastro() {
   font-weight: 700;
 }
 
-.msg-sucesso {
+.success-message {
   color: #2f5a2b;
   font-size: 13px;
   font-weight: 700;

@@ -1,6 +1,8 @@
 <template>
   <div class="contatos-page">
     <main class="main-content">
+      <BotaoVoltar to="/cadastroresidente" />
+
       <section class="contatos-painel">
         <h1 class="section-title">CONTATOS</h1>
 
@@ -109,6 +111,7 @@ import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import api from '@/services/api'
 import { useResidenteStore } from '@/stores/residente'
+import BotaoVoltar from '@/components/BotaoVoltar.vue'
 
 const router = useRouter()
 
