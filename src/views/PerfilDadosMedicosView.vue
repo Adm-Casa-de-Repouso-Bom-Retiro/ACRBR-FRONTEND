@@ -32,31 +32,225 @@
             <h1 class="section-title">Dados Médicos - {{ nomeResidente }}</h1>
           </div>
 
-          <button class="btn-editar" @click="abrirModal">EDITAR DADOS</button>
+          <div class="acoes-header">
+            <button v-if="!editando" class="btn-editar" @click="iniciarEdicao">EDITAR DADOS</button>
+
+            <template v-else>
+              <button class="btn-cancelar" type="button" @click="cancelarEdicao">CANCELAR</button>
+
+              <button class="btn-salvar" type="button" @click="handleSalvar">SALVAR</button>
+            </template>
+          </div>
         </div>
 
-        <p v-if="erro" class="error-message">{{ erro }}</p>
+        <p v-if="store.error" class="error-message">{{ store.error }}</p>
         <p v-if="sucesso" class="success-message">{{ sucesso }}</p>
+        <p v-if="store.loading" class="loading-message">
+          {{ editando ? 'Salvando dados...' : 'Carregando dados...' }}
+        </p>
 
         <div class="form-grid">
+          <!-- CONDIÇÕES MÉDICAS -->
           <div class="form-group">
             <label>CONDIÇÕES MÉDICAS:</label>
-            <textarea :value="condicoesMedicas" disabled></textarea>
+
+            <template v-if="!editando">
+              <div v-if="condicoes.length" class="chip-lista">
+                <span v-for="item in condicoes" :key="item" class="chip-item">{{ item }}</span>
+              </div>
+
+              <p v-else class="valor-vazio">Nenhuma condição registrada</p>
+            </template>
+
+            <template v-else>
+              <div v-if="condicoes.length" class="chip-lista">
+                <span v-for="(item, index) in condicoes" :key="index" class="chip-item">
+                  {{ item }}
+                  <button
+                    type="button"
+                    class="chip-remover"
+                    title="Remover"
+                    @click="removerCondicao(index)"
+                  >
+                    &times;
+                  </button>
+                </span>
+              </div>
+
+              <div class="chip-add">
+                <input
+                  v-model="novaCondicao"
+                  type="text"
+                  class="campo-texto"
+                  placeholder="Nova condição médica"
+                  @keyup.enter="adicionarCondicao"
+                />
+
+                <button type="button" class="btn-adicionar-item" @click="adicionarCondicao">
+                  Adicionar
+                </button>
+              </div>
+            </template>
           </div>
 
+          <!-- ALERGIAS -->
           <div class="form-group">
             <label>ALERGIAS:</label>
-            <textarea :value="alergias" disabled></textarea>
+
+            <template v-if="!editando">
+              <span v-if="semAlergiasConhecidas" class="chip-item chip-item--alergia">
+                Sem alergias conhecidas
+              </span>
+
+              <template v-else>
+                <div v-if="alergias.length" class="chip-lista">
+                  <span v-for="item in alergias" :key="item" class="chip-item chip-item--alergia">
+                    {{ item }}
+                  </span>
+                </div>
+
+                <p v-else class="valor-vazio">Nenhuma alergia registrada</p>
+              </template>
+            </template>
+
+            <template v-else>
+              <label class="checkbox-alergias">
+                <input v-model="semAlergiasConhecidas" type="checkbox" />
+                <span>Sem alergias conhecidas</span>
+              </label>
+
+              <template v-if="!semAlergiasConhecidas">
+                <div v-if="alergias.length" class="chip-lista">
+                  <span
+                    v-for="(item, index) in alergias"
+                    :key="index"
+                    class="chip-item chip-item--alergia"
+                  >
+                    {{ item }}
+                    <button
+                      type="button"
+                      class="chip-remover"
+                      title="Remover"
+                      @click="removerAlergia(index)"
+                    >
+                      &times;
+                    </button>
+                  </span>
+                </div>
+
+                <div class="chip-add">
+                  <input
+                    v-model="novaAlergia"
+                    type="text"
+                    class="campo-texto"
+                    placeholder="Nova alergia"
+                    @keyup.enter="adicionarAlergia"
+                  />
+
+                  <button type="button" class="btn-adicionar-item" @click="adicionarAlergia">
+                    Adicionar
+                  </button>
+                </div>
+              </template>
+            </template>
           </div>
 
-          <div class="form-group">
-            <label>OBSERVAÇÕES:</label>
-            <textarea :value="observacoes" disabled></textarea>
-          </div>
-
+          <!-- PESO E ALTURA -->
           <div class="form-group">
             <label>PESO E ALTURA:</label>
-            <textarea :value="pesoAltura" disabled></textarea>
+
+            <template v-if="!editando">
+              <div class="medida-linha">
+                <div class="medida">
+                  <span class="medida-valor">{{ peso ? `${formatarNumero(peso)} kg` : '—' }}</span>
+                  <span class="medida-rotulo">Peso</span>
+                </div>
+
+                <div class="medida">
+                  <span class="medida-valor">{{
+                    altura ? `${formatarNumero(altura)} cm` : '—'
+                  }}</span>
+                  <span class="medida-rotulo">Altura</span>
+                </div>
+              </div>
+
+              <p v-if="mostrarPesoAlturaLegado" class="valor-legado">
+                Registro anterior: {{ pesoAlturaLegado }}
+              </p>
+            </template>
+
+            <template v-else>
+              <div class="medida-linha">
+                <div class="campo-medida">
+                  <label for="campo-peso">PESO (KG)</label>
+
+                  <div class="input-unidade">
+                    <input
+                      id="campo-peso"
+                      v-model="peso"
+                      type="number"
+                      min="1"
+                      max="400"
+                      step="0.1"
+                      class="campo-numero"
+                      placeholder="—"
+                      title="Aceita ponto ou vírgula nos decimais"
+                      @keydown="tratarTeclaNumero"
+                      @paste="colarNumero"
+                    />
+
+                    <span class="unidade">kg</span>
+                  </div>
+                </div>
+
+                <div class="campo-medida">
+                  <label for="campo-altura">ALTURA (CM)</label>
+
+                  <div class="input-unidade">
+                    <input
+                      id="campo-altura"
+                      v-model="altura"
+                      type="number"
+                      min="30"
+                      max="250"
+                      step="0.1"
+                      class="campo-numero"
+                      placeholder="—"
+                      title="Aceita ponto ou vírgula nos decimais"
+                      @keydown="tratarTeclaNumero"
+                      @paste="colarNumero"
+                    />
+
+                    <span class="unidade">cm</span>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+
+          <!-- OBSERVAÇÕES -->
+          <div class="form-group">
+            <label>OBSERVAÇÕES:</label>
+
+            <template v-if="!editando">
+              <div class="bloco-texto">
+                <p v-if="observacoes" class="texto-observacoes">{{ observacoes }}</p>
+                <p v-else class="valor-vazio">Sem observações</p>
+              </div>
+            </template>
+
+            <template v-else>
+              <textarea
+                id="campo-observacoes"
+                v-model="observacoes"
+                class="campo-area"
+                maxlength="500"
+                rows="4"
+                placeholder="Registre observações relevantes"
+              ></textarea>
+
+              <span class="contador">{{ observacoes.length }}/500</span>
+            </template>
           </div>
         </div>
 
@@ -67,10 +261,11 @@
                 <th>MEDICAMENTOS</th>
                 <th>DOSAGEM</th>
                 <th>HORÁRIO</th>
+                <th v-if="editando" class="th-acao"></th>
               </tr>
             </thead>
 
-            <tbody>
+            <tbody v-if="!editando">
               <tr
                 v-for="(med, index) in medicamentos"
                 :key="index"
@@ -86,120 +281,54 @@
                 <td>{{ med.horario || '—' }}</td>
               </tr>
             </tbody>
+
+            <tbody v-else>
+              <tr v-for="(med, index) in medicamentos" :key="index">
+                <td>
+                  <input v-model="med.nome" class="med-input" placeholder="Nome do medicamento" />
+                </td>
+
+                <td>
+                  <input v-model="med.dosagem" class="med-input" placeholder="Dosagem" />
+                </td>
+
+                <td>
+                  <input v-model="med.horario" class="med-input" placeholder="Horário" />
+                </td>
+
+                <td class="td-acao">
+                  <button
+                    type="button"
+                    class="btn-remover"
+                    title="Excluir medicamento"
+                    @click="removerMedicamento(index)"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
           </table>
+
+          <button v-if="editando" class="btn-adicionar" type="button" @click="adicionarMedicamento">
+            + ADICIONAR MEDICAMENTO
+          </button>
         </div>
       </section>
     </main>
-
-    <div v-if="mostrarModal" class="modal-overlay" @click.self="fecharModal">
-      <div class="modal-box">
-        <button class="btn-fechar" type="button" @click="fecharModal">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M6 6l12 12M18 6 6 18"
-              stroke="#1f2d1c"
-              stroke-width="1.8"
-              stroke-linecap="round"
-            />
-          </svg>
-        </button>
-
-        <h3 class="modal-titulo">Editar dados médicos</h3>
-
-        <div class="modal-body">
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="modal-condicoes">CONDIÇÕES MÉDICAS:</label>
-              <textarea id="modal-condicoes" v-model="condicoesMedicas"></textarea>
-            </div>
-
-            <div class="form-group">
-              <label for="modal-alergias">ALERGIAS:</label>
-              <textarea id="modal-alergias" v-model="alergias"></textarea>
-            </div>
-
-            <div class="form-group">
-              <label for="modal-observacoes">OBSERVAÇÕES:</label>
-              <textarea id="modal-observacoes" v-model="observacoes"></textarea>
-            </div>
-
-            <div class="form-group">
-              <label for="modal-peso">PESO E ALTURA:</label>
-              <textarea id="modal-peso" v-model="pesoAltura"></textarea>
-            </div>
-          </div>
-
-          <div class="medicamentos-section">
-            <table class="medicamentos-table">
-              <thead>
-                <tr>
-                  <th>MEDICAMENTOS</th>
-                  <th>DOSAGEM</th>
-                  <th>HORÁRIO</th>
-                  <th class="th-acao"></th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr v-for="(med, index) in medicamentos" :key="index">
-                  <td>
-                    <input v-model="med.nome" class="med-input" placeholder="Nome do medicamento" />
-                  </td>
-
-                  <td>
-                    <input v-model="med.dosagem" class="med-input" placeholder="Dosagem" />
-                  </td>
-
-                  <td>
-                    <input v-model="med.horario" class="med-input" placeholder="Horário" />
-                  </td>
-
-                  <td class="td-acao">
-                    <button
-                      type="button"
-                      class="btn-remover"
-                      title="Excluir medicamento"
-                      @click="removerMedicamento(index)"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      >
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
-                      </svg>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <button class="btn-adicionar" type="button" @click="adicionarMedicamento">
-              + ADICIONAR MEDICAMENTO
-            </button>
-          </div>
-        </div>
-
-        <p v-if="erro" class="error-message">{{ erro }}</p>
-
-        <div class="modal-footer">
-          <button class="btn-cancelar" type="button" :disabled="carregando" @click="fecharModal">
-            CANCELAR
-          </button>
-
-          <button class="btn-salvar" type="button" :disabled="carregando" @click="handleSalvar">
-            {{ carregando ? 'SALVANDO...' : 'SALVAR ALTERAÇÕES' }}
-          </button>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -220,17 +349,20 @@ const props = defineProps({
 const route = useRoute()
 const store = useDadosMedicosStore()
 
+const editando = ref(false)
 const nomeResidente = ref('')
 const residente = ref({ foto: null })
-const mostrarModal = ref(false)
-const condicoesMedicas = ref('')
-const alergias = ref('')
+const condicoes = ref([])
+const alergias = ref([])
 const observacoes = ref('')
-const pesoAltura = ref('')
+const peso = ref('')
+const altura = ref('')
+const semAlergiasConhecidas = ref(false)
+const pesoAlturaLegado = ref('')
 const medicamentos = ref([])
-const erro = ref('')
+const novaCondicao = ref('')
+const novaAlergia = ref('')
 const sucesso = ref('')
-const carregando = ref(false)
 
 let snapshot = null
 
@@ -246,6 +378,79 @@ const idResidente = computed(() => {
 
   return null
 })
+
+const mostrarPesoAlturaLegado = computed(
+  () => !!pesoAlturaLegado.value && !peso.value && !altura.value,
+)
+
+function textoParaLista(texto) {
+  if (!texto) return []
+
+  return String(texto)
+    .split('\n')
+    .map((item) => item.trim())
+    .filter((item) => item !== '')
+}
+
+function normalizar(texto) {
+  return texto.trim().toLowerCase()
+}
+
+function formatarNumero(valor) {
+  const numero = Number(valor)
+
+  if (Number.isNaN(numero)) return ''
+
+  return numero.toLocaleString('pt-BR')
+}
+
+function paraNumero(valor) {
+  if (valor === null || valor === undefined || String(valor).trim() === '') return null
+
+  const numero = Number(valor)
+
+  return Number.isNaN(numero) ? null : numero
+}
+
+/* O campo type="number" descarta a vírgula e zera o valor, então ela é
+   transformada em ponto antes de chegar no navegador. */
+let virgulaPendente = false
+
+function tratarTeclaNumero(evento) {
+  const campo = evento.target
+
+  if (evento.key === ',') {
+    evento.preventDefault()
+
+    if (campo.value && !campo.value.includes('.')) {
+      virgulaPendente = true
+    }
+
+    return
+  }
+
+  if (virgulaPendente && /^[0-9]$/.test(evento.key)) {
+    evento.preventDefault()
+    campo.value = `${campo.value}.${evento.key}`
+    campo.dispatchEvent(new Event('input'))
+    virgulaPendente = false
+    return
+  }
+
+  virgulaPendente = false
+}
+
+function colarNumero(evento) {
+  const texto = (evento.clipboardData?.getData('text') || '').trim().replace(',', '.')
+
+  if (!texto) return
+
+  evento.preventDefault()
+
+  const campo = evento.target
+  campo.value = texto.endsWith('.') ? `${texto}0` : texto
+  campo.dispatchEvent(new Event('input'))
+}
 
 async function carregarResidente() {
   const id = idResidente.value
@@ -268,19 +473,19 @@ async function carregarDadosMedicos() {
 
   await store.fetchPorResidente(id)
 
-  if (store.error) {
-    erro.value = store.error
-    return
-  }
+  if (store.error) return
 
   const dados = store.dadosMedicos
 
   if (!dados) return
 
-  condicoesMedicas.value = dados.condicoes_medicas || ''
-  alergias.value = dados.alergias || ''
+  condicoes.value = textoParaLista(dados.condicoes_medicas)
+  alergias.value = textoParaLista(dados.alergias)
   observacoes.value = dados.observacoes || ''
-  pesoAltura.value = dados.peso_altura || ''
+  peso.value = dados.peso === null || dados.peso === undefined ? '' : String(dados.peso)
+  altura.value = dados.altura === null || dados.altura === undefined ? '' : String(dados.altura)
+  semAlergiasConhecidas.value = !!dados.sem_alergias_conhecidas
+  pesoAlturaLegado.value = dados.peso_altura || ''
 
   medicamentos.value = (dados.medicacoes || []).map((med) => ({
     nome: med.nome || '',
@@ -290,31 +495,66 @@ async function carregarDadosMedicos() {
   }))
 }
 
-function abrirModal() {
+function iniciarEdicao() {
   snapshot = {
-    condicoesMedicas: condicoesMedicas.value,
-    alergias: alergias.value,
+    condicoes: [...condicoes.value],
+    alergias: [...alergias.value],
     observacoes: observacoes.value,
-    pesoAltura: pesoAltura.value,
+    peso: peso.value,
+    altura: altura.value,
+    semAlergiasConhecidas: semAlergiasConhecidas.value,
     medicamentos: medicamentos.value.map((med) => ({ ...med })),
   }
 
-  erro.value = ''
+  novaCondicao.value = ''
+  novaAlergia.value = ''
   sucesso.value = ''
-  mostrarModal.value = true
+  editando.value = true
 }
 
-function fecharModal() {
+function cancelarEdicao() {
   if (snapshot) {
-    condicoesMedicas.value = snapshot.condicoesMedicas
-    alergias.value = snapshot.alergias
+    condicoes.value = [...snapshot.condicoes]
+    alergias.value = [...snapshot.alergias]
     observacoes.value = snapshot.observacoes
-    pesoAltura.value = snapshot.pesoAltura
-    medicamentos.value = snapshot.medicamentos
+    peso.value = snapshot.peso
+    altura.value = snapshot.altura
+    semAlergiasConhecidas.value = snapshot.semAlergiasConhecidas
+    medicamentos.value = snapshot.medicamentos.map((med) => ({ ...med }))
   }
 
-  erro.value = ''
-  mostrarModal.value = false
+  novaCondicao.value = ''
+  novaAlergia.value = ''
+  sucesso.value = ''
+  editando.value = false
+}
+
+function adicionarCondicao() {
+  const item = novaCondicao.value.trim()
+
+  if (!item) return
+  if (condicoes.value.some((condicao) => normalizar(condicao) === normalizar(item))) return
+
+  condicoes.value.push(item)
+  novaCondicao.value = ''
+}
+
+function removerCondicao(index) {
+  condicoes.value.splice(index, 1)
+}
+
+function adicionarAlergia() {
+  const item = novaAlergia.value.trim()
+
+  if (!item) return
+  if (alergias.value.some((alergia) => normalizar(alergia) === normalizar(item))) return
+
+  alergias.value.push(item)
+  novaAlergia.value = ''
+}
+
+function removerAlergia(index) {
+  alergias.value.splice(index, 1)
 }
 
 function toggleSelecionado(index) {
@@ -330,16 +570,16 @@ function removerMedicamento(index) {
 }
 
 async function handleSalvar() {
-  erro.value = ''
   sucesso.value = ''
-  carregando.value = true
 
   const dados = {
     residente: Number(idResidente.value),
-    condicoes_medicas: condicoesMedicas.value,
-    alergias: alergias.value,
+    condicoes_medicas: condicoes.value.join('\n'),
+    alergias: semAlergiasConhecidas.value ? '' : alergias.value.join('\n'),
     observacoes: observacoes.value,
-    peso_altura: pesoAltura.value,
+    peso: paraNumero(peso.value),
+    altura: paraNumero(altura.value),
+    sem_alergias_conhecidas: semAlergiasConhecidas.value,
     medicacoes: medicamentos.value
       .filter((med) => med.nome && med.nome.trim() !== '')
       .map((med) => ({
@@ -349,25 +589,30 @@ async function handleSalvar() {
       })),
   }
 
-  try {
-    let sucessoSalvamento
+  let salvou
 
-    if (store.dadosMedicos?.id) {
-      sucessoSalvamento = await store.atualizarDadosMedicos(store.dadosMedicos.id, dados)
-    } else {
-      sucessoSalvamento = await store.criarDadosMedicos(dados)
-    }
-
-    if (!sucessoSalvamento) {
-      erro.value = store.error || 'Erro ao salvar. Tente novamente.'
-      return
-    }
-
-    sucesso.value = 'Dados salvos com sucesso!'
-    mostrarModal.value = false
-  } finally {
-    carregando.value = false
+  if (store.dadosMedicos?.id) {
+    salvou = await store.atualizarDadosMedicos(store.dadosMedicos.id, dados)
+  } else {
+    salvou = await store.criarDadosMedicos(dados)
   }
+
+  if (!salvou) return
+
+  const salvo = store.dadosMedicos
+
+  if (salvo) {
+    condicoes.value = textoParaLista(salvo.condicoes_medicas)
+    alergias.value = textoParaLista(salvo.alergias)
+    observacoes.value = salvo.observacoes || ''
+    peso.value = salvo.peso === null || salvo.peso === undefined ? '' : String(salvo.peso)
+    altura.value = salvo.altura === null || salvo.altura === undefined ? '' : String(salvo.altura)
+    semAlergiasConhecidas.value = !!salvo.sem_alergias_conhecidas
+  }
+
+  sucesso.value = 'Dados salvos com sucesso!'
+  snapshot = null
+  editando.value = false
 }
 
 onMounted(() => {
@@ -458,6 +703,12 @@ onMounted(() => {
   font-weight: 800;
 }
 
+.acoes-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .btn-editar {
   background: #3e7a2b;
   color: #ffffff;
@@ -477,6 +728,44 @@ onMounted(() => {
   background: #2f5a2b;
 }
 
+.btn-salvar {
+  background: #3e7a2b;
+  border: none;
+  color: #ffffff;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 11px 26px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-salvar:hover {
+  background: #2f5a2b;
+}
+
+.btn-cancelar {
+  background: transparent;
+  color: #3e7a2b;
+  border: 1.5px solid #3e7a2b;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-cancelar:hover {
+  background: #f2f7f0;
+}
+
 /* Mensagens */
 .error-message {
   margin: 0 0 16px 0;
@@ -493,6 +782,12 @@ onMounted(() => {
   color: #2f5a2b;
   font-size: 13px;
   font-weight: 700;
+  margin: 0 0 16px 0;
+}
+
+.loading-message {
+  color: #4a5a47;
+  font-size: 13px;
   margin: 0 0 16px 0;
 }
 
@@ -517,7 +812,203 @@ onMounted(() => {
   letter-spacing: 0.6px;
 }
 
-.form-group textarea {
+/* Chips de condições e alergias */
+.chip-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 0;
+}
+
+.chip-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #e8f1e3;
+  color: #2f5a2b;
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.chip-item--alergia {
+  background: #fff4e0;
+  color: #7a4b00;
+}
+
+.chip-remover {
+  background: none;
+  border: none;
+  padding: 0;
+  color: inherit;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.65;
+}
+
+.chip-remover:hover {
+  opacity: 1;
+}
+
+.chip-add {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.campo-texto {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid #dde7d8;
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-family: inherit;
+  font-size: 13px;
+  color: #1f2d1c;
+  background: #ffffff;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.campo-texto:focus {
+  border-color: #3e7a2b;
+}
+
+.btn-adicionar-item {
+  background: #e8f1e3;
+  border: 1px solid #dde7d8;
+  color: #2f5a2b;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.4px;
+  padding: 9px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.btn-adicionar-item:hover {
+  background: #f2f7f0;
+}
+
+/* Checkbox de alergias conhecidas */
+.form-group .checkbox-alergias {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #1f2d1c;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0;
+  cursor: pointer;
+}
+
+.checkbox-alergias input {
+  width: 16px;
+  height: 16px;
+  accent-color: #3e7a2b;
+  cursor: pointer;
+}
+
+/* Peso e altura */
+.medida-linha {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  padding: 10px 0;
+}
+
+.medida {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.medida-valor {
+  color: #1f2d1c;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.medida-rotulo {
+  color: #4a5a47;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.valor-legado {
+  margin: 0;
+  color: #4a5a47;
+  font-size: 12px;
+  font-style: italic;
+}
+
+.campo-medida {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1;
+  min-width: 150px;
+}
+
+.input-unidade {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #dde7d8;
+  border-radius: 8px;
+  padding: 0 12px;
+  background: #ffffff;
+  transition: border-color 0.15s ease;
+}
+
+.input-unidade:focus-within {
+  border-color: #3e7a2b;
+}
+
+.campo-numero {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  padding: 9px 0;
+  font-family: inherit;
+  font-size: 13px;
+  color: #1f2d1c;
+  background: transparent;
+}
+
+.unidade {
+  color: #4a5a47;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Observações */
+.bloco-texto {
+  border: 1px solid #dde7d8;
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: #ffffff;
+}
+
+.texto-observacoes {
+  margin: 0;
+  color: #1f2d1c;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.campo-area {
   width: 100%;
   min-height: 100px;
   border: 1px solid #dde7d8;
@@ -532,15 +1023,23 @@ onMounted(() => {
   transition: border-color 0.15s ease;
 }
 
-.form-group textarea:disabled {
-  background: #f2f7f0;
-  border-color: #dde7d8;
-  color: #4a5a47;
-  cursor: default;
+.campo-area:focus {
+  border-color: #3e7a2b;
 }
 
-.form-group textarea:focus:not(:disabled) {
-  border-color: #3e7a2b;
+.contador {
+  align-self: flex-end;
+  color: #4a5a47;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Valores vazios */
+.valor-vazio {
+  margin: 0;
+  padding: 10px 0;
+  color: #4a5a47;
+  font-size: 13px;
 }
 
 /* Tabela de medicamentos */
@@ -595,7 +1094,7 @@ onMounted(() => {
   border: 1px solid #dde7d8;
   transition:
     background 0.15s ease,
-    border-color 0.15s ease;
+    border 0.15s ease;
 }
 
 .checkbox-icon.marcado {
@@ -674,122 +1173,6 @@ onMounted(() => {
   background: #fbe9e9;
 }
 
-/* ---------- Modal ---------- */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: rgba(31, 45, 28, 0.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-}
-
-.modal-box {
-  position: relative;
-  width: 100%;
-  max-width: 820px;
-  max-height: calc(100vh - 48px);
-  overflow-y: auto;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 18px 48px rgba(31, 45, 28, 0.28);
-  padding: 32px;
-}
-
-.btn-fechar {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  width: 34px;
-  height: 34px;
-  border: none;
-  border-radius: 8px;
-  background: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.btn-fechar:hover {
-  background: #f2f7f0;
-}
-
-.btn-fechar svg {
-  width: 20px;
-  height: 20px;
-}
-
-.modal-titulo {
-  margin: 0 0 24px 0;
-  color: #2f5a2b;
-  font-size: 18px;
-  font-weight: 800;
-}
-
-.modal-body {
-  display: flex;
-  flex-direction: column;
-}
-
-/* No modal as linhas da tabela não são clicáveis. */
-.modal-box .medicamentos-table tbody tr {
-  cursor: default;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  padding-top: 24px;
-}
-
-.btn-cancelar {
-  background: transparent;
-  color: #3e7a2b;
-  border: 1.5px solid #3e7a2b;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.btn-cancelar:hover:not(:disabled) {
-  background: #f2f7f0;
-}
-
-.btn-salvar {
-  background: #3e7a2b;
-  border: none;
-  color: #ffffff;
-  font-family: inherit;
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.5px;
-  padding: 12px 34px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.btn-salvar:hover:not(:disabled) {
-  background: #2f5a2b;
-}
-
-.btn-salvar:disabled,
-.btn-cancelar:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
 @media (max-width: 900px) {
   .main-content {
     padding: 20px 16px 40px 16px;
@@ -804,6 +1187,10 @@ onMounted(() => {
     align-items: stretch;
   }
 
+  .acoes-header {
+    flex-wrap: wrap;
+  }
+
   .btn-editar {
     align-self: flex-start;
   }
@@ -812,25 +1199,22 @@ onMounted(() => {
     grid-template-columns: 1fr;
   }
 
+  .medida-linha {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .chip-add {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
   .medicamentos-section {
     overflow-x: auto;
   }
 
   .btn-salvar {
-    width: 100%;
-  }
-}
-
-@media (max-width: 700px) {
-  .modal-overlay {
-    padding: 0;
-  }
-
-  .modal-box {
-    max-width: 100%;
-    height: 100%;
-    max-height: 100%;
-    border-radius: 0;
+    flex: 1;
   }
 }
 </style>
