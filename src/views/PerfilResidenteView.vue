@@ -1,11 +1,26 @@
 <template>
   <div class="perfil-view">
-    <div class="topo-voltar">
-      <BotaoVoltar to="/prontuario" />
-    </div>
-
     <div class="faixa-verde">
-      <h1 class="faixa-titulo">Perfil do Residente</h1>
+      <div class="faixa-conteudo">
+        <h1 class="faixa-titulo">Perfil do Residente</h1>
+        <router-link class="botao-voltar" to="/prontuario">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+          >
+            <path
+              d="M19 12H5M11 18l-6-6 6-6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+          <span>VOLTAR</span>
+        </router-link>
+      </div>
     </div>
 
     <main class="main-content">
@@ -373,7 +388,6 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import api, { uploadImagem } from '@/services/api'
 import { useResidentesStore } from '@/stores/residentes'
-import BotaoVoltar from '@/components/BotaoVoltar.vue'
 
 const props = defineProps({
   id: {
@@ -565,24 +579,67 @@ onMounted(buscarResidente)
   flex-direction: column;
 }
 
-.topo-voltar {
-  background: #f2f7f0;
-  padding: 20px 24px 0 24px;
-}
-
 /* Faixa verde escura no topo do conteúdo. */
 .faixa-verde {
   background: #2f5a2b;
   padding: 32px 24px 64px 24px;
 }
 
-.faixa-titulo {
+/* Linha interna da faixa: título à esquerda e botão VOLTAR à direita. */
+.faixa-conteudo {
   width: 100%;
   max-width: 1240px;
   margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.faixa-titulo {
+  margin: 0;
   color: #ffffff;
   font-size: 24px;
   font-weight: 800;
+}
+
+/* Botão VOLTAR (secundário) sobre a faixa verde. */
+.botao-voltar {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 9px 18px;
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.botao-voltar:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.botao-voltar:focus-visible {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+.botao-voltar svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .main-content {

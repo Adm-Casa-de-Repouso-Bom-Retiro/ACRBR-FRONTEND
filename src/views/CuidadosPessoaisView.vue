@@ -312,6 +312,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '@/services/api'
+import { useCuidadosPessoaisStore } from '@/stores/cuidadospessoais'
 import BotaoVoltar from '@/components/BotaoVoltar.vue'
 
 const props = defineProps({
@@ -322,6 +323,7 @@ const props = defineProps({
 })
 
 const route = useRoute()
+const store = useCuidadosPessoaisStore()
 
 const mostrarModal = ref(false)
 const salvando = ref(false)
@@ -459,48 +461,42 @@ async function carregarDados() {
     const dadosResidente = respostaResidente.data || {}
     residente.value.nome = dadosResidente.nome_completo || dadosResidente.nome || ''
     residente.value.foto = dadosResidente.foto || null
-
-    const respostaCuidados = await api.get('/cuidadospessoais/')
-
-    let lista = respostaCuidados.data
-
-    if (!Array.isArray(lista)) {
-      lista = respostaCuidados.data?.results || []
-    }
-
-    const cuidado = lista.find((item) => {
-      if (item.residente && typeof item.residente === 'object') {
-        return Number(item.residente.id) === Number(id)
-      }
-
-      return Number(item.residente) === Number(id)
-    })
-
-    if (!cuidado) {
-      cuidadosId.value = null
-      return
-    }
-
-    cuidadosId.value = cuidado.id
-
-    cuidados.value.higiene.ajudaBanho = cuidado.ajuda_banho ?? null
-    cuidados.value.higiene.ajudaHigieneIntima = cuidado.ajuda_higiene_intima ?? null
-    cuidados.value.higiene.ajudaHigieneBucal = cuidado.ajuda_higiene_bucal ?? null
-    cuidados.value.higiene.ajudaUsarBanheiro = cuidado.ajuda_usar_banheiro ?? null
-    cuidados.value.higiene.ajudaVestirRoupas = cuidado.ajuda_vestir_roupas ?? null
-
-    cuidados.value.locomocao.ajudaLocomocao = cuidado.ajuda_locomocao ?? null
-    cuidados.value.locomocao.riscoQueda = cuidado.risco_queda ?? null
-
-    cuidados.value.alimentacao.ajudaAlimentar = cuidado.ajuda_alimentar ?? null
-    cuidados.value.alimentacao.possuiRestricoes = cuidado.possui_restricoes ?? null
-
-    cuidados.value.observacoes = cuidado.observacoes || ''
   } catch (erro) {
     console.error('ERRO AO CARREGAR:', erro.response?.data || erro)
 
     mostrarMensagem('Erro ao carregar os dados.', 'erro')
+    return
   }
+
+  await store.fetchPorResidente(id)
+
+  if (store.error) {
+    mostrarMensagem(store.error, 'erro')
+    return
+  }
+
+  const cuidado = store.cuidadosPessoais
+
+  if (!cuidado) {
+    cuidadosId.value = null
+    return
+  }
+
+  cuidadosId.value = cuidado.id
+
+  cuidados.value.higiene.ajudaBanho = cuidado.ajuda_banho ?? null
+  cuidados.value.higiene.ajudaHigieneIntima = cuidado.ajuda_higiene_intima ?? null
+  cuidados.value.higiene.ajudaHigieneBucal = cuidado.ajuda_higiene_bucal ?? null
+  cuidados.value.higiene.ajudaUsarBanheiro = cuidado.ajuda_usar_banheiro ?? null
+  cuidados.value.higiene.ajudaVestirRoupas = cuidado.ajuda_vestir_roupas ?? null
+
+  cuidados.value.locomocao.ajudaLocomocao = cuidado.ajuda_locomocao ?? null
+  cuidados.value.locomocao.riscoQueda = cuidado.risco_queda ?? null
+
+  cuidados.value.alimentacao.ajudaAlimentar = cuidado.ajuda_alimentar ?? null
+  cuidados.value.alimentacao.possuiRestricoes = cuidado.possui_restricoes ?? null
+
+  cuidados.value.observacoes = cuidado.observacoes || ''
 }
 
 async function salvarDados() {
@@ -536,49 +532,26 @@ async function salvarDados() {
     observacoes: cuidados.value.observacoes,
   }
 
+  let sucessoSalvamento
+
   try {
-    let resposta
-
     if (cuidadosId.value) {
-      resposta = await api.patch(`/cuidadospessoais/${cuidadosId.value}/`, dados)
+      sucessoSalvamento = await store.atualizarCuidadosPessoais(cuidadosId.value, dados)
     } else {
-      resposta = await api.post('/cuidadospessoais/', dados)
+      sucessoSalvamento = await store.criarCuidadosPessoais(dados)
+    }
 
-      if (resposta.data?.id) {
-        cuidadosId.value = resposta.data.id
-      }
+    if (!sucessoSalvamento) {
+      mostrarMensagem(store.error || 'Nao foi possivel salvar os dados.', 'erro')
+      return
+    }
+
+    if (store.cuidadosPessoais?.id) {
+      cuidadosId.value = store.cuidadosPessoais.id
     }
 
     mostrarModal.value = false
     mostrarMensagem('Dados salvos com sucesso!', 'sucesso')
-  } catch (erro) {
-    console.error('ERRO AO SALVAR:', erro.response?.data || erro)
-
-    const erroApi = erro.response?.data
-
-    let mensagemErro = 'Nao foi possivel salvar os dados.'
-
-    if (erroApi) {
-      if (typeof erroApi === 'string') {
-        mensagemErro = erroApi
-      } else if (typeof erroApi === 'object') {
-        const mensagens = Object.entries(erroApi)
-          .map(([campo, valor]) => {
-            if (Array.isArray(valor)) {
-              return `${campo}: ${valor.join(', ')}`
-            }
-
-            return `${campo}: ${valor}`
-          })
-          .join(' | ')
-
-        if (mensagens) {
-          mensagemErro = mensagens
-        }
-      }
-    }
-
-    mostrarMensagem(mensagemErro, 'erro')
   } finally {
     salvando.value = false
   }

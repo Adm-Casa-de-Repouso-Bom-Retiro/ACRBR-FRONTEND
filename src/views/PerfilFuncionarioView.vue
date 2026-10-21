@@ -1,8 +1,5 @@
 <template>
   <div class="perfil-view">
-    <div class="topo-voltar">
-      <BotaoVoltar to="/" />
-    </div>
 
     <div class="faixa-verde">
       <h1 class="faixa-titulo">Meu perfil</h1>
@@ -277,7 +274,6 @@ import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { uploadImagem } from '@/services/api'
 import { useAuthStore } from '@/stores/auth'
-import BotaoVoltar from '@/components/BotaoVoltar.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -430,12 +426,6 @@ onMounted(async () => {
   flex-direction: column;
 }
 
-.topo-voltar {
-  background: #f2f7f0;
-  padding: 20px 24px 0 24px;
-}
-
-/* Faixa verde escura no topo do conteúdo. */
 .faixa-verde {
   background: #2f5a2b;
   padding: 32px 24px 64px 24px;

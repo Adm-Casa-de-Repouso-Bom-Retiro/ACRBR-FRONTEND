@@ -207,6 +207,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '@/services/api'
+import { useDadosMedicosStore } from '@/stores/dadosmedicos'
 import BotaoVoltar from '@/components/BotaoVoltar.vue'
 
 const props = defineProps({
@@ -216,9 +217,8 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['dados-medicos'])
-
 const route = useRoute()
+const store = useDadosMedicosStore()
 
 const nomeResidente = ref('')
 const residente = ref({ foto: null })
@@ -227,16 +227,7 @@ const condicoesMedicas = ref('')
 const alergias = ref('')
 const observacoes = ref('')
 const pesoAltura = ref('')
-const medicamentos = ref([
-  { nome: 'Losartana', dosagem: '50 mg', horario: '08:00h', selecionado: false },
-  { nome: 'Metformina', dosagem: '850 mg', horario: '08:00h e 20:00h', selecionado: false },
-  {
-    nome: 'Cálcio + Vitamina D',
-    dosagem: '1 comprimido',
-    horario: '12:00h',
-    selecionado: false,
-  },
-])
+const medicamentos = ref([])
 const erro = ref('')
 const sucesso = ref('')
 const carregando = ref(false)
@@ -268,6 +259,35 @@ async function carregarResidente() {
   } catch (erroCarregar) {
     console.error('Erro ao carregar residente:', erroCarregar)
   }
+}
+
+async function carregarDadosMedicos() {
+  const id = idResidente.value
+
+  if (!id) return
+
+  await store.fetchPorResidente(id)
+
+  if (store.error) {
+    erro.value = store.error
+    return
+  }
+
+  const dados = store.dadosMedicos
+
+  if (!dados) return
+
+  condicoesMedicas.value = dados.condicoes_medicas || ''
+  alergias.value = dados.alergias || ''
+  observacoes.value = dados.observacoes || ''
+  pesoAltura.value = dados.peso_altura || ''
+
+  medicamentos.value = (dados.medicacoes || []).map((med) => ({
+    nome: med.nome || '',
+    dosagem: med.dosagem || '',
+    horario: med.horario || '',
+    selecionado: false,
+  }))
 }
 
 function abrirModal() {
@@ -314,31 +334,46 @@ async function handleSalvar() {
   sucesso.value = ''
   carregando.value = true
 
+  const dados = {
+    residente: Number(idResidente.value),
+    condicoes_medicas: condicoesMedicas.value,
+    alergias: alergias.value,
+    observacoes: observacoes.value,
+    peso_altura: pesoAltura.value,
+    medicacoes: medicamentos.value
+      .filter((med) => med.nome && med.nome.trim() !== '')
+      .map((med) => ({
+        nome: med.nome,
+        dosagem: med.dosagem,
+        horario: med.horario,
+      })),
+  }
+
   try {
-    emit('dados-medicos', {
-      condicoes_medicas: condicoesMedicas.value,
-      alergias: alergias.value,
-      observacoes: observacoes.value,
-      peso_altura: pesoAltura.value,
-      medicamentos: medicamentos.value,
-    })
+    let sucessoSalvamento
+
+    if (store.dadosMedicos?.id) {
+      sucessoSalvamento = await store.atualizarDadosMedicos(store.dadosMedicos.id, dados)
+    } else {
+      sucessoSalvamento = await store.criarDadosMedicos(dados)
+    }
+
+    if (!sucessoSalvamento) {
+      erro.value = store.error || 'Erro ao salvar. Tente novamente.'
+      return
+    }
 
     sucesso.value = 'Dados salvos com sucesso!'
     mostrarModal.value = false
-  } catch (error) {
-    if (error.response && error.response.data) {
-      const erros = error.response.data
-      const primeiroErro = Object.values(erros)[0]
-      erro.value = Array.isArray(primeiroErro) ? primeiroErro[0] : primeiroErro
-    } else {
-      erro.value = 'Erro ao salvar. Tente novamente.'
-    }
   } finally {
     carregando.value = false
   }
 }
 
-onMounted(carregarResidente)
+onMounted(() => {
+  carregarResidente()
+  carregarDadosMedicos()
+})
 </script>
 
 <style scoped>

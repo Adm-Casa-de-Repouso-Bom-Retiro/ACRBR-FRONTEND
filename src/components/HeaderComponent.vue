@@ -2,35 +2,7 @@
   <header class="header">
     <div class="header-inner">
       <div class="brand">
-        <span class="brand-icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M3 11.5 12 4l9 7.5"
-              stroke="#2F5A2B"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M5 10.5V20h14v-9.5"
-              stroke="#2F5A2B"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-            <path
-              d="M10 20v-5h4v5"
-              stroke="#2F5A2B"
-              stroke-width="1.8"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-            />
-          </svg>
-        </span>
-        <span class="brand-text">
-          <strong>Administrativo</strong>
-          <span>Casa de Repouso Bom Retiro</span>
-        </span>
+        <img src="@/assets/images/logo.png" alt="" aria-hidden="true" />
       </div>
 
       <nav v-if="store.usuario || store.estaLogado()" class="menu">
@@ -126,35 +98,11 @@ watch(
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
-.brand-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
-  background: #e8f1e3;
-}
-
-.brand-icon svg {
-  width: 24px;
-  height: 24px;
-}
-
-.brand-text {
-  display: flex;
-  flex-direction: column;
-  line-height: 1.15;
-  color: #1f2d1c;
-  font-size: 13px;
-}
-
-.brand-text strong {
-  font-size: 14px;
-  font-weight: 800;
+.brand img {
+  height: 52px;
+  width: auto;
 }
 
 /* ── MENU ─────────────────────────────────────────────── */

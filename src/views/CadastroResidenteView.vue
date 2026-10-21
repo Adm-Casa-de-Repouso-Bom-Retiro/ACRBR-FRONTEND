@@ -1,7 +1,6 @@
 <template>
   <div class="cadastro-residente-page">
     <main class="main-content">
-      <BotaoVoltar to="/prontuario" />
 
       <section class="cadastro-painel">
         <div class="cadastro-card">
@@ -144,7 +143,7 @@ import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useResidenteStore } from '@/stores/residente'
-import BotaoVoltar from '@/components/BotaoVoltar.vue'
+
 
 const router = useRouter()
 const residenteStore = useResidenteStore()
