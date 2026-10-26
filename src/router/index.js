@@ -79,6 +79,13 @@ const router = createRouter({
       meta: { requiresAuth: true },
       props: true,
     },
+    {
+      path: '/calendario/:id',
+      name: 'calendario',
+      component: () => import('../views/CalendarioResidenteView.vue'),
+      meta: { requiresAuth: true },
+      props: true,
+    },
   ],
 })
 router.beforeEach((to) => {
