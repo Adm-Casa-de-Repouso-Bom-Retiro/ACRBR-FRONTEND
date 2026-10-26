@@ -31,6 +31,15 @@
       </div>
 
       <div class="form-group">
+        <label for="anotacao-status">STATUS</label>
+        <select id="anotacao-status" v-model="form.status">
+          <option v-for="status in STATUS_ANOTACAO" :key="status.valor" :value="status.valor">
+            {{ status.rotulo }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group form-group--full">
         <label for="anotacao-titulo">TÍTULO</label>
         <input
           id="anotacao-titulo"
@@ -66,7 +75,7 @@
 
 <script setup>
 import { ref, watch } from 'vue'
-import { CATEGORIAS_ANOTACAO } from '@/constants/anotacoes'
+import { CATEGORIAS_ANOTACAO, STATUS_ANOTACAO, STATUS_ANOTACAO_PADRAO } from '@/constants/anotacoes'
 
 const props = defineProps({
   editingAnotacao: {
@@ -86,6 +95,7 @@ const form = ref({
   data: props.dataSelecionada || hojeISO(),
   hora: '',
   categoria: 'geral',
+  status: STATUS_ANOTACAO_PADRAO,
   titulo: '',
   texto: '',
 })
@@ -97,6 +107,7 @@ watch(
       form.value.data = String(anotacao.data || '').slice(0, 10)
       form.value.hora = String(anotacao.hora || '').slice(0, 5)
       form.value.categoria = anotacao.categoria || 'geral'
+      form.value.status = anotacao.status || STATUS_ANOTACAO_PADRAO
       form.value.titulo = anotacao.titulo || ''
       form.value.texto = anotacao.texto || ''
     } else {
@@ -127,6 +138,7 @@ function resetarFormulario() {
   form.value.data = props.dataSelecionada || hojeISO()
   form.value.hora = ''
   form.value.categoria = 'geral'
+  form.value.status = STATUS_ANOTACAO_PADRAO
   form.value.titulo = ''
   form.value.texto = ''
   erro.value = ''
@@ -149,6 +161,7 @@ function handleSubmit() {
     data: form.value.data,
     hora: form.value.hora || null,
     categoria: form.value.categoria,
+    status: form.value.status,
     titulo: form.value.titulo.trim(),
     texto: form.value.texto.trim(),
   }
@@ -171,13 +184,14 @@ function handleSubmit() {
 }
 
 .anotacao-form {
-  margin-top: 20px;
-  padding-top: 20px;
+  margin-top: 24px;
+  padding-top: 24px;
   border-top: 1px solid #dde7d8;
+  scroll-margin-top: 24px;
 }
 
 .form-titulo {
-  margin: 0 0 14px 0;
+  margin: 0 0 16px 0;
   color: #2f5a2b;
   font-size: 16px;
   font-weight: 800;
@@ -186,14 +200,18 @@ function handleSubmit() {
 .form-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 14px 18px;
-  margin-bottom: 14px;
+  gap: 16px 20px;
+  margin-bottom: 16px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+}
+
+.form-group--full {
+  grid-column: 1 / -1;
 }
 
 .form-group label {
@@ -243,6 +261,7 @@ function handleSubmit() {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+  margin-top: 16px;
 }
 
 .btn-salvar,

@@ -1,7 +1,10 @@
 <template>
   <article class="anotacao-item" :class="classeCategoria">
     <div class="anotacao-topo">
-      <span v-if="anotacao.hora" class="anotacao-hora">{{ formatarHora(anotacao.hora) }}</span>
+      <div class="anotacao-topo-info">
+        <span v-if="anotacao.hora" class="anotacao-hora">{{ formatarHora(anotacao.hora) }}</span>
+        <span class="anotacao-status" :class="classeStatus">{{ rotuloStatus }}</span>
+      </div>
       <span class="anotacao-categoria">{{ rotuloCategoria }}</span>
     </div>
 
@@ -16,6 +19,18 @@
 
     <div v-if="podeEditar" class="anotacao-acoes">
       <template v-if="!confirmandoExclusao">
+        <select
+          class="btn-acao anotacao-status-select"
+          :class="classeStatus"
+          :value="statusAtual"
+          aria-label="Status da anotação"
+          @change="alterarStatus"
+        >
+          <option v-for="status in STATUS_ANOTACAO" :key="status.valor" :value="status.valor">
+            {{ status.rotulo }}
+          </option>
+        </select>
+
         <button type="button" class="btn-acao btn-editar" @click="emit('edit', anotacao)">
           Editar
         </button>
@@ -38,7 +53,7 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import { CATEGORIAS_ANOTACAO } from '@/constants/anotacoes'
+import { CATEGORIAS_ANOTACAO, STATUS_ANOTACAO, obterStatusAnotacao } from '@/constants/anotacoes'
 
 const props = defineProps({
   anotacao: {
@@ -51,7 +66,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['edit', 'remove'])
+const emit = defineEmits(['edit', 'remove', 'status-change'])
 
 const confirmandoExclusao = ref(false)
 
@@ -66,6 +81,11 @@ const rotuloCategoria = computed(() => {
 
   return categoria ? categoria.rotulo : 'Geral'
 })
+
+const statusInfo = computed(() => obterStatusAnotacao(props.anotacao.status))
+const statusAtual = computed(() => statusInfo.value.valor)
+const rotuloStatus = computed(() => statusInfo.value.rotulo)
+const classeStatus = computed(() => statusInfo.value.classe)
 
 function formatarHora(hora) {
   if (!hora) return ''
@@ -87,6 +107,16 @@ function formatarRegistro(valor) {
     hour: '2-digit',
     minute: '2-digit',
   })
+}
+
+function alterarStatus(evento) {
+  const novoStatus = evento.target.value
+  const statusAnterior = statusAtual.value
+
+  if (novoStatus === statusAnterior) return
+
+  evento.target.value = statusAnterior
+  emit('status-change', { anotacao: props.anotacao, status: novoStatus })
 }
 
 function confirmarExclusao() {
@@ -143,12 +173,47 @@ function confirmarExclusao() {
   color: #1c2a52;
 }
 
+.status-pendente {
+  background: #f8ecd4;
+  border-color: #e6d3ae;
+  color: #4a3510;
+}
+
+.status-concluido {
+  background: #dff0e7;
+  border-color: #b9dbc8;
+  color: #173d2a;
+}
+
+.status-nao-concluido {
+  background: #fbe0e0;
+  border-color: #e4b4b4;
+  color: #8a1f1f;
+}
+
 .anotacao-topo {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 8px;
   margin-bottom: 6px;
+}
+
+.anotacao-topo-info {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.anotacao-status {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 2px 8px;
 }
 
 .anotacao-hora {
@@ -206,6 +271,11 @@ function confirmarExclusao() {
   font-size: 11px;
   font-weight: 700;
   cursor: pointer;
+}
+
+.anotacao-status-select {
+  margin-right: auto;
+  border: 1px solid transparent;
 }
 
 .btn-editar {

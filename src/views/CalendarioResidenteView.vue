@@ -34,7 +34,6 @@
 
             <div class="header-texto">
               <h1 class="section-title">Calendário - {{ residente.nome_completo || '...' }}</h1>
-              <span class="aba-ativa">CALENDÁRIO</span>
             </div>
           </div>
         </header>
@@ -165,6 +164,9 @@
 
                     <strong class="card-titulo">{{ anotacao.titulo }}</strong>
                     <span class="card-autor">{{ anotacao.autor_nome || 'Equipe' }}</span>
+                    <span class="card-status" :class="classeStatus(anotacao.status)">
+                      {{ rotuloStatus(anotacao.status) }}
+                    </span>
                   </article>
 
                   <p v-if="!anotacoesFiltradasDoDia(dia.iso).length" class="sem-anotacao">—</p>
@@ -200,6 +202,7 @@
                         class="celula-anotacao"
                         :class="classeCategoria(anotacao.categoria)"
                       >
+                        <span class="celula-status" :class="classeStatus(anotacao.status)"></span>
                         {{ anotacao.titulo }}
                       </span>
 
@@ -234,6 +237,7 @@
                   :pode-editar="podeEditar"
                   @edit="handleEdit"
                   @remove="handleRemove"
+                  @status-change="handleStatusChange"
                 />
               </div>
 
@@ -243,6 +247,7 @@
 
               <AnotacaoForm
                 v-else
+                ref="formRef"
                 :key="formKey"
                 :editing-anotacao="anotacaoEmEdicao"
                 :data-selecionada="dataSelecionada"
@@ -259,12 +264,12 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '@/services/api'
 import { useAnotacoesStore } from '@/stores/anotacoes'
 import { useAuthStore } from '@/stores/auth'
-import { CARGOS_COM_EDICAO, CATEGORIAS_ANOTACAO } from '@/constants/anotacoes'
+import { CARGOS_COM_EDICAO, CATEGORIAS_ANOTACAO, obterStatusAnotacao } from '@/constants/anotacoes'
 import BotaoVoltar from '@/components/BotaoVoltar.vue'
 import MiniCalendario from '@/components/MiniCalendario.vue'
 import AnotacaoItem from '@/components/AnotacaoItem.vue'
@@ -288,6 +293,7 @@ const visao = ref('semana')
 const categoriasAtivas = ref(CATEGORIAS_ANOTACAO.map((categoria) => categoria.valor))
 const anotacaoEmEdicao = ref(null)
 const formKey = ref(0)
+const formRef = ref(null)
 
 const podeEditar = computed(() => {
   const usuario = authStore.usuario
@@ -459,6 +465,14 @@ function classeCategoria(valor) {
   return categoria ? categoria.classe : 'categoria-geral'
 }
 
+function rotuloStatus(valor) {
+  return obterStatusAnotacao(valor).rotulo
+}
+
+function classeStatus(valor) {
+  return obterStatusAnotacao(valor).classe
+}
+
 function anotacoesFiltradasDoDia(iso) {
   return anotacoesVisiveis.value.filter((anotacao) => anotacao.data === iso).sort(ordenarPorHora)
 }
@@ -532,13 +546,28 @@ function periodoProximo() {
   )
 }
 
-function handleNovaAnotacao() {
-  anotacaoEmEdicao.value = null
-  formKey.value += 1
+async function rolarParaFormulario() {
+  await nextTick()
+
+  const formulario = formRef.value?.$el
+
+  if (!formulario) return
+
+  formulario.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  formulario.querySelector('#anotacao-titulo')?.focus({ preventScroll: true })
 }
 
-function handleEdit(anotacao) {
+async function handleNovaAnotacao() {
+  anotacaoEmEdicao.value = null
+  formKey.value += 1
+
+  await rolarParaFormulario()
+}
+
+async function handleEdit(anotacao) {
   anotacaoEmEdicao.value = anotacao
+
+  await rolarParaFormulario()
 }
 
 function handleCancel() {
@@ -580,6 +609,10 @@ async function handleRemove(anotacao) {
     anotacaoEmEdicao.value = null
     formKey.value += 1
   }
+}
+
+async function handleStatusChange({ anotacao, status }) {
+  await store.updateAnotacao(anotacao.id, { status })
 }
 
 onMounted(() => {
@@ -980,6 +1013,17 @@ onMounted(() => {
   overflow-wrap: anywhere;
 }
 
+.card-status {
+  align-self: flex-start;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 1px 6px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
 .sem-anotacao {
   margin: 8px 0;
   color: #8fa093;
@@ -1066,6 +1110,9 @@ onMounted(() => {
 }
 
 .celula-anotacao {
+  display: flex;
+  align-items: center;
+  gap: 3px;
   border-radius: 4px;
   padding: 2px 4px;
   font-size: 9px;
@@ -1073,6 +1120,13 @@ onMounted(() => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.celula-status {
+  width: 5px;
+  height: 5px;
+  flex-shrink: 0;
+  border-radius: 50%;
 }
 
 .celula-mais {
@@ -1117,9 +1171,27 @@ onMounted(() => {
   color: #1c2a52;
 }
 
+.status-pendente {
+  background: #f8ecd4;
+  border-color: #e6d3ae;
+  color: #4a3510;
+}
+
+.status-concluido {
+  background: #dff0e7;
+  border-color: #b9dbc8;
+  color: #173d2a;
+}
+
+.status-nao-concluido {
+  background: #fbe0e0;
+  border-color: #e4b4b4;
+  color: #8a1f1f;
+}
+
 .painel-dia {
   border-top: 1px solid #dde7d8;
-  padding-top: 18px;
+  padding-top: 24px;
 }
 
 .painel-dia-topo {
@@ -1128,7 +1200,7 @@ onMounted(() => {
   justify-content: space-between;
   gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .painel-dia-titulo {
@@ -1147,11 +1219,12 @@ onMounted(() => {
 .lista-anotacoes {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  margin-bottom: 4px;
 }
 
 .empty-message {
-  margin: 0;
+  margin: 0 0 4px 0;
   padding: 16px;
   background: #f2f7f0;
   border: 1px dashed #dde7d8;
