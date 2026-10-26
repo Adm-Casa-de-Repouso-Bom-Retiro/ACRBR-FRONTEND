@@ -126,9 +126,14 @@
                 </button>
               </div>
 
-              <button v-if="podeEditar" type="button" class="btn-nova" @click="handleNovaAnotacao">
+              <a
+                v-if="podeEditar"
+                class="btn-nova"
+                href="#anotacao-form"
+                @click="handleNovaAnotacao"
+              >
                 Nova anotação
-              </button>
+              </a>
             </div>
 
             <div v-if="visao === 'semana'" class="grade-semana">
@@ -237,7 +242,6 @@
                   :pode-editar="podeEditar"
                   @edit="handleEdit"
                   @remove="handleRemove"
-                  @status-change="handleStatusChange"
                 />
               </div>
 
@@ -247,7 +251,6 @@
 
               <AnotacaoForm
                 v-else
-                ref="formRef"
                 :key="formKey"
                 :editing-anotacao="anotacaoEmEdicao"
                 :data-selecionada="dataSelecionada"
@@ -264,7 +267,7 @@
 </template>
 
 <script setup>
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '@/services/api'
 import { useAnotacoesStore } from '@/stores/anotacoes'
@@ -293,7 +296,6 @@ const visao = ref('semana')
 const categoriasAtivas = ref(CATEGORIAS_ANOTACAO.map((categoria) => categoria.valor))
 const anotacaoEmEdicao = ref(null)
 const formKey = ref(0)
-const formRef = ref(null)
 
 const podeEditar = computed(() => {
   const usuario = authStore.usuario
@@ -546,28 +548,13 @@ function periodoProximo() {
   )
 }
 
-async function rolarParaFormulario() {
-  await nextTick()
-
-  const formulario = formRef.value?.$el
-
-  if (!formulario) return
-
-  formulario.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  formulario.querySelector('#anotacao-titulo')?.focus({ preventScroll: true })
-}
-
-async function handleNovaAnotacao() {
+function handleNovaAnotacao() {
   anotacaoEmEdicao.value = null
   formKey.value += 1
-
-  await rolarParaFormulario()
 }
 
-async function handleEdit(anotacao) {
+function handleEdit(anotacao) {
   anotacaoEmEdicao.value = anotacao
-
-  await rolarParaFormulario()
 }
 
 function handleCancel() {
@@ -609,10 +596,6 @@ async function handleRemove(anotacao) {
     anotacaoEmEdicao.value = null
     formKey.value += 1
   }
-}
-
-async function handleStatusChange({ anotacao, status }) {
-  await store.updateAnotacao(anotacao.id, { status })
 }
 
 onMounted(() => {
@@ -893,6 +876,7 @@ onMounted(() => {
 }
 
 .btn-nova {
+  display: inline-block;
   border: none;
   background: #3e7a2b;
   color: #ffffff;
@@ -901,6 +885,8 @@ onMounted(() => {
   font-family: inherit;
   font-size: 12px;
   font-weight: 700;
+  text-align: center;
+  text-decoration: none;
   cursor: pointer;
   transition: background 0.15s ease;
 }

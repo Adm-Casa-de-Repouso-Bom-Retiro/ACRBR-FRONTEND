@@ -1,5 +1,5 @@
 <template>
-  <form class="anotacao-form" @submit.prevent="handleSubmit">
+  <form id="anotacao-form" class="anotacao-form" @submit.prevent="handleSubmit">
     <h3 class="form-titulo">
       {{ editingAnotacao ? 'Editar anotação' : 'Nova anotação' }}
     </h3>
@@ -39,7 +39,7 @@
         </select>
       </div>
 
-      <div class="form-group form-group--full">
+      <div class="form-group form-group-full">
         <label for="anotacao-titulo">TÍTULO</label>
         <input
           id="anotacao-titulo"
@@ -210,7 +210,7 @@ function handleSubmit() {
   gap: 8px;
 }
 
-.form-group--full {
+.form-group-full {
   grid-column: 1 / -1;
 }
 

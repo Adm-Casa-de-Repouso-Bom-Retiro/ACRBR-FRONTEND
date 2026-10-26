@@ -19,21 +19,9 @@
 
     <div v-if="podeEditar" class="anotacao-acoes">
       <template v-if="!confirmandoExclusao">
-        <select
-          class="btn-acao anotacao-status-select"
-          :class="classeStatus"
-          :value="statusAtual"
-          aria-label="Status da anotação"
-          @change="alterarStatus"
-        >
-          <option v-for="status in STATUS_ANOTACAO" :key="status.valor" :value="status.valor">
-            {{ status.rotulo }}
-          </option>
-        </select>
-
-        <button type="button" class="btn-acao btn-editar" @click="emit('edit', anotacao)">
+        <a class="btn-acao btn-editar" href="#anotacao-form" @click="emit('edit', anotacao)">
           Editar
-        </button>
+        </a>
         <button type="button" class="btn-acao btn-excluir" @click="confirmandoExclusao = true">
           Excluir
         </button>
@@ -53,7 +41,7 @@
 
 <script setup>
 import { computed, ref } from 'vue'
-import { CATEGORIAS_ANOTACAO, STATUS_ANOTACAO, obterStatusAnotacao } from '@/constants/anotacoes'
+import { CATEGORIAS_ANOTACAO, obterStatusAnotacao } from '@/constants/anotacoes'
 
 const props = defineProps({
   anotacao: {
@@ -66,7 +54,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(['edit', 'remove', 'status-change'])
+const emit = defineEmits(['edit', 'remove'])
 
 const confirmandoExclusao = ref(false)
 
@@ -83,7 +71,6 @@ const rotuloCategoria = computed(() => {
 })
 
 const statusInfo = computed(() => obterStatusAnotacao(props.anotacao.status))
-const statusAtual = computed(() => statusInfo.value.valor)
 const rotuloStatus = computed(() => statusInfo.value.rotulo)
 const classeStatus = computed(() => statusInfo.value.classe)
 
@@ -107,16 +94,6 @@ function formatarRegistro(valor) {
     hour: '2-digit',
     minute: '2-digit',
   })
-}
-
-function alterarStatus(evento) {
-  const novoStatus = evento.target.value
-  const statusAnterior = statusAtual.value
-
-  if (novoStatus === statusAnterior) return
-
-  evento.target.value = statusAnterior
-  emit('status-change', { anotacao: props.anotacao, status: novoStatus })
 }
 
 function confirmarExclusao() {
@@ -273,15 +250,11 @@ function confirmarExclusao() {
   cursor: pointer;
 }
 
-.anotacao-status-select {
-  margin-right: auto;
-  border: 1px solid transparent;
-}
-
 .btn-editar {
   background: transparent;
   border: 1px solid currentColor;
   color: inherit;
+  text-decoration: none;
 }
 
 .btn-excluir {
