@@ -54,8 +54,8 @@
               <span class="info-label">AVALIAÇÃO</span>
               <p class="info-text">Peso: {{ item.peso ? item.peso + ' kg' : '—' }}</p>
               <p class="info-text">Altura: {{ item.altura ? item.altura + ' m' : '—' }}</p>
-              <p class="info-text">IMC: {{ calcularImc(item.peso, item.altura) }}</p>
-              <p class="info-text">Classificação: {{ classificarImc(item.peso, item.altura) }}</p>
+              <p class="info-text">IMC: {{ item.imc || '—' }}</p>
+              <p class="info-text">Classificação: {{ classificarImc(item.imc) }}</p>
             </div>
 
             <div class="info-box">
@@ -121,34 +121,19 @@ const observacoes = ref('')
 const dataAvaliacao = ref('')
 const sucesso = ref('')
 
-function calcularImc(peso, altura) {
-  const pesoNumero = Number(peso)
-  const alturaNumero = Number(altura)
-
-  if (
-    !peso ||
-    !altura ||
-    Number.isNaN(pesoNumero) ||
-    Number.isNaN(alturaNumero) ||
-    pesoNumero <= 0 ||
-    alturaNumero <= 0
-  ) {
-    return '—'
-  }
-
-  return (pesoNumero / (alturaNumero * alturaNumero)).toFixed(1)
-}
-
-function classificarImc(peso, altura) {
-  const imc = calcularImc(peso, altura)
-
-  if (imc === '—') return '—'
+function classificarImc(imc) {
+  if (imc === null || imc === undefined || imc === '') return '—'
 
   const valor = Number(imc)
 
-  if (valor < 22) return 'Baixo peso'
-  if (valor <= 27) return 'Adequado'
-  return 'Sobrepeso'
+  if (Number.isNaN(valor)) return '—'
+
+  if (valor < 18.5) return 'Baixo peso'
+  if (valor < 25) return 'Peso normal (adequado)'
+  if (valor < 30) return 'Sobrepeso'
+  if (valor < 35) return 'Obesidade grau I'
+  if (valor < 40) return 'Obesidade grau II'
+  return 'Obesidade grau III (grave)'
 }
 
 function podeSalvar() {

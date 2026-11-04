@@ -43,7 +43,12 @@ export const useNutricaoStore = defineStore('nutricao', () => {
           }
         })
 
-      const alturaCm = dadosMedicos ? Number(dadosMedicos.altura) : 0
+      const peso = dadosMedicos ? Number(dadosMedicos.peso) : 0
+      const alturaInformada = dadosMedicos ? Number(dadosMedicos.altura) : 0
+      const alturaMetros =
+        alturaInformada > 0 ? (alturaInformada > 3 ? alturaInformada / 100 : alturaInformada) : null
+      const imc =
+        peso > 0 && alturaMetros ? (peso / (alturaMetros * alturaMetros)).toFixed(1) : null
 
       nutricoes.value = [
         {
@@ -51,9 +56,10 @@ export const useNutricaoStore = defineStore('nutricao', () => {
           nome: residente.nome_completo,
           foto: residente.foto,
           avaliacao_id: avaliacao ? avaliacao.id : null,
-          peso: dadosMedicos ? dadosMedicos.peso : null,
-          altura: alturaCm > 0 ? alturaCm / 100 : null,
-          altura_cm: alturaCm > 0 ? alturaCm : null,
+          peso: peso > 0 ? peso : null,
+          altura: alturaMetros,
+          altura_cm: alturaMetros ? alturaMetros * 100 : null,
+          imc: imc,
           plano_alimentar: avaliacao ? avaliacao.dieta_prescrita : '',
           observacoes: avaliacao ? avaliacao.restricoes_alimentares : '',
           data_avaliacao: avaliacao ? avaliacao.data_avaliacao : '',
@@ -76,14 +82,18 @@ export const useNutricaoStore = defineStore('nutricao', () => {
     }
 
     const peso = Number(atual.peso)
+    const alturaMetros = Number(atual.altura)
     const alturaCm = Number(atual.altura_cm)
 
     if (
       !atual.peso ||
+      !atual.altura ||
       !atual.altura_cm ||
       Number.isNaN(peso) ||
+      Number.isNaN(alturaMetros) ||
       Number.isNaN(alturaCm) ||
       peso <= 0 ||
+      alturaMetros <= 0 ||
       alturaCm <= 0
     ) {
       error.value = 'Preencha peso e altura em Dados Médicos antes de salvar.'
@@ -99,8 +109,7 @@ export const useNutricaoStore = defineStore('nutricao', () => {
     error.value = ''
 
     try {
-      const altura = alturaCm / 100
-      const imc = (peso / (altura * altura)).toFixed(1)
+      const imc = (peso / (alturaMetros * alturaMetros)).toFixed(1)
       const payload = {
         residente: Number(residenteId),
         peso_kg: peso,
