@@ -86,6 +86,13 @@ const router = createRouter({
       meta: { requiresAuth: true },
       props: true,
     },
+    {
+      path: '/nutricao/:id',
+      name: 'nutricao',
+      component: () => import('../views/NutricaoView.vue'),
+      meta: { requiresAuth: true },
+      props: true,
+    },
   ],
 })
 router.beforeEach((to) => {
