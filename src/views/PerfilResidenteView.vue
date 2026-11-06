@@ -211,7 +211,7 @@
 
             <button class="btn-menu" @click="irPara('cuidadospessoais')">CUIDADOS PESSOAIS</button>
 
-            <button class="btn-menu" @click="irPara('historico')">HISTÓRICO</button>
+            <button class="btn-menu" @click="irPara('historicoocorrencias')">HISTÓRICO</button>
 
             <button class="btn-menu" @click="irPara('calendario')">CALENDÁRIO</button>
 
@@ -486,6 +486,11 @@ async function buscarResidente() {
 }
 
 function irPara(nomeRota) {
+  if (nomeRota === 'historicoocorrencias') {
+    router.push({ name: nomeRota, query: { residente: props.id } })
+    return
+  }
+
   router.push({ name: nomeRota, params: { id: props.id } })
 }
 

@@ -367,6 +367,9 @@ async function handleAtualizar() {
   sucesso.value = ''
   authStore.error = ''
 
+  const fotoAnterior = administrador.value?.foto_url || ''
+  let enviouFoto = false
+
   const dados = {
     nome: form.value.nome,
     email: form.value.email,
@@ -378,11 +381,13 @@ async function handleAtualizar() {
     try {
       const imagem = await uploadImagem(fotoArquivo.value, form.value.nome || 'foto-perfil')
 
-      if (imagem?.attachment_key) {
-        // Aviso: o AdministradorSerializer hoje ignora "perfil_attachment_key"
-        // no PATCH, então a foto pode não persistir no backend.
-        dados.perfil_attachment_key = imagem.attachment_key
+      if (!imagem?.attachment_key) {
+        authStore.error = 'Não foi possível anexar a foto.'
+        return
       }
+
+      dados.perfil_attachment_key = imagem.attachment_key
+      enviouFoto = true
     } catch (erro) {
       authStore.error = 'Erro ao enviar a foto.'
       return
@@ -392,6 +397,12 @@ async function handleAtualizar() {
   const atualizado = await authStore.atualizarPerfil(dados)
 
   if (atualizado) {
+    if (enviouFoto && (administrador.value?.foto_url || '') === fotoAnterior) {
+      authStore.error =
+        'A foto foi enviada, mas o servidor não atualizou. Verifique se o backend está atualizado.'
+      return
+    }
+
     sucesso.value = 'Perfil atualizado com sucesso!'
     fotoArquivo.value = null
     fotoPrevia.value = ''

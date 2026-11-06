@@ -54,6 +54,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/historicoocorrencias',
+      name: 'historicoocorrencias',
+      component: () => import('../views/HistoricoOcorrenciasView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/perfildadosmedicos/:id',
       name: 'perfildadosmedicos',
       component: () => import('../views/PerfilDadosMedicosView.vue'),
