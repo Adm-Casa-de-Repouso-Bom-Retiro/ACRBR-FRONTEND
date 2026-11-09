@@ -11,3 +11,7 @@ export function criarOcorrencia(dados) {
 export function atualizarOcorrencia(id, dados) {
   return api.patch(`/ocorrencias/${id}/`, dados)
 }
+
+export function excluirOcorrencia(id) {
+  return api.delete(`/ocorrencias/${id}/`)
+}

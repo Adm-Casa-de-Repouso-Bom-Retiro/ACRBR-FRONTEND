@@ -184,14 +184,47 @@
             <div class="occurrence-content">
               <div class="occurrence-header">
                 <h2 class="resident-name">{{ nomeDoResidente(ocorrencia.residente) }}</h2>
-                <button
-                  v-if="!mostrarFormulario"
-                  type="button"
-                  class="btn-editar-ocorrencia"
-                  @click="abrirFormulario(ocorrencia)"
-                >
-                  EDITAR
-                </button>
+
+                <div v-if="!mostrarFormulario" class="occurrence-actions">
+                  <template v-if="ocorrenciaParaExcluir === ocorrencia.id">
+                    <span class="confirmacao-texto">Excluir esta ocorrência?</span>
+                    <button
+                      type="button"
+                      class="btn-confirmar-exclusao"
+                      :disabled="store.removendo"
+                      @click="confirmarExclusao(ocorrencia)"
+                    >
+                      {{ store.removendo ? 'EXCLUINDO...' : 'CONFIRMAR' }}
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-cancelar-exclusao"
+                      :disabled="store.removendo"
+                      @click="cancelarExclusao"
+                    >
+                      CANCELAR
+                    </button>
+                  </template>
+
+                  <template v-else>
+                    <button
+                      type="button"
+                      class="btn-editar-ocorrencia"
+                      :disabled="store.removendo"
+                      @click="abrirFormulario(ocorrencia)"
+                    >
+                      EDITAR
+                    </button>
+                    <button
+                      type="button"
+                      class="btn-excluir-ocorrencia"
+                      :disabled="store.removendo"
+                      @click="solicitarExclusao(ocorrencia)"
+                    >
+                      EXCLUIR
+                    </button>
+                  </template>
+                </div>
               </div>
               <p v-if="ocorrencia.tipo" class="occurrence-type">{{ ocorrencia.tipo }}</p>
               <p v-if="ocorrencia.gravidade" class="occurrence-severity">
@@ -254,7 +287,9 @@ const inputFoto = ref(null)
 const ocorrenciaEmEdicao = ref(null)
 const fotosExistentes = ref([])
 const fotosSelecionadas = ref([])
+const fotosAlteradas = ref(false)
 const enviandoFotos = ref(false)
+const ocorrenciaParaExcluir = ref(null)
 
 function nomeDoResidente(id) {
   const residente = residentesStore.residentes.find((item) => item.id === Number(id))
@@ -273,6 +308,7 @@ function abrirFormulario(ocorrencia = null) {
   erroFormulario.value = ''
   sucesso.value = ''
   store.error = ''
+  ocorrenciaParaExcluir.value = null
   limparCampos()
 
   if (ocorrencia) {
@@ -305,6 +341,10 @@ function abrirSeletorFoto() {
 function selecionarFotos(evento) {
   const arquivos = Array.from(evento.target.files || [])
 
+  if (arquivos.length) {
+    fotosAlteradas.value = true
+  }
+
   arquivos.forEach((arquivo) => {
     fotosSelecionadas.value.push({
       arquivo,
@@ -322,6 +362,7 @@ function removerFoto(index) {
 
   if (!foto) return
 
+  fotosAlteradas.value = true
   URL.revokeObjectURL(foto.preview)
   fotosSelecionadas.value.splice(index, 1)
 }
@@ -329,6 +370,7 @@ function removerFoto(index) {
 function removerFotoExistente(index) {
   if (!fotosExistentes.value[index]) return
 
+  fotosAlteradas.value = true
   fotosExistentes.value.splice(index, 1)
 }
 
@@ -348,6 +390,7 @@ function limparCampos() {
   providencias.value = ''
   limparFotos()
   fotosExistentes.value = []
+  fotosAlteradas.value = false
   ocorrenciaEmEdicao.value = null
 }
 
@@ -378,20 +421,18 @@ function salvarOcorrencia() {
   const fotosParaEnviar = fotosSelecionadas.value.map((foto) => foto.arquivo)
 
   const enviar = (novasChaves = []) => {
+    const houveAlteracaoFotos = fotosAlteradas.value || novasChaves.length > 0
+
     if (ocorrenciaEditando) {
-      dados.fotos_attachment_keys = [
-        ...fotosExistentes.value.map((foto) => foto.attachment_key),
-        ...novasChaves,
-      ]
+      if (houveAlteracaoFotos) {
+        dados.fotos_attachment_keys = [
+          ...fotosExistentes.value.map((foto) => foto.attachment_key),
+          ...novasChaves,
+        ]
+      }
 
       return store.atualizarOcorrencia(ocorrenciaEditando.id, dados).then((salva) => {
         if (!salva) return
-
-        if ((salva.fotos?.length ?? 0) !== dados.fotos_attachment_keys.length) {
-          erroFormulario.value =
-            'As fotos não foram atualizadas. Verifique se o backend está atualizado.'
-          return
-        }
 
         sucesso.value = 'Ocorrência atualizada com sucesso!'
         limparCampos()
@@ -442,6 +483,32 @@ function salvarOcorrencia() {
   } else {
     enviar()
   }
+}
+
+function solicitarExclusao(ocorrencia) {
+  sucesso.value = ''
+  store.error = ''
+  ocorrenciaParaExcluir.value = ocorrencia.id
+}
+
+function cancelarExclusao() {
+  ocorrenciaParaExcluir.value = null
+}
+
+function confirmarExclusao(ocorrencia) {
+  sucesso.value = ''
+  store.error = ''
+
+  return store.removeOcorrencia(ocorrencia.id).then((excluiu) => {
+    if (!excluiu) return
+
+    if (ocorrenciaEmEdicao.value?.id === ocorrencia.id) {
+      fecharFormulario()
+    }
+
+    ocorrenciaParaExcluir.value = null
+    sucesso.value = 'Ocorrência excluída com sucesso!'
+  })
 }
 
 onMounted(() => {
@@ -828,8 +895,77 @@ onMounted(() => {
   transition: background 0.15s ease;
 }
 
-.btn-editar-ocorrencia:hover {
+.btn-editar-ocorrencia:hover:not(:disabled) {
   background: #e6f2e4;
+}
+
+.btn-editar-ocorrencia:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.occurrence-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.confirmacao-texto {
+  color: #4a5a47;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.btn-excluir-ocorrencia,
+.btn-confirmar-exclusao,
+.btn-cancelar-exclusao {
+  padding: 7px 16px;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.btn-excluir-ocorrencia {
+  background: transparent;
+  color: #8a1f1f;
+  border: 1.5px solid #c98a8a;
+}
+
+.btn-excluir-ocorrencia:hover:not(:disabled) {
+  background: #fbe9e9;
+}
+
+.btn-confirmar-exclusao {
+  background: #8a1f1f;
+  color: #ffffff;
+  border: 1.5px solid #8a1f1f;
+}
+
+.btn-confirmar-exclusao:hover:not(:disabled) {
+  background: #6f1919;
+}
+
+.btn-cancelar-exclusao {
+  background: transparent;
+  color: #4a5a47;
+  border: 1.5px solid #c9d6c6;
+}
+
+.btn-cancelar-exclusao:hover:not(:disabled) {
+  background: #eef7ec;
+}
+
+.btn-excluir-ocorrencia:disabled,
+.btn-confirmar-exclusao:disabled,
+.btn-cancelar-exclusao:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .occurrence-type {
