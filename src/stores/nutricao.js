@@ -96,7 +96,7 @@ export const useNutricaoStore = defineStore('nutricao', () => {
       alturaMetros <= 0 ||
       alturaCm <= 0
     ) {
-      error.value = 'Preencha peso e altura em Dados Médicos antes de salvar.'
+      error.value = 'Peso e altura devem ser preenchidos em Dados Médicos antes de salvar.'
       return false
     }
 
