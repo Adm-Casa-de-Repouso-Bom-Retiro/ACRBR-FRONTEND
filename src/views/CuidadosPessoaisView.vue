@@ -29,7 +29,10 @@
               </svg>
             </div>
 
-            <h1 class="section-title">Cuidados Pessoais - {{ residente.nome }}</h1>
+            <div class="header-texto">
+              <h1 class="section-title">CUIDADOS PESSOAIS</h1>
+              <p class="resident-subtitle">Residente: {{ residente.nome }}</p>
+            </div>
           </div>
 
           <button class="btn-editar" @click="abrirModal">EDITAR DADOS</button>
@@ -632,11 +635,25 @@ onMounted(carregarDados)
   border-radius: 50%;
 }
 
+.header-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
 .section-title {
   margin: 0;
-  color: #1f2d1c;
+  color: #3a7d44;
   font-size: 22px;
   font-weight: 800;
+}
+
+.resident-subtitle {
+  margin: 6px 0 0 0;
+  color: #4a5a47;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .btn-editar {

@@ -33,7 +33,8 @@
             </div>
 
             <div class="header-texto">
-              <h1 class="section-title">Calendário - {{ residente.nome_completo || '...' }}</h1>
+              <h1 class="section-title">CALENDÁRIO</h1>
+              <p class="resident-subtitle">Residente: {{ residente.nome_completo || '...' }}</p>
             </div>
           </div>
         </header>
@@ -692,10 +693,17 @@ onMounted(() => {
 
 .section-title {
   margin: 0;
-  color: #1f2d1c;
+  color: #3a7d44;
   font-size: 22px;
   font-weight: 800;
   overflow-wrap: anywhere;
+}
+
+.resident-subtitle {
+  margin: 6px 0 0 0;
+  color: #4a5a47;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .aba-ativa {

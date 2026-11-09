@@ -29,7 +29,10 @@
               </svg>
             </div>
 
-            <h1 class="section-title">Dados Médicos - {{ nomeResidente }}</h1>
+            <div class="header-texto">
+              <h1 class="section-title">DADOS MÉDICOS</h1>
+              <p class="resident-subtitle">Residente: {{ nomeResidente }}</p>
+            </div>
           </div>
 
           <div class="acoes-header">
@@ -694,13 +697,27 @@ onMounted(() => {
   border-radius: 50%;
 }
 
+.header-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
 .section-title {
   display: flex;
   align-items: center;
   margin: 0;
-  color: #1f2d1c;
+  color: #3a7d44;
   font-size: 22px;
   font-weight: 800;
+}
+
+.resident-subtitle {
+  margin: 6px 0 0 0;
+  color: #4a5a47;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .acoes-header {

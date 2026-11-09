@@ -32,7 +32,10 @@
 
           <div class="info-coluna">
             <div class="card-header">
-              <h1 class="section-title">Contatos - {{ residente.nome_completo }}</h1>
+              <div class="header-texto">
+                <h1 class="section-title">CONTATOS</h1>
+                <p class="resident-subtitle">Residente: {{ residente.nome_completo }}</p>
+              </div>
             </div>
 
             <p v-if="sucesso" class="success-message">{{ sucesso }}</p>
@@ -434,11 +437,25 @@ onMounted(buscarResidente)
   flex-wrap: wrap;
 }
 
+.header-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
 .section-title {
   margin: 0;
-  color: #1f2d1c;
+  color: #3a7d44;
   font-size: 22px;
   font-weight: 800;
+}
+
+.resident-subtitle {
+  margin: 6px 0 0 0;
+  color: #4a5a47;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .bloco-responsavel {

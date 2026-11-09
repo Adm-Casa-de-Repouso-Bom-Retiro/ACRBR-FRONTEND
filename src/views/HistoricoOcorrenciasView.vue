@@ -8,9 +8,34 @@
       <section class="history-card">
         <template v-if="residenteId">
           <div class="card-top">
-            <div>
-              <h1 class="section-title">HISTÓRICO DE OCORRÊNCIAS</h1>
-              <p class="resident-subtitle">Residente: {{ nomeDoResidente(residenteId) }}</p>
+            <div class="header-left">
+              <div class="avatar" :class="{ 'avatar--foto': residenteAtual?.foto }">
+                <img
+                  v-if="residenteAtual?.foto"
+                  :src="residenteAtual.foto.url"
+                  alt="Foto do residente"
+                  class="avatar-img"
+                />
+
+                <svg
+                  v-else
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="avatar-icone"
+                >
+                  <path
+                    d="M12 12a4.2 4.2 0 1 0 0-8.4 4.2 4.2 0 0 0 0 8.4Zm0 2.1c-3.5 0-7 1.76-7 5.25V21h14v-1.65c0-3.49-3.5-5.25-7-5.25Z"
+                    fill="#3e7a2b"
+                    opacity="0.75"
+                  />
+                </svg>
+              </div>
+
+              <div class="header-texto">
+                <h1 class="section-title">HISTÓRICO DE OCORRÊNCIAS</h1>
+                <p class="resident-subtitle">Residente: {{ nomeDoResidente(residenteId) }}</p>
+              </div>
             </div>
 
             <button
@@ -230,7 +255,7 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import BotaoVoltar from '@/components/BotaoVoltar.vue'
 import { uploadImagem } from '@/services/api'
@@ -255,6 +280,10 @@ const ocorrenciaEmEdicao = ref(null)
 const fotosExistentes = ref([])
 const fotosSelecionadas = ref([])
 const enviandoFotos = ref(false)
+
+const residenteAtual = computed(() =>
+  residentesStore.residentes.find((item) => item.id === residenteId.value),
+)
 
 function nomeDoResidente(id) {
   const residente = residentesStore.residentes.find((item) => item.id === Number(id))
@@ -487,6 +516,49 @@ onMounted(() => {
   gap: 16px;
   flex-wrap: wrap;
   margin-bottom: 24px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.avatar {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #e8f1e3;
+  border: 1.5px solid #dde7d8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.avatar-icone {
+  width: 24px;
+  height: 24px;
+}
+
+.avatar--foto {
+  background: #e8f1e3;
+  border-color: #3e7a2b;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.header-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
 }
 
 .section-title {
@@ -871,6 +943,14 @@ onMounted(() => {
 
   .history-card {
     padding: 24px 18px;
+  }
+
+  .header-left {
+    align-items: flex-start;
+  }
+
+  .section-title {
+    font-size: 18px;
   }
 
   .form-row {
