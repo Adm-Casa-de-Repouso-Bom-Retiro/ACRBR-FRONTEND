@@ -88,13 +88,32 @@
             <input id="data-avaliacao" v-model="dataAvaliacao" type="date" class="campo-data" />
           </div>
 
-          <p v-if="!item.peso || !item.altura" class="aviso-dados">
-            Peso e altura devem ser preenchidos em
-            <router-link :to="{ name: 'perfildadosmedicos', params: { id: props.id } }">
-              Dados Médicos
-            </router-link>
-            antes de salvar.
-          </p>
+          <div v-if="!item.peso || !item.altura" class="aviso-dados">
+            <svg class="aviso-icone" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.8" />
+              <line
+                x1="12"
+                y1="11"
+                x2="12"
+                y2="16"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+              />
+              <circle cx="12" cy="7.5" r="1.2" fill="currentColor" />
+            </svg>
+
+            <div class="aviso-conteudo">
+              <span class="aviso-titulo">INFORMAÇÃO</span>
+              <p class="aviso-texto">
+                Peso e altura devem ser preenchidos em
+                <router-link :to="{ name: 'perfildadosmedicos', params: { id: props.id } }">
+                  Dados Médicos
+                </router-link>
+                antes de salvar.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
     </main>
@@ -433,21 +452,55 @@ onMounted(() => {
 }
 
 .aviso-dados {
-  margin: 14px 0 0 0;
-  color: #8a1f1f;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 18px 0 0 0;
+  padding: 14px 16px;
+  background: #eef4fb;
+  border: 1px solid #d3e0f2;
+  border-left: 4px solid #2f6fb0;
+  border-radius: 8px;
+}
+
+.aviso-icone {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  color: #2f6fb0;
+}
+
+.aviso-conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.aviso-titulo {
+  color: #1f5288;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.aviso-texto {
+  margin: 0;
+  color: #33475f;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 1.5;
 }
 
 .aviso-dados a {
-  color: #3a7d44;
-  font-weight: 800;
-  text-decoration: none;
+  color: #2f6fb0;
+  font-weight: 700;
+  text-decoration: underline;
 }
 
 .aviso-dados a:hover {
-  text-decoration: underline;
+  color: #1f5288;
 }
 
 .error-message {
