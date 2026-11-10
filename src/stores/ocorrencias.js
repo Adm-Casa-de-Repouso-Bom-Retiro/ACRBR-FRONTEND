@@ -4,12 +4,14 @@ import {
   listarOcorrencias,
   criarOcorrencia,
   atualizarOcorrencia as atualizarOcorrenciaApi,
+  excluirOcorrencia,
 } from '../api/ocorrencias.js'
 
 export const useOcorrenciasStore = defineStore('ocorrencias', () => {
   const ocorrencias = ref([])
   const loading = ref(false)
   const salvando = ref(false)
+  const removendo = ref(false)
   const error = ref('')
 
   function fetchOcorrencias() {
@@ -72,13 +74,33 @@ export const useOcorrenciasStore = defineStore('ocorrencias', () => {
       })
   }
 
+  function removeOcorrencia(id) {
+    removendo.value = true
+    error.value = ''
+
+    return excluirOcorrencia(id)
+      .then(() => {
+        ocorrencias.value = ocorrencias.value.filter((item) => item.id !== id)
+        return true
+      })
+      .catch(() => {
+        error.value = 'Erro ao excluir ocorrência. Tente novamente.'
+        return false
+      })
+      .finally(() => {
+        removendo.value = false
+      })
+  }
+
   return {
     ocorrencias,
     loading,
     salvando,
+    removendo,
     error,
     fetchOcorrencias,
     addOcorrencia,
     atualizarOcorrencia,
+    removeOcorrencia,
   }
 })
