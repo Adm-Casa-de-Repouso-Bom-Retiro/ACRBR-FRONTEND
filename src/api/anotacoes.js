@@ -9,6 +9,25 @@ export function listarAnotacoes(residenteId) {
   })
 }
 
+export function listarAnotacoesAtualizadasNaData(data) {
+  return api.get('/anotacoes/', {
+    params: {
+      atualizado_em__date: data,
+      page_size: 100,
+    },
+  })
+}
+
+export function listarMedicacoesDoDia(data) {
+  return api.get('/anotacoes/', {
+    params: {
+      data,
+      categoria: 'medicacao',
+      page_size: 100,
+    },
+  })
+}
+
 export function criarAnotacao(dados) {
   return api.post('/anotacoes/', dados)
 }

@@ -1,9 +1,18 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { listarAnotacoes, criarAnotacao, atualizarAnotacao, excluirAnotacao } from '@/api/anotacoes'
+import {
+  listarAnotacoes,
+  listarAnotacoesAtualizadasNaData,
+  listarMedicacoesDoDia,
+  criarAnotacao,
+  atualizarAnotacao,
+  excluirAnotacao,
+} from '@/api/anotacoes'
 
 export const useAnotacoesStore = defineStore('anotacoes', () => {
   const anotacoes = ref([])
+  const anotacoesAtualizadasHoje = ref([])
+  const medicacoesDoDia = ref([])
   const loading = ref(false)
   const error = ref('')
 
@@ -33,6 +42,29 @@ export const useAnotacoesStore = defineStore('anotacoes', () => {
     } finally {
       loading.value = false
     }
+  }
+
+  function fetchResumoDoDia(data) {
+    loading.value = true
+    error.value = ''
+
+    return listarAnotacoesAtualizadasNaData(data)
+      .then((resposta) => {
+        anotacoesAtualizadasHoje.value = resposta.data.results || resposta.data || []
+
+        return listarMedicacoesDoDia(data)
+      })
+      .then((resposta) => {
+        medicacoesDoDia.value = resposta.data.results || resposta.data || []
+      })
+      .catch(() => {
+        error.value = 'Erro ao carregar os dados do dia. Tente novamente.'
+        anotacoesAtualizadasHoje.value = []
+        medicacoesDoDia.value = []
+      })
+      .finally(() => {
+        loading.value = false
+      })
   }
 
   async function addAnotacao(dados) {
@@ -90,12 +122,15 @@ export const useAnotacoesStore = defineStore('anotacoes', () => {
 
   return {
     anotacoes,
+    anotacoesAtualizadasHoje,
+    medicacoesDoDia,
     loading,
     error,
     anotacoesPorResidente,
     anotacoesDoDia,
     anotacoesPorCategoria,
     fetchAnotacoes,
+    fetchResumoDoDia,
     addAnotacao,
     updateAnotacao,
     removeAnotacao,
