@@ -112,18 +112,53 @@
                   @change="selecionarFotos"
                 />
 
-                <button
-                  type="button"
-                  class="btn-foto"
-                  :disabled="enviandoFotos"
-                  @click="abrirSeletorFoto"
-                >
-                  {{
-                    fotosExistentes.length || fotosSelecionadas.length
-                      ? 'ADICIONAR MAIS FOTOS'
-                      : 'ADICIONAR FOTOS'
-                  }}
-                </button>
+                <input
+                  ref="inputCamera"
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  class="input-foto-oculto"
+                  @change="selecionarFotos"
+                />
+
+                <div class="photo-botoes">
+                  <button
+                    type="button"
+                    class="btn-foto"
+                    :disabled="enviandoFotos"
+                    @click="abrirSeletorFoto"
+                  >
+                    {{
+                      fotosExistentes.length || fotosSelecionadas.length
+                        ? 'ADICIONAR MAIS FOTOS'
+                        : 'ADICIONAR FOTOS'
+                    }}
+                  </button>
+
+                  <button
+                    type="button"
+                    class="btn-foto btn-foto--camera"
+                    :disabled="enviandoFotos"
+                    @click="abrirCamera"
+                  >
+                    <svg
+                      class="btn-foto-icone"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M4 8a2 2 0 0 1 2-2h1.17a2 2 0 0 0 1.63-.84l.4-.57A2 2 0 0 1 10.8 3.6h2.4a2 2 0 0 1 1.6.98l.4.57A2 2 0 0 0 16.83 6H18a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8Z"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                        stroke-linejoin="round"
+                      />
+                      <circle cx="12" cy="13" r="3.2" stroke="currentColor" stroke-width="1.5" />
+                    </svg>
+                    TIRAR FOTO
+                  </button>
+                </div>
 
                 <div
                   v-if="fotosExistentes.length || fotosSelecionadas.length"
@@ -309,6 +344,7 @@ const erroFormulario = ref('')
 const sucesso = ref('')
 const formularioRef = ref(null)
 const inputFoto = ref(null)
+const inputCamera = ref(null)
 const ocorrenciaEmEdicao = ref(null)
 const fotosExistentes = ref([])
 const fotosSelecionadas = ref([])
@@ -367,8 +403,13 @@ function abrirSeletorFoto() {
   inputFoto.value?.click()
 }
 
+function abrirCamera() {
+  inputCamera.value?.click()
+}
+
 function selecionarFotos(evento) {
-  const arquivos = Array.from(evento.target.files || [])
+  const input = evento.target
+  const arquivos = Array.from(input?.files || [])
 
   if (arquivos.length) {
     fotosAlteradas.value = true
@@ -381,8 +422,8 @@ function selecionarFotos(evento) {
     })
   })
 
-  if (inputFoto.value) {
-    inputFoto.value.value = ''
+  if (input) {
+    input.value = ''
   }
 }
 
@@ -409,6 +450,10 @@ function limparFotos() {
 
   if (inputFoto.value) {
     inputFoto.value.value = ''
+  }
+
+  if (inputCamera.value) {
+    inputCamera.value.value = ''
   }
 }
 
@@ -776,8 +821,18 @@ onMounted(() => {
   display: none;
 }
 
+.photo-botoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .btn-foto {
   align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   background: #ffffff;
   color: #3a7d44;
   border: 1.5px dashed #3a7d44;
@@ -790,6 +845,12 @@ onMounted(() => {
   text-transform: uppercase;
   cursor: pointer;
   transition: background 0.15s ease;
+}
+
+.btn-foto-icone {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .btn-foto:hover:not(:disabled) {
@@ -1091,6 +1152,15 @@ onMounted(() => {
 
   .form-row {
     grid-template-columns: 1fr;
+  }
+
+  .photo-botoes {
+    flex-direction: column;
+  }
+
+  .btn-foto {
+    width: 100%;
+    align-self: stretch;
   }
 
   .occurrence-photo,
