@@ -106,6 +106,12 @@ async function handleLogin() {
   padding: 0;
 }
 
+.login-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 .login-line {
   width: 100%;
   height: 1.3vw;
@@ -256,5 +262,40 @@ async function handleLogin() {
 
 .btn-entrar:hover:not(:disabled) {
   background: #2f5a2b;
+}
+
+@media (max-width: 900px) {
+  .login-line {
+    height: 6px;
+  }
+
+  .main-content {
+    height: auto;
+    flex-direction: column;
+  }
+
+  .photo-side {
+    display: none;
+  }
+
+  .form-side {
+    flex: 1;
+    padding: 32px 20px 48px;
+  }
+}
+
+@media (max-width: 380px) {
+  .form-side {
+    padding: 24px 16px 40px;
+  }
+
+  .avatar-img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .btn-entrar {
+    width: 100%;
+  }
 }
 </style>

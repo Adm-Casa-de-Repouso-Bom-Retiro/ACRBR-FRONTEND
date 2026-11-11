@@ -1,7 +1,6 @@
 <template>
   <div class="cadastro-residente-page">
     <main class="main-content">
-
       <section class="cadastro-painel">
         <div class="cadastro-card">
           <div class="foto-coluna">
@@ -143,7 +142,6 @@ import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
 import { useResidenteStore } from '@/stores/residente'
-
 
 const router = useRouter()
 const residenteStore = useResidenteStore()
@@ -449,6 +447,16 @@ function proximo() {
   .btn-proximo {
     width: 100%;
     justify-content: center;
+  }
+}
+
+@media (max-width: 600px) {
+  .opcao-grau {
+    align-items: flex-start;
+  }
+
+  .opcao-texto {
+    white-space: normal;
   }
 }
 </style>

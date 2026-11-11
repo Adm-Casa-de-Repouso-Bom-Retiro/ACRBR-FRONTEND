@@ -220,7 +220,8 @@ onMounted(() => {
 }
 
 .nutricao-card {
-  width: 80vw;
+  width: 100%;
+  max-width: 960px;
   margin: 0 auto;
   background: #ffffff;
   border: 1px solid #3a7d44;
@@ -539,7 +540,7 @@ onMounted(() => {
   }
 
   .nutricao-card {
-    width: 92vw;
+    width: 100%;
     padding: 24px 18px;
   }
 
