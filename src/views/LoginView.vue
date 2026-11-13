@@ -121,7 +121,7 @@ async function handleLogin() {
 .main-content {
   flex: 1;
   width: 100%;
-  height: calc(100vh - 140px);
+  min-height: calc(100vh - 140px);
   display: flex;
 }
 

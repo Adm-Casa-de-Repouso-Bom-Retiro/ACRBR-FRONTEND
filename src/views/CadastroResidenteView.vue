@@ -285,6 +285,7 @@ function proximo() {
 }
 
 .campo-nome,
+.campo-grau,
 .campo-observacoes {
   grid-column: 1 / -1;
 }
@@ -442,6 +443,14 @@ function proximo() {
 
   .form-grid {
     grid-template-columns: 1fr;
+  }
+
+  .opcao-grau {
+    align-items: flex-start;
+  }
+
+  .opcao-texto {
+    white-space: normal;
   }
 
   .btn-proximo {

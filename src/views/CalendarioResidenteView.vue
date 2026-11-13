@@ -978,6 +978,7 @@ onMounted(() => {
 
 .card-semana-topo {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 4px;
   font-size: 9px;
@@ -986,11 +987,16 @@ onMounted(() => {
 }
 
 .card-hora {
+  flex-shrink: 0;
   white-space: nowrap;
 }
 
 .card-categoria {
+  min-width: 0;
+  overflow: hidden;
   text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   opacity: 0.85;
 }
 
@@ -1239,6 +1245,12 @@ onMounted(() => {
   font-weight: 700;
 }
 
+@media (max-width: 1100px) {
+  .layout-calendario {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 900px) {
   .main-content {
     padding: 20px 16px 40px 16px;
@@ -1290,6 +1302,16 @@ onMounted(() => {
   .celula-mes {
     min-height: 64px;
     padding: 4px;
+  }
+
+  .grade-mes {
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .mes-cabecalho,
+  .mes-semana {
+    min-width: 560px;
   }
 
   .celula-anotacao {

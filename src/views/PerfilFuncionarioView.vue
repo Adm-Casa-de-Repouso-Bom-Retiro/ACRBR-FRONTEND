@@ -1,6 +1,5 @@
 <template>
   <div class="perfil-view">
-
     <div class="faixa-verde">
       <h1 class="faixa-titulo">Meu perfil</h1>
     </div>
@@ -481,8 +480,9 @@ onMounted(async () => {
 }
 
 .foto-box {
-  width: 240px;
-  height: 240px;
+  width: min(240px, 100%);
+  aspect-ratio: 1 / 1;
+  height: auto;
   border-radius: 20px;
   border: 1px solid #dde7d8;
   overflow: hidden;
@@ -698,6 +698,7 @@ onMounted(async () => {
   flex-direction: column;
   gap: 24px;
   border-right: 1px solid #dde7d8;
+  overflow-y: auto;
 }
 
 .modal-foto {
@@ -938,11 +939,12 @@ onMounted(async () => {
   }
 
   .modal-box {
-    flex-direction: column;
+    display: block;
     width: 100%;
     max-width: 100%;
     height: 100%;
     max-height: 100%;
+    overflow-y: auto;
     border-radius: 0;
   }
 
@@ -952,6 +954,7 @@ onMounted(async () => {
     border-bottom: 1px solid #dde7d8;
     padding: 24px 20px 16px 20px;
     gap: 16px;
+    overflow-y: visible;
   }
 
   .modal-foto {
@@ -975,8 +978,9 @@ onMounted(async () => {
   }
 
   .modal-direita {
-    flex: 1;
+    width: 100%;
     padding: 24px 20px;
+    overflow-y: visible;
   }
 }
 </style>

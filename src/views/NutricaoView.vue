@@ -395,6 +395,7 @@ onMounted(() => {
   font-size: 14px;
   line-height: 1.5;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .info-text:last-child {

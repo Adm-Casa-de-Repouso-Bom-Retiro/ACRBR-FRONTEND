@@ -220,6 +220,7 @@ function confirmarExclusao() {
   font-size: 13px;
   line-height: 1.5;
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .anotacao-rodape {

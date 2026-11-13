@@ -705,6 +705,10 @@ onMounted(buscarResidente)
     height: 220px;
   }
 
+  .info-coluna {
+    width: 100%;
+  }
+
   .btn-editar {
     width: 100%;
   }
@@ -730,6 +734,16 @@ onMounted(buscarResidente)
     height: 100%;
     max-height: 100%;
     border-radius: 0;
+    padding: 20px;
+  }
+
+  .modal-footer {
+    flex-wrap: wrap;
+  }
+
+  .modal-footer .btn-cancelar,
+  .modal-footer .btn-salvar {
+    flex: 1;
   }
 }
 </style>

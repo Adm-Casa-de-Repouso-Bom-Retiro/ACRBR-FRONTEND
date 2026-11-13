@@ -1154,6 +1154,15 @@ onMounted(() => {
     grid-template-columns: 1fr;
   }
 
+  .form-actions {
+    flex-wrap: wrap;
+  }
+
+  .form-actions .btn-cancelar,
+  .form-actions .btn-salvar {
+    flex: 1;
+  }
+
   .photo-botoes {
     flex-direction: column;
   }

@@ -455,6 +455,17 @@ watch(
     border-top: 1px solid #eef3ea;
   }
 
+  .user-profile {
+    min-width: 0;
+  }
+
+  .user-name {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .user-info {
     align-items: flex-end;
   }

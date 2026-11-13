@@ -972,6 +972,7 @@ textarea:disabled {
   }
 
   .grid-sections {
+    grid-template-columns: 1fr;
     gap: 20px;
   }
 }
@@ -1002,12 +1003,32 @@ textarea:disabled {
     height: 100%;
     max-height: 100%;
     border-radius: 0;
+    padding: 20px;
+  }
+
+  .modal-footer {
+    flex-wrap: wrap;
+  }
+
+  .modal-footer .btn-cancelar,
+  .modal-footer .btn-salvar {
+    flex: 1;
   }
 }
 
 @media (max-width: 480px) {
   .cuidados-painel {
     padding: 20px 16px;
+  }
+
+  .modal-footer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .modal-footer .btn-cancelar,
+  .modal-footer .btn-salvar {
+    width: 100%;
   }
 
   .section-title {

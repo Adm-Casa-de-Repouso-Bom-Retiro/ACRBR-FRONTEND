@@ -704,7 +704,7 @@ onMounted(() => {
 
 .summary-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 22px;
 }
 
@@ -753,10 +753,12 @@ onMounted(() => {
 }
 
 .summary-value {
+  max-width: 100%;
   color: #1f2d1c;
   font-size: 36px;
   font-weight: 800;
   line-height: 1.1;
+  overflow-wrap: anywhere;
 }
 
 .summary-label {
@@ -1056,6 +1058,14 @@ onMounted(() => {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .summary-card {
+    padding: 20px;
+  }
+
+  .summary-value {
+    font-size: 30px;
+  }
+
   .quick-cards {
     grid-template-columns: 1fr;
   }
@@ -1072,6 +1082,10 @@ onMounted(() => {
 @media (max-width: 600px) {
   .summary-grid {
     grid-template-columns: 1fr;
+  }
+
+  .summary-value {
+    font-size: 28px;
   }
 
   .modal-list-item {

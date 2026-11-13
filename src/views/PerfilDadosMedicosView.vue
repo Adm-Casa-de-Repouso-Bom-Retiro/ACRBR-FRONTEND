@@ -841,6 +841,7 @@ onMounted(() => {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  max-width: 100%;
   background: #e8f1e3;
   color: #2f5a2b;
   border-radius: 999px;
@@ -848,6 +849,7 @@ onMounted(() => {
   font-size: 12px;
   font-weight: 600;
   line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .chip-item--alergia {

@@ -448,6 +448,10 @@ async function handleCadastro() {
     height: 220px;
   }
 
+  .info-coluna {
+    width: 100%;
+  }
+
   .form-grid {
     flex-direction: column;
     gap: 16px;
